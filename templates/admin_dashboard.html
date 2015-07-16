@@ -1,0 +1,96 @@
+
+{% extends 'base.html' %}
+{% block body %}
+ <div class="container">
+    <h1 align="center">Lead Tracking</h1>
+    <div id="toolbar">
+        <button id="remove" class="btn btn-danger" disabled>
+            <i class="glyphicon glyphicon-remove"></i> Delete
+        </button>
+    </div>
+    {% if current_user.is_authenticated() %}
+    <table id="table"
+           data-toggle="table"
+           data-toolbar="#toolbar"
+           data-search="true"
+           data-show-refresh="true"
+           data-show-toggle="true"
+           data-show-columns="true"
+           data-show-export="true"
+           data-minimum-count-columns="2"
+           data-show-pagination-switch="true"
+           data-pagination="true"
+           data-maintain-selected="true"
+           data-search="true"
+           data-url={{ '/leads?user_id=' + current_user.user_id }}
+           data-page-number="1"
+
+    />
+    {% endif %}
+
+
+   <thead>
+            <tr>
+                <th data-field="state" data-checkbox="true" ></th>
+                <th data-field="first_name"  data-editable="true" data-typo="text">First Name</th>
+                <th data-field="last_name" data-editable="true" data-typo="text">Last Name</th>
+                <th data-field="zip" data-editable="true" data-typo="text">Zip Code</th>
+                <th data-field="city" data-editable="true" data-typo="text">City</th>
+                <th data-field="entry_date" data-typo="text">Entry Date</th>
+                <th data-field="status" data-typo="select" data-editable="true" >Disposition</th>
+                {% if current_user.access == 'admin' or current_user.access == 'superadmin' %}
+                <th data-field="agent" data-typo="select" data-editable="true" >Assigned To</th>
+                {% endif %}
+            </tr>
+    </thead>
+
+
+    </table>
+</div>
+{% endblock %}
+
+
+    
+  </body>
+</html>
+
+<script type="text/javascript">
+
+var $table = $('#table');
+var $remove = $('#remove');
+
+
+$table.on('check.bs.table uncheck.bs.table ' +
+                'check-all.bs.table uncheck-all.bs.table', function () {
+
+
+            $remove.prop('disabled', !$table.bootstrapTable('getSelections').length);
+            
+
+        });
+        
+$remove.click(function () {
+
+            var ids = getIdSelections();
+            $table.bootstrapTable('remove', {
+                field: 'lead_id',
+                values: ids
+            });
+            var leads = JSON.stringify({lead_id_list : ids},null,2);
+            $.ajax({
+              url: '/delete',
+              data: leads,
+              method: 'POST',
+              contentType: 'application/json'
+            });
+            $remove.prop('disabled', true);
+        });
+
+function getIdSelections() {
+
+        return $.map($table.bootstrapTable('getSelections'), function (row) {
+            return row.lead_id
+        });
+    }
+
+</script>
