@@ -1,6 +1,6 @@
 from main import create_user, bcrypt
 from getpass import getpass
-name = 'SuperUser'
+name = raw_input('Name : ')
 access = 'superadmin'
 
 email = raw_input("Email : ")
@@ -15,4 +15,6 @@ for i in range(3):
 		else:
 			print "Error creating super user contact the admin :("
 			break
+	else:
+		print "Error Passwords don't match try again !!"
 
