@@ -60,12 +60,17 @@
             var _formatter = column.formatter;
             column.formatter = function (value, row, index) {
                 var result = _formatter ? _formatter(value, row, index) : value;
+                if (column.field == 'lead_id') {
+                        console.log(column.lead_id)
+                        return ['<a href="/profile?lead_id=' + row.lead_id +'"><i class="glyphicon glyphicon-eye-open"></i></a>']
+                }
                 if (column.typo == 'select') {
 
                         return ['<a href="javascript:void(0)"',
                         ' data-name="' + column.field + '"',
                         ' data-url="/edit"',
                         ' data-type="'+ column.typo + '"',
+                        ' data-emptytext="' + column.field + '"',
                         ' data-pk="' + row.lead_id + '"',        
                        'data-value="' + result + '"',
                        ' data-source="' + eval(column.field) + '"',

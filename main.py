@@ -95,7 +95,7 @@ def create_user(name,email,access,password):
 	return True
 
 
-def query(sql,params):
+def query(sql,params=[]):
 	conn = mysql.connect()
 	cursor = conn.cursor()
 	cursor.execute(sql,params)
@@ -137,7 +137,7 @@ def delete_lead(lead_id_list):
 	return False
 
 
-def lead_details(sql,params):
+def lead_details(sql,params=[]):
 	rows,columns = query(sql,params)
 	result = []
 	for row in rows:
@@ -177,15 +177,18 @@ def edit():
 	lead_id = params['pk']
 	field = params['name']
 	value = params['value']
-	save = update_lead(lead_id,field,value)
-	if save:
-		if field == 'agent':
-			sendmail(user_id=value,lead_id=lead_id)
-
+	if field == 'agent':
+		sendmail(user_id=value,lead_id=lead_id)
+	if field == 'status':
+		# Add in disposition table
+		create_disposition_record(lead_id=lead_id,agent_id=current_user.user_id,time=datetime.datetime.now(),status=value)
+		# Alert Email to the Agent
 		return 'OK'
-	
 	else:
-		return 'Error updating the Lead'
+		save = update_lead(lead_id,field,value)
+		return 'OK'
+
+	return 'Error updating the Lead'
 	
 
 @app.route('/status')
@@ -302,6 +305,104 @@ def logout():
     return render_template("login.html")
 
 
+@app.route('/charts', methods=['GET'])
+@login_required
+def charts():
+	time_unit = request.args.get('unit')
+	sql = 'SELECT entry_date FROM lead_details'
+	lead_dates,foo = query(sql)
+	lead_dates = data_distribution(lead_dates,time_unit)
+	foo = {}
+
+	for i in lead_dates:
+		foo[to_timestamp(i)] = lead_dates[i]
+
+	lead_dates = foo
+	result = []
+
+	for i in lead_dates:
+		result.append([i,lead_dates[i]])
+
+	result.sort()
+
+	result = {'chart_data':result}
+	print len(lead_dates)
+	return json.dumps(result)
+
+def to_timestamp(dt):
+	return (dt - datetime.datetime(1970, 1, 1)).total_seconds()*1000
+
+def data_distribution(lead_dates,time_unit):
+	lead_dates = [row[0] for row in lead_dates]
+
+	if time_unit == 'day':
+		lead_dates = [i.replace(hour=0,minute=0,second=0,microsecond=0) for i in lead_dates]
+	if time_unit == 'month':
+		lead_dates = [i.replace(day=1,hour=0,minute=0,second=0,microsecond=0) for i in lead_dates]
+	if time_unit == 'year':
+		lead_dates = [i.replace(month=1,day=1,hour=0,minute=0,second=0,microsecond=0) for i in lead_dates]
+	if time_unit == 'quarter':
+		lead_dates = [i.replace(month=quarter(i.month),day=1,hour=0,minute=0,second=0,microsecond=0) for i in lead_dates]
+	if time_unit == 'hour':
+		lead_dates = [i.replace(minute=0,second=0,microsecond=0) for i in lead_dates]
+	if time_unit == 'week':
+		lead_dates = [i.replace(hour=0,minute=0,second=0,microsecond=0) for i in lead_dates]
+
+
+
+
+	distinct = set(lead_dates)
+	count = dict(zip(distinct,[0 for i in range(len(distinct))]))
+
+	for i in lead_dates:
+		count[i] += 1
+	return count
+
+def quarter(month):
+	if 1 <= month <= 3:
+		return 1
+	elif 4 <= month <= 6:
+		return 4
+	elif 7 <= month <= 9:
+		return 7
+	else:
+		return 10
+
+def truncate_datetime(dt,**kwargs):
+	for name,value in kwargs.items():
+		dt = dt.replace(name=value)
+	return dt
+
+@app.route('/get_dispositions')
+@login_required
+def get_dispositions():
+	lead_id = request.args.get('lead_id')
+	params = [lead_id,]
+	sql = 'SELECT dr.status, ltu.name, dr.timestamp, dr.notes FROM disposition_record dr LEFT JOIN lead_track_users ltu\
+																		ON ltu.id = dr.agent_id \
+																		WHERE lead_id = %s'
+	return json.dumps(lead_details(sql,params))
+
+
+def create_disposition_record(lead_id,agent_id,status,time,notes=''):
+	conn = mysql.connect()
+	cursor = conn.cursor()
+	sql = 'INSERT IGNORE INTO disposition_record (lead_id,notes,agent_id,status,`timestamp`) VALUES(%s,%s,%s,%s,%s)'
+	params = [lead_id,notes,agent_id,status,time]
+	update_lead(lead_id,'status',status)
+
+	try:
+		with conn:
+			cursor.execute(sql,params)
+			# conn.close()
+			return True
+	except Exception,e:
+		print e
+		# conn.close()
+		return False
+
+
+
 
 def sendmail(user_id,lead_id):
 	conn = mysql.connect()
@@ -346,6 +447,52 @@ def message_creator(lead_id,name):
 			   '''.format(*details)
 	return message + info
 
+@app.route('/profile',methods=['GET'])
+@login_required
+def profile():
+	lead_id = request.args.get('lead_id')
+	sql = 'SELECT * FROM lead_details WHERE lead_id = %s'
+	params = [lead_id,]
+	row,column = query(sql,params)
+	details = dict(zip(column,row[0]))
+	names = [
+		'first_name' , 'Fist Name',
+		'last_name' ,'Last Name',
+		'phone_number' , 'Phone Number',
+		'email' , 'Email',
+		'zip' , 'Zip',
+		'street' , 'Street',
+		'city' , 'City',
+		'state' , 'State',
+		'country', 'Country',
+
+	]
+	# print details
+	return render_template('profile.html',details=details,names=names)
+
+@app.route('/create_disposition',methods=['POST'])
+@login_required
+def create_disposition():
+	params = request.form
+	notes = params['notes']
+	status = params['status']
+	lead_id = params['lead_id']
+	print notes,status,lead_id
+	agent_id = current_user.user_id
+	if create_disposition_record(lead_id=lead_id,time=datetime.datetime.now(),status=status,agent_id=agent_id,notes=notes):
+		return 'OK'
+	else:
+		print 'Error Creating Disposition Record.'
+		return 'OK'
+
+@app.route('/disposition_types')
+@login_required
+def disposition_types():
+	user = request.args.get('user')
+	sql = 'SELECT name,value FROM disposition_types WHERE user = %s'
+	params = [user,]
+	details = lead_details(sql=sql,params=params)
+	return str(details)
 
 
 if __name__== '__main__':

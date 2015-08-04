@@ -37,8 +37,41 @@
     <script src="/static/bootstrap-table.js"></script>
 
     <script src="/static/bootstrap-table-editable.js"></script>
+    <script src="/static/jquery.flot.js"></script>
+    <script src="/static/jquery.flot.time.js"></script>
+    <script src="/static/charts.js"></script>
 
 
+<style type="text/css">
+
+.demo-container {
+  box-sizing: border-box;
+  width: 850px;
+  height: 450px;
+  padding: 20px 15px 15px 15px;
+  margin: 15px auto 30px auto;
+  border: 1px solid #ddd;
+  background: #fff;
+  background: linear-gradient(#f6f6f6 0, #fff 50px);
+  background: -o-linear-gradient(#f6f6f6 0, #fff 50px);
+  background: -ms-linear-gradient(#f6f6f6 0, #fff 50px);
+  background: -moz-linear-gradient(#f6f6f6 0, #fff 50px);
+  background: -webkit-linear-gradient(#f6f6f6 0, #fff 50px);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  -o-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  -ms-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  -moz-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  -webkit-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.demo-placeholder {
+  width: 100%;
+  height: 400px;
+  font-size: 14px;
+  line-height: 1.2em;
+}
+
+</style>
 
 
   </head>
@@ -83,5 +116,18 @@
   </div><!-- /.container-fluid -->
 </nav>
 <!-- Navbar end -->
+{% block chart %}
+<!-- KPI chart start -->
+<div class="demo-container">
+<div id="linechart" class="demo-placeholder"></div>
+</div>
+
+
+    <p align="center"><button id="month">By Month</button>
+    <button id="day">By Day</button>
+    <button id="quarter">By Quarter</button>
+    <button id="year">By Year</button></p>
+{% endblock %}
+<!-- KPI chart end  -->
 {% block body%}
 {% endblock %}
