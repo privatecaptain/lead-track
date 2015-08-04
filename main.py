@@ -5,6 +5,7 @@ import json
 import datetime
 from flask.ext.bcrypt import Bcrypt
 import requests
+from config import *
 
 app = Flask(__name__,static_url_path='/static')
 app.debug = True
@@ -13,10 +14,10 @@ app.secret_key = 'BD$b7v5vbr494rfci7cv47b'
 #MySQL Config.
 
 mysql = MySQL()
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'badman1108'
-app.config['MYSQL_DATABASE_DB'] = 'lead'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+app.config['MYSQL_DATABASE_USER'] = MYSQL_DATABASE_USER
+app.config['MYSQL_DATABASE_PASSWORD'] = MYSQL_DATABASE_PASSWORD
+app.config['MYSQL_DATABASE_DB'] = MYSQL_DATABASE_DB
+app.config['MYSQL_DATABASE_HOST'] = MYSQL_DATABASE_HOST
 mysql.init_app(app)
 
 
