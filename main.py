@@ -191,21 +191,25 @@ def edit():
 
 	return 'Error updating the Lead'
 	
+def d_types(user):
+	sql = 'SELECT `text`,value FROM disposition_types WHERE user = %s'
+	params = [user,]
+	details = lead_details(sql=sql,params=params)
+	for i in details:
+		i['text'] = str(i['text'])
+		i['value'] = str(i['value'])
+	return details
 
 @app.route('/status')
 @login_required
-def status():
-	result =   [
-			              {'value': 'default' , 'text': '--status--'},
-			              {'value': 'previously_enrolled', 'text': 'Previosly Enrolled'},
-			              {'value': 'appointment_set', 'text': 'Appointment Set'},
-			              {'value': 'out_of_territory', 'text': 'Out of Territory'},
-			              {'value': 'customer_refused', 'text': 'Customer Refused'},
-			              {'value': 'working_on_lead', 'text': 'Working on Lead'}
-           				]
-   			 
+def disposition_types():
+	user = request.args.get('user')
+	if not user:
+		user = 'agent'
 
-   	return str(result)
+	dispositions = d_types(user)
+	return str(dispositions)
+
 
 @app.route('/agents')
 @login_required
@@ -468,8 +472,11 @@ def profile():
 		'country', 'Country',
 
 	]
+	dispositions = d_types('agent')
+	# print dispositions
+
 	# print details
-	return render_template('profile.html',details=details,names=names)
+	return render_template('profile.html',details=details,names=names,dispositions=dispositions)
 
 @app.route('/create_disposition',methods=['POST'])
 @login_required
@@ -485,15 +492,6 @@ def create_disposition():
 	else:
 		print 'Error Creating Disposition Record.'
 		return 'OK'
-
-@app.route('/disposition_types')
-@login_required
-def disposition_types():
-	user = request.args.get('user')
-	sql = 'SELECT name,value FROM disposition_types WHERE user = %s'
-	params = [user,]
-	details = lead_details(sql=sql,params=params)
-	return str(details)
 
 
 if __name__== '__main__':
