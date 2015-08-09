@@ -314,8 +314,14 @@ def logout():
 @login_required
 def charts():
 	time_unit = request.args.get('unit')
-	sql = 'SELECT entry_date FROM lead_details'
-	lead_dates,foo = query(sql)
+	type_filter = request.args.get('type_filter')
+	params = []
+	if not type_filter:
+		sql = 'SELECT entry_date FROM lead_details'
+	else:
+		params = [type_filter]
+		sql = 'SELECT entry_date FROM lead_details WHERE status = %s'
+	lead_dates,foo = query(sql,params)
 	lead_dates = data_distribution(lead_dates,time_unit)
 	foo = {}
 

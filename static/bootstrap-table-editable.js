@@ -37,6 +37,7 @@
                 status = data;
             }
         });
+        console.log(status);
         $.ajax({
             url:"/agents",
             success: function(data) {
@@ -125,6 +126,17 @@
                             values: getIdSelections()}
               // console.log(checks);
               $table.bootstrapTable('uncheckBy',checks);
+
+
+              //Single-Click Fix
+
+              $('a.editable.editable-click').editable({/* options here */}).on('shown', function(event, editable) {
+                      editable.input.postrender = function() {
+                      var e = document.createEvent('MouseEvents');
+                      e.initMouseEvent("mousedown");
+                      editable.input.$input.get(0).dispatchEvent(e);
+                }
+});
 
 });
     };

@@ -94,6 +94,17 @@ function getIdSelections() {
         });
     }
 
+$(function () {
+    $('a.editable.editable-click').editable({/* options here */}).on('shown', function(event, editable) {
+      console.log('dodo');
+      editable.input.postrender = function() {
+      var e = document.createEvent('MouseEvents');
+      e.initMouseEvent("mousedown");
+      editable.input.$input.get(0).dispatchEvent(e);
+      }
+});
+});
+
 </script>
 {% endblock %}
 
