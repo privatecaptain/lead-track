@@ -9,7 +9,7 @@
 <div style="padding : 22px;">
 
 {% for i in range(0,18,2) %}
-  <li>{{names[i+1]}} : {{details[names[i]]}}</li><br>
+  <li><b>{{names[i+1]}}</b> : {{details[names[i]]}}</li><br>
 {% endfor %}
 </div>
 
@@ -64,7 +64,6 @@
 <script type="text/javascript">
 
 $('#create_disposition').submit(function create(){
-	 		console.log('yello');
 	            $.ajax({
 	                url:'/create_disposition',
 	                type:'POST',
