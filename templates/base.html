@@ -117,16 +117,17 @@
 </nav>
 <!-- Navbar end -->
 {% block chart %}
+
 <!-- KPI chart start -->
 <div class="demo-container">
 <div id="linechart" class="demo-placeholder"></div>
 </div>
 
+<p align="center"><button id="month">By Month</button>
+<button id="day">By Day</button>
+<button id="quarter">By Quarter</button>
+<button id="year">By Year</button></p>
 
-    <p align="center"><button id="month">By Month</button>
-    <button id="day">By Day</button>
-    <button id="quarter">By Quarter</button>
-    <button id="year">By Year</button></p>
 {% endblock %}
 <!-- KPI chart end  -->
 {% block body%}

@@ -6,6 +6,7 @@ import datetime
 from flask.ext.bcrypt import Bcrypt
 import requests
 from config import *
+from twilio.rest import TwilioRestClient
 
 app = Flask(__name__,static_url_path='/static')
 app.debug = True
@@ -33,6 +34,15 @@ login_manager = LoginManager()
 login_manager.init_app(app) 
 
 login_manager.login_view = 'login'
+
+
+# Twilio Credentials(Temp)
+
+TWILIO_ACCOUNT_SID = 'AC833b66e407f64608b690d887a95d4e95'
+TWILIO_AUTH_TOKEN = 'ce82d22b81861522c3b5fd52ef8fdb61'
+
+# Twilio Client Object 
+twilio_client = TwilioRestClient(TWILIO_ACCOUNT_SID,TWILIO_AUTH_TOKEN)
 
 
 class User(object):
@@ -499,6 +509,26 @@ def create_disposition():
 		print 'Error Creating Disposition Record.'
 		return 'OK'
 
+@app.route('/test',methods=['GET','POST'])
+@login_required
+def text_sms():
+	if request.method == 'GET':
+		return render_template('test_sms.html')
+
+	if request.method == 'POST':
+		params = request.form
+		reciever = params['reciever']
+		body = params['body']
+
+		from_  = '16473601648'
+
+		message = twilio_client.messages.create(
+					body = body,
+					to = reciever,
+					from_=from_
+			)
+		sid = message.sid
+		return render_template('test_sms.html',success=True,sid=sid)
 
 if __name__== '__main__':
 	app.run()

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block chart %}
+{% endblock %}
+{% block body %}
+
+<form class="form-horizontal" align="center" action='/test' id="test_sms" method="POST">
+  <fieldset>
+    <div id="legend">
+      <legend class="">Test SMS</legend>
+    </div>
+    {% if success == True %}
+    <div class="alert alert-success" role="alert">Successfully Sent SMS. Log SID = {{sid}}</div>
+    {% endif %}
+
+    <div class="control-group">
+      <!-- Username -->
+      <label class="control-label"  for="username">To</label>
+      <div class="controls">
+        <input type="text" id="name" name="reciever" placeholder="+12269227837" class="input-xlarge" required>
+      </div>
+    </div>
+ 
+    <div class="control-group">
+      <!-- E-mail -->
+      <label class="control-label" for="email">Body</label>
+      <div class="controls">
+        <textarea type="textarea" rows="6" id="email" name="body" placeholder="Welcome to Highlands Energy !!!" class="input-xlarge" required></textarea>
+      </div>
+    </div>
+ 
+
+    <div class="control-group">
+      <!-- Button -->
+      <div class="controls">
+        <button class="btn btn-success">Send</button>
+      </div>
+    </div>
+  </fieldset>
+</form>
+</body>
+</html>
+{% endblock %}
