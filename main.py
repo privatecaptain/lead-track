@@ -7,6 +7,8 @@ from flask.ext.bcrypt import Bcrypt
 import requests
 from config import *
 from twilio.rest import TwilioRestClient
+import difflib
+
 
 app = Flask(__name__,static_url_path='/static')
 app.debug = True
@@ -38,8 +40,8 @@ login_manager.login_view = 'login'
 
 # Twilio Credentials(Temp)
 
-TWILIO_ACCOUNT_SID = 'AC833b66e407f64608b690d887a95d4e95'
-TWILIO_AUTH_TOKEN = 'ce82d22b81861522c3b5fd52ef8fdb61'
+TWILIO_ACCOUNT_SID = 'ACd1e13b7f6f530d73dd47f13ce91224d5'
+TWILIO_AUTH_TOKEN = '67b23de6936fea29f8982a341276c070'
 
 # Twilio Client Object 
 twilio_client = TwilioRestClient(TWILIO_ACCOUNT_SID,TWILIO_AUTH_TOKEN)
@@ -520,15 +522,114 @@ def text_sms():
 		reciever = params['reciever']
 		body = params['body']
 
-		from_  = '14159677994'
+		from_  = '+15595127617'
 
-		message = twilio_client.messages.create(
-					body = body,
-					to = reciever,
-					from_=from_
-			)
+		message = send_text(to=to,from_=from_,body=body)
 		sid = message.sid
+
 		return render_template('test_sms.html',success=True,sid=sid)
+
+def send_text(to,from_,body):
+	message = twilio_client.messages.create(
+				to=to,
+				body=body,
+				from_=from_
+				)
+
+	return message
+
+
+@app.route('/esap',methods=['POST','GET'])
+def esap_process():
+	if request.method == 'GET':
+		step = request.args.get('step')
+		return render_template('esap.html',step=step)
+	
+	if request.method == 'POST':
+		params = request.form
+		step = params['step']
+
+		if process_resolution(step=step,params=params):
+			step += 1
+			return render_template('esap.html',step=step)
+
+		terminate_process(step=step)
+		return render_template('esap.html',terminate=True)
+
+
+def check_zip(params):
+	zip_code = params['zip_code']
+	sql = 'SELECT * from zip_codes WHERE zip_code = %s'
+	params = [zip_code,]
+	q = query(sql,params)
+	if q:
+		return True
+	return False
+
+def check_provider(params):
+	gas = params['gas']
+	electric = params['electric']
+
+	if gas == 'socal_gas' or 'p&e' and electric == 'p&e':
+		return True
+	return False
+
+def check_income(params):
+	pass
+
+def home_age(params):
+	age = params['age']
+	if age == 1:
+		return True
+	return False
+
+def check_address(params):
+
+	address = params['address']
+	sql = 'SELECT * from lead_details'
+	q = query(sql)
+
+	pass
+
+
+def match_address(address,suspects):
+	pass
+
+
+def add_details(params):
+
+	first_name = params['first_name']
+	last_name = params['last_name']
+	email = params['email']
+	mobile_phone = params['mobile_phone']
+	home_phone = params['home_phone']
+
+	pass
+
+
+def process_resolution(step,params):
+	if step == 1:
+		return check_zip(params)
+
+	elif step == 2:
+		return check_provider(params)
+
+	elif step == 3:
+		return check_income(params)
+
+	elif step == 4:
+		return home_age(params)
+
+	elif step == 5:
+		return check_address(params)
+	elif step == 6:
+		return add_details(params)
+	elif step == 7:
+		return add_referer(params)
+
+
+
+
 
 if __name__== '__main__':
 	app.run()
