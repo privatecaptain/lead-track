@@ -522,9 +522,9 @@ def text_sms():
 		reciever = params['reciever']
 		body = params['body']
 
-		from_  = '+15595127617'
+		from_  = '15595127617'
 
-		message = send_text(to=to,from_=from_,body=body)
+		message = send_text(to=reciever,from_=from_,body=body)
 		sid = message.sid
 
 		return render_template('test_sms.html',success=True,sid=sid)
