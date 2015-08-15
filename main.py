@@ -6,6 +6,7 @@ import datetime
 from flask.ext.bcrypt import Bcrypt
 import requests
 from config import *
+from terminate import *
 from twilio.rest import TwilioRestClient
 import difflib
 
@@ -543,25 +544,44 @@ def send_text(to,from_,body):
 def esap_process():
 	if request.method == 'GET':
 		step = request.args.get('step')
-		return render_template('esap.html',step=step)
+		if not step:
+			step = 1
+		return render_template('esap.html',step=step,terminate=False)
 	
 	if request.method == 'POST':
 		params = request.form
-		step = params['step']
+		step = int(params['step'])
+		print step
 
 		if process_resolution(step=step,params=params):
 			step += 1
-			return render_template('esap.html',step=step)
+			return render_template('esap.html',step=step,params=params,terminate=False)
 
-		terminate_process(step=step)
-		return render_template('esap.html',terminate=True)
+		if step == 5:
+			lead_id = match_address(make_address(params))
+			terminate_message = terminate_process(step=step,lead_id=lead_id)
+		else:
+			terminate_message = terminate_process(step=step)
+		return render_template('esap.html',
+								terminate=True,
+								terminate_message=terminate_message)
+
+
+def terminate_process(step,lead_id=0):
+	if step == 1 or step == 2:
+		return step1
+	if step == 3:
+		return step3
+	if step == 4:
+		return step4
+
 
 
 def check_zip(params):
 	zip_code = params['zip_code']
 	sql = 'SELECT * from zip_codes WHERE zip_code = %s'
 	params = [zip_code,]
-	q = query(sql,params)
+	q = query(sql,params)[0]
 	if q:
 		return True
 	return False
@@ -570,41 +590,119 @@ def check_provider(params):
 	gas = params['gas']
 	electric = params['electric']
 
-	if gas == 'socal_gas' or 'p&e' and electric == 'p&e':
+	if gas == 'socal_gas' or gas == 'pg&e' and electric == 'pg&e':
 		return True
 	return False
 
 def check_income(params):
-	pass
+	return True
 
 def home_age(params):
 	age = params['age']
-	if age == 1:
+	if age == 'yes':
 		return True
 	return False
 
+def match_address(address):
+	sql = 'SELECT apartment_number,street,city,state,lead_id from lead_details'
+	rows = query(sql)[0]
+
+	suspects = {}
+
+	for row in rows:
+		suspect = row[0] + row[1] + row[2] + row[3]
+		suspects[suspect] = row[4]
+	
+	matches = difflib.get_close_matches(address,suspects.keys(),cutoff=0.95)
+
+	if matches:
+		return suspects[matches[0]]
+	return False
+
+
+def make_address(params):
+	return params['apartment_number'] + params['street'] + params['city'] + params['state']
+
+
 def check_address(params):
+	
+	address = make_address(params)
+	match = match_address(address)
 
-	address = params['address']
-	sql = 'SELECT * from lead_details'
-	q = query(sql)
-
-	pass
-
-
-def match_address(address,suspects):
-	pass
+	if match:
+		return False
+	return True
 
 
 def add_details(params):
 
+
 	first_name = params['first_name']
 	last_name = params['last_name']
+
 	email = params['email']
-	mobile_phone = params['mobile_phone']
+
+	mobile_phone = params['phone_number']
 	home_phone = params['home_phone']
 
-	pass
+	zip_code = params['zip_code']
+	members = params['members']
+
+	street = params['street']
+	apartment_number = params['apartment_number']
+	city = params['city']
+	state = params['state']
+	country = 'Unites States'
+
+	sql = 'INSERT INTO lead_details(first_name,\
+									last_name,\
+									email,\
+									phone_number,\
+									home_phone,\
+									zip,\
+									members,\
+									street,\
+									apartment_number,\
+									city,\
+									state,\
+									country) \
+						VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+
+	sql_params = [first_name,last_name,email,mobile_phone,home_phone,zip_code,members,street,apartment_number,city,state,country]
+
+	conn = mysql.connect()
+
+	with conn:
+		cursor = conn.cursor()
+		cursor.execute(sql,sql_params)
+		
+
+	referer = params['referer']
+
+	if referer == 'yes':
+		return True
+	return False
+
+
+def add_referer(params):
+
+	referer_name = params['referer_name']
+	referer_email = params['referer_email']
+	referer_phone_number = params['referer_phone_number']
+	referer_relation = params['referer_relation']
+
+	sql = 'INSERT INTO lead_details(referer_name,\
+									referer_email,\
+									referer_phone_number,\
+									referer_relation) \
+						VALUES(%s,%s,%s,%s)'
+
+	sql_params = [referer_name,referer_email,referer_phone_number,referer_relation]
+
+	query(sql,sql_params)
+
+	return False
+
 
 
 def process_resolution(step,params):
