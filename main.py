@@ -557,6 +557,7 @@ def esap_process():
 			step += 1
 			return render_template('esap.html',step=step,params=params,terminate=False)
 
+		terminate_message = ''
 		if step == 5:
 			lead_id = match_address(make_address(params))
 			terminate_message = status_terminate(lead_id=lead_id)
