@@ -6,7 +6,7 @@ import datetime
 from flask.ext.bcrypt import Bcrypt
 import requests
 from config import *
-from terminate import *
+from terminate import terminate
 from twilio.rest import TwilioRestClient
 import difflib
 
@@ -559,21 +559,25 @@ def esap_process():
 
 		if step == 5:
 			lead_id = match_address(make_address(params))
-			terminate_message = terminate_process(step=step,lead_id=lead_id)
-		else:
-			terminate_message = terminate_process(step=step)
+			terminate_message = status_terminate(lead_id=lead_id)
+
 		return render_template('esap.html',
 								terminate=True,
+								step=step,
 								terminate_message=terminate_message)
 
 
-def terminate_process(step,lead_id=0):
-	if step == 1 or step == 2:
-		return step1
-	if step == 3:
-		return step3
-	if step == 4:
-		return step4
+def status_terminate(lead_id):
+	sql = 'SELECT status FROM lead_details WHERE lead_id = %s'
+	sql_params = [lead_id,]
+
+	rows,foo = query(sql,sql_params)
+	status = rows[0][0]
+
+	return terminate(status)
+
+
+
 
 
 
