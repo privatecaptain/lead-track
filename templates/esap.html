@@ -382,12 +382,12 @@ vertical-align: top!important;
 {% endfor %}
 <label class='gfield_label' for='members' >Select your Electric and Gas Provider:<span class='gfield_required'>*</span></label>
 <p>Electric:</p>
-<input type="radio" name="electric" value="pg&e">PG&E<br>
-<input type="radio" name="electric" value="other">Other<br>
+<input type="radio" name="electric" value="pg&e" required>PG&E<br>
+<input type="radio" name="electric" value="other" required>Other<br>
 <p>Gas:</p>
-<input type="radio" name="gas" value="pg&e">PG&E<br>
-<input type="radio" name="gas" value="socal_gas">SoCAL Gas<br>
-<input type="radio" name="gas" value="other">Other<br>
+<input type="radio" name="gas" value="pg&e" required>PG&E<br>
+<input type="radio" name="gas" value="socal_gas" required>SoCAL Gas<br>
+<input type="radio" name="gas" value="other" required>Other<br>
 
 {% endif %}
 
@@ -397,7 +397,7 @@ vertical-align: top!important;
 <input type="hidden" name="{{key}}" value="{{params[key]}}">
 {% endfor %}
 <label class='gfield_label' for='members' >Now, tell us how many people live in your home:<span class='gfield_required'>*</span></label>
-<input type="text" name="members"/>
+<input type="text" name="members" required>
 {% endif %}
 
 {% if step == 4 %}
@@ -408,8 +408,8 @@ vertical-align: top!important;
 <label class='gfield_label' for='age' >You're qualfied based on income. 
 Is your home at least five-years old?
 <span class='gfield_required'>*</span></label>
-<input type="radio" name="age" value="yes"/>Yes<br>
-<input type="radio" name="age" value="no">No<br>
+<input type="radio" name="age" value="yes" required>Yes<br>
+<input type="radio" name="age" value="no" required>No<br>
 {% endif %}
 
 {% if step == 5 %}
@@ -419,13 +419,13 @@ Is your home at least five-years old?
 {% endfor %}
 <label class='gfield_label' for='own' >Do You Rent or Own ?:
 <span class='gfield_required'>*</span></label>
-<input type="radio" name="own" value="yes"/>Own<br>
-<input type="radio" name="own" value="no">Rent<br>
+<input type="radio" name="own" value="yes" required>Own<br>
+<input type="radio" name="own" value="no" required>Rent<br>
 <label class='gfield_label' for='own' >What is your Property Address ?:
 <span class='gfield_required'>*</span></label>
 <label class='gfield_label' for='own' >Apartment #: 
 <span class='gfield_required'>*</span></label>
-<input type="text" name="apartment_number" required>
+<input type="text" name="apartment_number">
 <label class='gfield_label' for='own' >Street: 
 <span class='gfield_required'>*</span></label>
 <input type="text" name="street" required>
