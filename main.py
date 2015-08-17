@@ -9,6 +9,10 @@ from config import *
 from terminate import terminate
 from twilio.rest import TwilioRestClient
 import difflib
+import locale
+
+# Currency Locale set1111
+locale.setlocale( locale.LC_ALL, '' )
 
 
 app = Flask(__name__,static_url_path='/static')
@@ -550,15 +554,16 @@ def esap_process():
 	
 	if request.method == 'POST':
 		params = request.form
+		extras = {}
 		step = int(params['step'])
 		print step
 
-		if process_resolution(step=step,params=params):
+		if process_resolution(step=step,params=params,extras=extras):
 			step += 1
-			return render_template('esap.html',step=step,params=params,terminate=False)
+			return render_template('esap.html',step=step,params=params,terminate=False,extras=extras)
 
 		terminate_message = ''
-		if step == 5:
+		if step == 6:
 			lead_id = match_address(make_address(params))
 			terminate_message = status_terminate(lead_id=lead_id)
 
@@ -599,7 +604,8 @@ def check_provider(params):
 		return True
 	return False
 
-def check_income(params):
+def members(params,extras):
+	extras['required_income'] = required_income(params)
 	return True
 
 def home_age(params):
@@ -713,8 +719,36 @@ def add_referer(params):
 	return False
 
 
+member_income = {
+		1 : 31860,
+		2 : 31860,
+		3 : 40180,
+		4 : 48500,
+		5 : 56820,
+		6 : 65140,
+		7 : 73460,
+		8 : 81780
+	}
 
-def process_resolution(step,params):
+def required_income(params):
+	members = int(params['members'])
+	required_income = 0
+	if members <= 9:
+		required_income = member_income[members]
+	else:
+		difference = members - 9
+		extra_income = difference * 8320
+		required_income = member_income[8] + extra_income
+	return locale.currency(required_income,grouping=True)
+
+
+def check_income(params):
+	income = params['income']
+	if income == 'no':
+		return True
+	return False
+
+def process_resolution(step,params,extras):
 	if step == 1:
 		return check_zip(params)
 
@@ -722,16 +756,18 @@ def process_resolution(step,params):
 		return check_provider(params)
 
 	elif step == 3:
+		return members(params,extras)
+	elif step == 4:
 		return check_income(params)
 
-	elif step == 4:
+	elif step == 5:
 		return home_age(params)
 
-	elif step == 5:
-		return check_address(params)
 	elif step == 6:
-		return add_details(params)
+		return check_address(params)
 	elif step == 7:
+		return add_details(params)
+	elif step == 8:
 		return add_referer(params)
 
 

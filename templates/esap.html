@@ -371,7 +371,7 @@ vertical-align: top!important;
 {% if step == 1%}
 <input type="hidden" name="step" value="1">
 <label class='gfield_label' for='zip_code' >Let&#039;s start with your Zip Code:<span class='gfield_required'>*</span></label>
-<input type="text" name="zip_code"/>
+<input type="text" name="zip_code" maxlength="5">
 {% endif %}
 
 {% if step == 2 %}
@@ -405,6 +405,19 @@ vertical-align: top!important;
 {% for key in params %}
 <input type="hidden" name="{{key}}" value="{{params[key]}}">
 {% endfor %}
+<label class='gfield_label' for='members' >Is the total income, before taxes, for all the people in the home less than:
+:<span class='gfield_required'>*</span></label>
+<p>{{extras['required_income']}}</p><br>
+<input type="radio" name="income" value="yes" required>Yes<br>
+<input type="radio" name="income" value="no" required>No<br>  
+{% endif %}
+
+
+{% if step == 5 %}
+<input type="hidden" name="step" value="5">
+{% for key in params %}
+<input type="hidden" name="{{key}}" value="{{params[key]}}">
+{% endfor %}
 <label class='gfield_label' for='age' >You're qualfied based on income. 
 Is your home at least five-years old?
 <span class='gfield_required'>*</span></label>
@@ -412,8 +425,8 @@ Is your home at least five-years old?
 <input type="radio" name="age" value="no" required>No<br>
 {% endif %}
 
-{% if step == 5 %}
-<input type="hidden" name="step" value="5">
+{% if step == 6 %}
+<input type="hidden" name="step" value="6">
 {% for key in params %}
 <input type="hidden" name="{{key}}" value="{{params[key]}}">
 {% endfor %}
@@ -440,8 +453,8 @@ Is your home at least five-years old?
 
 {% endif %}
 
-{% if step == 6 %}
-<input type="hidden" name="step" value="6">
+{% if step == 7 %}
+<input type="hidden" name="step" value="7">
 {% for key in params %}
 <input type="hidden" name="{{key}}" value="{{params[key]}}">
 {% endfor %}
@@ -468,7 +481,7 @@ Is your home at least five-years old?
 
 <label class='gfield_label' for='own' >Apartment #: 
 <span class='gfield_required'>*</span></label>
-<input type="text" name="apartment_number" value="{{params['apartment_number']}}" required>
+<input type="text" name="apartment_number" value="{{params['apartment_number']}}">
 <label class='gfield_label' for='own' >Street: 
 <span class='gfield_required'>*</span></label>
 <input type="text" name="street" value="{{params['street']}}" required>
@@ -489,8 +502,8 @@ Is your home at least five-years old?
 
 {% endif %}
 
-{% if step == 7 %}
-<input type="hidden" name="step" value="7">
+{% if step == 8 %}
+<input type="hidden" name="step" value="8">
 {% for key in params %}
 <input type="hidden" name="{{key}}" value="{{params[key]}}">
 {% endfor %}
@@ -538,7 +551,7 @@ Thank you again for the inquiry.  If you have any friends or family in Stanislau
 
 {% endif %}
 
-{% if step == 3 %}
+{% if step == 3 or step == 4 %}
 
 Thank you for inquiring about the Energy Savings Assistance Program.  
 
@@ -555,7 +568,7 @@ Thank you again for the inquiry.  If you have any friends or family in Stanislau
 
 {% endif %}
 
-{% if step == 4 %}
+{% if step == 5 %}
 
 Thank you for inquiring about the Energy Savings Assistance Program.  
 
@@ -571,14 +584,14 @@ Thank you again for the inquiry.  If you have any friends or family in Stanislau
 
 {% endif %}
 
-{% if step == 5 %}
+{% if step == 6 %}
 
 {{terminate_message}}
 
 {% endif %}
 
 
-{% if step == 6 or step == 7 %}
+{% if step == 7 or step == 8 %}
 
 Thats it!
 
@@ -590,6 +603,24 @@ Please note that your return call will have a FRESNO (559) area code.
 By submitting this form you are opting in to receive updates and notifications regarding your application by email and text message.  SMS text message rates may apply. Please check with your carrier for rates, if any.<br>
 
 <button type="submit" name="opt-in" value="True">Submit</button>
+
+
+<!-- Facebook Conversion Code for Webleads -->
+<script>(function() {
+var _fbq = window._fbq || (window._fbq = []);
+if (!_fbq.loaded) {
+var fbds = document.createElement('script');
+fbds.async = true;
+fbds.src = '//connect.facebook.net/en_US/fbds.js';
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(fbds, s);
+_fbq.loaded = true;
+}
+})();
+window._fbq = window._fbq || [];
+window._fbq.push(['track', '6025147422634', {'value':'0.00','currency':'USD'}]);
+</script>
+<noscript><img height="1" width="1" alt="" style="display:none" src="https://www.facebook.com/tr?ev=6025147422634&amp;cd[value]=0.00&amp;cd[currency]=USD&amp;noscript=1" /></noscript>
 
 
 {% endif %}
