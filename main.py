@@ -12,7 +12,7 @@ import difflib
 import locale
 
 # Currency Locale set1111
-locale.setlocale( locale.LC_ALL, '' )
+locale.setlocale( locale.LC_ALL, 'en_CA.UTF-8' )
 
 
 app = Flask(__name__,static_url_path='/static')
