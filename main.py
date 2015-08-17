@@ -698,13 +698,17 @@ def add_referer(params):
 
 	sql = 'INSERT INTO lead_details(referer_name,\
 									referer_email,\
-									referer_phone_number,\
+									referer_phone,\
 									referer_relation) \
 						VALUES(%s,%s,%s,%s)'
 
 	sql_params = [referer_name,referer_email,referer_phone_number,referer_relation]
 
-	query(sql,sql_params)
+	conn = mysql.connect()
+
+	with conn:
+		cursor = conn.cursor()
+		cursor.execute(sql,sql_params)
 
 	return False
 
