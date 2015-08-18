@@ -725,7 +725,7 @@ def add_referer(params,extras):
 		cursor = conn.cursor()
 		cursor.execute(sql,sql_params)
 
-	return False
+	return True
 
 
 member_income = {
@@ -797,6 +797,8 @@ def process_resolution(step,params,extras):
 		return check_referer(params)
 	elif step == 10:
 		return add_referer(params,extras)
+	elif step == 11:
+		return False
 
 
 
