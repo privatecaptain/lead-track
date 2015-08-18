@@ -372,7 +372,7 @@ vertical-align: top!important;
 
 {% if step == 2 %}
 <input type="hidden" name="step" value="2">
-
+<input type="hidden" name="city" value="{{extras['city']}}">
 {% for key in params %}
 <input type="hidden" name="{{key}}" value="{{params[key]}}">
 {% endfor %}
@@ -453,10 +453,10 @@ Is your home at least five-years old?
 
 <label class='gfield_label' for='own' >City: 
 <span class='gfield_required'>*</span></label>
-<input type="text" name="city" required>
+<input type="text" name="city" value="{{params['city']}}" required>
 <label class='gfield_label' for='own' >State:
 <span class='gfield_required'>*</span></label>
-<input type="text" name="state" required>
+<input type="text" name="state" value="California" required>
 
 {% endif %}
 
@@ -501,7 +501,7 @@ Is your home at least five-years old?
 <input type="text" name="city" value="{{params['city']}}" required>
 <label class='gfield_label' for='own' >State:
 <span class='gfield_required'>*</span></label>
-<input type="text" name="state" value="{{params['state']}}" required>
+<input type="text" name="state" value="California" required>
 
 
 

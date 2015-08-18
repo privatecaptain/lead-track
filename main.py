@@ -585,20 +585,27 @@ def status_terminate(lead_id):
 	return terminate(status)
 
 
+def guess_address(zip_code):
+	sql = 'SELECT City FROM zip_codes WHERE zip_code = %s'
+	sql_params = [zip_code,]
+	city, foo = query(sql,sql_params)
+
+	city = city[0][0]
+	return city
 
 
 
-
-def check_zip(params):
+def check_zip(params,extras):
 	zip_code = params['zip_code']
 	sql = 'SELECT * from zip_codes WHERE zip_code = %s'
-	params = [zip_code,]
-	q = query(sql,params)[0]
+	sql_params = [zip_code,]
+	q = query(sql,sql_params)[0]
+	extras['city'] = guess_address(zip_code)
 	if q:
 		return True
 	return False
 
-def check_provider(params):
+def check_provider(params,extras):
 	gas = params['gas']
 	electric = params['electric']
 
@@ -634,7 +641,7 @@ def match_address(address):
 
 
 def make_address(params):
-	return params['apartment_number'] + params['street'] + params['city'] + params['state']
+	return params['street'] + params['city'] + params['state']
 
 
 def check_address(params):
@@ -662,7 +669,10 @@ def add_details(params,extras):
 	members = params['members']
 
 	street = params['street']
-	apartment_number = params['apartment_number']
+	if 'apartment_number' in params.keys():
+		apartment_number = params['apartment_number']
+	else:
+		apartment_number = ''
 	city = params['city']
 	state = params['state']
 	country = 'Unites States'
@@ -761,10 +771,11 @@ def check_referer(params):
 
 def process_resolution(step,params,extras):
 	if step == 1:
-		return check_zip(params)
+		print params
+		return check_zip(params=params, extras=extras)
 
 	elif step == 2:
-		return check_provider(params)
+		return check_provider(params,extras)
 
 	elif step == 3:
 		return members(params,extras)
