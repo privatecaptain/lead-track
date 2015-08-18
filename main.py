@@ -410,9 +410,9 @@ def get_dispositions():
 																		ON ltu.id = dr.agent_id \
 																		LEFT JOIN disposition_types dt\
 																		ON dr.status = dt.value\
-																		WHERE lead_id = %s'
+																		WHERE lead_id = %s ORDER BY dr.timestamp desc'
 	return json.dumps(lead_details(sql,params))
-1
+
 
 def create_disposition_record(lead_id,agent_id,status,time,notes=''):
 	conn = mysql.connect()
@@ -602,9 +602,9 @@ def check_provider(params):
 	gas = params['gas']
 	electric = params['electric']
 
-	if gas == 'socal_gas' or gas == 'pg&e' and electric == 'pg&e':
-		return True
-	return False
+	if gas == 'other' and electric == 'other':
+		return False
+	return True
 
 def members(params,extras):
 	extras['required_income'] = required_income(params)
