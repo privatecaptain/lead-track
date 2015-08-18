@@ -249,7 +249,7 @@ def delete():
 	return '500'
 
 @app.route('/create_user',methods=['POST','GET'])
-# @login_required
+@login_required
 def create():
 
 	# Agents not allowed to create Users.
@@ -565,7 +565,7 @@ def esap_process():
 			return render_template('esap.html',step=step,params=params,terminate=False,extras=extras)
 
 		terminate_message = ''
-		if step == 6:
+		if step == 7:
 			lead_id = match_address(make_address(params))
 			terminate_message = status_terminate(lead_id=lead_id)
 
@@ -691,13 +691,7 @@ def add_details(params,extras):
 		extras['lead_id'] = cursor.lastrowid
 		print 'id : ',cursor.lastrowid
 		
-
-	referer = params['referer']
-
-	if referer == 'yes':
-		return True
-	return False
-
+	return True
 
 def add_referer(params,extras):
 
@@ -753,6 +747,18 @@ def check_income(params):
 		return True
 	return False
 
+def check_own(params):
+	own = params['own']
+	return True
+
+
+def check_referer(params):
+	referer = params['referer']
+	if referer == 'yes':
+		return True
+	return False
+
+
 def process_resolution(step,params,extras):
 	if step == 1:
 		return check_zip(params)
@@ -769,10 +775,16 @@ def process_resolution(step,params,extras):
 		return home_age(params)
 
 	elif step == 6:
-		return check_address(params)
+		return check_own(params)
+
 	elif step == 7:
-		return add_details(params,extras)
+		return check_address(params)
+	
 	elif step == 8:
+		return add_details(params,extras)
+	elif step == 9:
+		return check_referer(params)
+	elif step == 10:
 		return add_referer(params,extras)
 
 
