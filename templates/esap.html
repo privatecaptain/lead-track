@@ -194,11 +194,7 @@ vertical-align: top!important;
     <body class="page page-id-2349 page-parent page-template-default custom-background loading waves-pagebuilder">
         <div id="theme-layout" class="theme-full  menu-fixed">                <div class="tw-top-bar">
                     <div class="container">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="tw-top-widget left" id="text-8"><span class="top-widget-title">Schools Call Now!</span>			<div class="textwidget"><span>Schools Call Now! <a href="tel:+18554583224">(855) 45-TEACH</a></span></div>
-		</div><div class="tw-top-widget left" id="text-9"><span class="top-widget-title">Office</span>			<div class="textwidget"><span><a href="tel:+18556504437">(855) 650-4437</a></span></div>
-		</div>                            </div>
+                        
                             <div class="col-md-6">
                                 <div class="tw-top-widget right" id="text-4">			<div class="textwidget"></div>
 		</div>                            </div>
@@ -504,6 +500,7 @@ Is your home at least five-years old?
 
 {% if step == 8 %}
 <input type="hidden" name="step" value="8">
+<input type="hidden" name="lead_id" value="{{extras['lead_id']}}">
 {% for key in params %}
 <input type="hidden" name="{{key}}" value="{{params[key]}}">
 {% endfor %}

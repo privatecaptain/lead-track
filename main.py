@@ -406,11 +406,13 @@ def truncate_datetime(dt,**kwargs):
 def get_dispositions():
 	lead_id = request.args.get('lead_id')
 	params = [lead_id,]
-	sql = 'SELECT dr.status, ltu.name, dr.timestamp, dr.notes FROM disposition_record dr LEFT JOIN lead_track_users ltu\
+	sql = 'SELECT dt.text status, ltu.name, dr.timestamp, dr.notes FROM disposition_record dr LEFT JOIN lead_track_users ltu\
 																		ON ltu.id = dr.agent_id \
+																		LEFT JOIN disposition_types dt\
+																		ON dr.status = dt.value\
 																		WHERE lead_id = %s'
 	return json.dumps(lead_details(sql,params))
-
+1
 
 def create_disposition_record(lead_id,agent_id,status,time,notes=''):
 	conn = mysql.connect()
@@ -645,7 +647,7 @@ def check_address(params):
 	return True
 
 
-def add_details(params):
+def add_details(params,extras):
 
 
 	first_name = params['first_name']
@@ -686,6 +688,8 @@ def add_details(params):
 	with conn:
 		cursor = conn.cursor()
 		cursor.execute(sql,sql_params)
+		extras['lead_id'] = cursor.lastrowid
+		print 'id : ',cursor.lastrowid
 		
 
 	referer = params['referer']
@@ -695,20 +699,21 @@ def add_details(params):
 	return False
 
 
-def add_referer(params):
+def add_referer(params,extras):
 
+	lead_id = params['lead_id']
 	referer_name = params['referer_name']
 	referer_email = params['referer_email']
 	referer_phone_number = params['referer_phone_number']
 	referer_relation = params['referer_relation']
 
-	sql = 'INSERT INTO lead_details(referer_name,\
-									referer_email,\
-									referer_phone,\
-									referer_relation) \
-						VALUES(%s,%s,%s,%s)'
+	sql = 'UPDATE lead_details set referer_name = %s,\
+									referer_email = %s,\
+									referer_phone = %s,\
+									referer_relation = %s \
+									 WHERE lead_id = %s'
 
-	sql_params = [referer_name,referer_email,referer_phone_number,referer_relation]
+	sql_params = [referer_name,referer_email,referer_phone_number,referer_relation,lead_id]
 
 	conn = mysql.connect()
 
@@ -766,9 +771,9 @@ def process_resolution(step,params,extras):
 	elif step == 6:
 		return check_address(params)
 	elif step == 7:
-		return add_details(params)
+		return add_details(params,extras)
 	elif step == 8:
-		return add_referer(params)
+		return add_referer(params,extras)
 
 
 
