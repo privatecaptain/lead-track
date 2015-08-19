@@ -441,14 +441,17 @@ Is your home at least five-years old?
 {% endfor %}
 <label class='gfield_label' for='own' >What is your Property Address ?:
 <span class='gfield_required'></span></label>
+
+<label class='gfield_label' for='own' >Street: 
+<span class='gfield_required'>*</span></label>
+<input type="text" name="street" required>
+
+
 {% if params['own'] == "no" %}
 <label class='gfield_label' for='own' >Apartment/Unit/Space #: 
 <span class='gfield_required'></span></label>
 <input type="text" name="apartment_number">
 {% endif %}
-<label class='gfield_label' for='own' >Street: 
-<span class='gfield_required'>*</span></label>
-<input type="text" name="street" required>
 
 
 <label class='gfield_label' for='own' >City: 
@@ -476,24 +479,26 @@ Is your home at least five-years old?
 
 <label class='gfield_label' for='own' >Email: 
 <span class='gfield_required'>*</span></label>
-<input type="text" name="email" required>
+<input type="email" name="email" required>
 
 <label class='gfield_label' for='own' >Mobile Phone: 
 <span class='gfield_required'>*</span></label>
-<input type="text" name="phone_number" required>
+<input type="number" name="phone_number" maxlength="10" required>
 
 <label class='gfield_label' for='own' >Home Phone: 
 <span class='gfield_required'>*</span></label>
-<input type="text" name="home_phone" required>
+<input type="number" name="home_phone" maxlength="10" required>
+
+<label class='gfield_label' for='own' >Street: 
+<span class='gfield_required'>*</span></label>
+<input type="text" name="street" value="{{params['street']}}" required>
+
 
 {% if params['own'] == "no" %}
 <label class='gfield_label' for='own' >Apartment/Unit/Space #: 
 <span class='gfield_required'></span></label>
 <input type="text" name="apartment_number">
 {% endif %}
-<label class='gfield_label' for='own' >Street: 
-<span class='gfield_required'>*</span></label>
-<input type="text" name="street" value="{{params['street']}}" required>
 
 
 <label class='gfield_label' for='own' >City: 
@@ -532,7 +537,7 @@ Is your home at least five-years old?
 
 <label class='gfield_label' for='own' >Referrer's Email: 
 <span class='gfield_required'>*</span></label>
-<input type="text" name="referer_email" required>
+<input type="email" name="referer_email" required>
 
 
 <label class='gfield_label' for='own' >Referrer's Relationship to the Authorized Person: 
@@ -542,7 +547,7 @@ Is your home at least five-years old?
 
 <label class='gfield_label' for='own' >Referer's Phone Number: 
 <span class='gfield_required'>*</span></label>
-<input type="text" name="referer_phone_number" required>
+<input type="number" name="referer_phone_number" maxlength="10" required>
 
 {% endif %}
 
@@ -609,23 +614,14 @@ Thank you again for the inquiry.  If you have any friends or family in Stanislau
 {% endif %}
 
 
-{% if step == 8 or step == 9 or step == 10 or step == 11%}
+{% if step == 8 or step == 9 or step == 10 %}
 
-Thats it!
-
-What to expect next:
-A specialist will contact you within 2 business days.  
-We are are open Monday – Friday 9am – 6pm 
-Please note that your return call will have a FRESNO (559) area code.
-
-{% if step != 11 %}
 By submitting this form you are opting in to receive updates and notifications regarding your application by email and text message.  SMS text message rates may apply. Please check with your carrier for rates, if any.<br>
 
 <form action="/esap" method="post">
 	<input type="hidden" name="step" value="11">
-<button type="submit" name="opt-in" value="True">Opt-In</button>
+<button type="submit" name="opt-in" value="True">Submit</button>
 </form>
-{% endif %}
 
 <!-- Facebook Conversion Code for Webleads -->
 <script>(function() {
@@ -647,6 +643,16 @@ window._fbq.push(['track', '6025147422634', {'value':'0.00','currency':'USD'}]);
 
 {% endif %}
 
+{% if step == 11 %}
+
+Thats it!
+
+What to expect next:
+A specialist will contact you within 2 business days.  
+We are are open Monday – Friday 9am – 6pm 
+Please note that your return call will have a FRESNO (559) area code.
+
+{% endif %}
 
 {% endif %}
 

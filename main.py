@@ -754,8 +754,8 @@ def required_income(params):
 def check_income(params):
 	income = params['income']
 	if income == 'no':
-		return True
-	return False
+		return False
+	return True
 
 def check_own(params):
 	own = params['own']
