@@ -661,6 +661,7 @@ def add_details(params,extras):
 	last_name = params['last_name']
 
 	email = params['email']
+	print email
 
 	mobile_phone = params['phone_number']
 	home_phone = params['home_phone']
@@ -673,6 +674,13 @@ def add_details(params,extras):
 		apartment_number = params['apartment_number']
 	else:
 		apartment_number = ''
+
+	if params['own'] == 'no':
+		landlord_name = params['landlord_name']
+		landlord_contact = params['landlord_contact']
+	else:
+		landlord_contact = ''
+		landlord_name = ''
 	city = params['city']
 	state = params['state']
 	country = 'Unites States'
@@ -688,10 +696,12 @@ def add_details(params,extras):
 									apartment_number,\
 									city,\
 									state,\
-									country) \
-						VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+									Country,\
+									landlord_name,\
+									landlord_contact) \
+						 VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
 
-	sql_params = [first_name,last_name,email,mobile_phone,home_phone,zip_code,members,street,apartment_number,city,state,country]
+	sql_params = [first_name,last_name,email,mobile_phone,home_phone,zip_code,members,street,apartment_number,city,state,country,landlord_name,landlord_contact,]
 
 	conn = mysql.connect()
 
@@ -725,7 +735,7 @@ def add_referer(params,extras):
 		cursor = conn.cursor()
 		cursor.execute(sql,sql_params)
 
-	return True
+	return False
 
 
 member_income = {

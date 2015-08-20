@@ -446,12 +446,9 @@ Is your home at least five-years old?
 <span class='gfield_required'>*</span></label>
 <input type="text" name="street" required>
 
-
-{% if params['own'] == "no" %}
 <label class='gfield_label' for='own' >Apartment/Unit/Space #: 
 <span class='gfield_required'></span></label>
 <input type="text" name="apartment_number">
-{% endif %}
 
 
 <label class='gfield_label' for='own' >City: 
@@ -483,22 +480,31 @@ Is your home at least five-years old?
 
 <label class='gfield_label' for='own' >Mobile Phone: 
 <span class='gfield_required'>*</span></label>
-<input type="number" name="phone_number" maxlength="10" required>
+<input type="text" name="phone_number" maxlength="10" pattern="[0-9]{10}" required>
 
 <label class='gfield_label' for='own' >Home Phone: 
 <span class='gfield_required'>*</span></label>
-<input type="number" name="home_phone" maxlength="10" required>
+<input type="text" name="home_phone" maxlength="10" pattern="[0-9]{10}" required>
+
+
+
+<label class='gfield_label' for='own' >Landlord's Name: 
+<span class='gfield_required'>*</span></label>
+<input type="text" name="landlord_name" required>
+
+
+<label class='gfield_label' for='own' >Landlord's Contact(Phone/Email): 
+<span class='gfield_required'>*</span></label>
+<input type="text" name="landlord_contact" required>
 
 <label class='gfield_label' for='own' >Street: 
 <span class='gfield_required'>*</span></label>
 <input type="text" name="street" value="{{params['street']}}" required>
 
-
-{% if params['own'] == "no" %}
 <label class='gfield_label' for='own' >Apartment/Unit/Space #: 
 <span class='gfield_required'></span></label>
 <input type="text" name="apartment_number">
-{% endif %}
+
 
 
 <label class='gfield_label' for='own' >City: 
@@ -547,7 +553,7 @@ Is your home at least five-years old?
 
 <label class='gfield_label' for='own' >Referer's Phone Number: 
 <span class='gfield_required'>*</span></label>
-<input type="number" name="referer_phone_number" maxlength="10" required>
+<input type="text" name="referer_phone_number" maxlength="10" pattern="[0-9]{10}" required>
 
 {% endif %}
 
