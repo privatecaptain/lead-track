@@ -600,8 +600,8 @@ def check_zip(params,extras):
 	sql = 'SELECT * from zip_codes WHERE zip_code = %s'
 	sql_params = [zip_code,]
 	q = query(sql,sql_params)[0]
-	extras['city'] = guess_address(zip_code)
 	if q:
+		extras['city'] = guess_address(zip_code)
 		return True
 	return False
 
