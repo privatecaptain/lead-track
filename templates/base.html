@@ -117,17 +117,12 @@
   </div><!-- /.container-fluid -->
 </nav>
 <!-- Navbar end -->
+
 {% block kpi %}
-<h4 align="center">Key Performance Indicators(KPI's)</h4>
-{% for kpi in kpi_nums %}
-
-<li align="center">{{kpi}} : {{kpi_nums[kpi]}}</li>
-
-{% endfor %}
-
 {% endblock %}
 
 {% block chart %}
+{% if current_user.access !=  'agent' %}
 
 <!-- KPI chart start -->
 <div class="demo-container">
@@ -138,6 +133,8 @@
 <button id="day">By Day</button>
 <button id="quarter">By Quarter</button>
 <button id="year">By Year</button></p>
+
+{% endif %}
 
 {% endblock %}
 <!-- KPI chart end  -->

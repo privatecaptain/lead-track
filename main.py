@@ -333,29 +333,93 @@ def kpi_numbers(user):
 		the user'''
 
 	user_type =  user.access
-	sql = 'SELECT status FROM lead_details'
-	dispositions,foo = query(sql)
-	sql2 = 'SELECT value,`text` FROM disposition_types WHERE user = %s'
-	sql_params = [user_type]
-	kpis,foo = query(sql2,sql_params)
 
-	kpi_nums = {}
+	if user_type == 'superadmin':
+		sql = 'SELECT status FROM lead_details'
+		dispositions,foo = query(sql)
+		final = {
+		'awaiting_assignment' : 0,
+		'appointment_set' : 0,
+		'previously_enrolled' : 0,
+		'refused' : 0,
+		'dnq' : 0,
+		'currently_working' : 0,
 
-	for i in dispositions:
-		if i[0] not in kpi_nums:
-			kpi_nums[i[0]] = 1
-		else:
-			kpi_nums[i[0]] += 1
+		}
 
-	kpis = {i[0]:i[1] for i in kpis}
+		for i in dispositions:
+			i = i[0]#only element
 
-	final = {} 
-	for i in kpi_nums:
-		if i in kpis:
-			final[kpis[i]] = kpi_nums[i]
+			if i == 'default':
+				final['awaiting_assignment'] += 1
+			elif i == 'appointment_set':
+				final['appointment_set'] += 1
+			elif i == 'previously_enrolled':
+				final['previously_enrolled'] += 1
+			elif i == 'customer_refused':
+				final['refused'] += 1
+			elif i == 'dnq_out_of_area' or i == 'dnq_other_utility':
+				final['dnq'] += 1
+			elif i == 'working_on_lead':
+				final['currently_working'] += 1
 
-	return final
+		return final
 
+	elif user_type == 'admin':
+
+		sql = 'SELECT status FROM lead_details'
+		dispositions,foo = query(sql)
+
+		final = {
+
+				'unassigned_leads' : 0,
+				'require_utility_authorization': 0,
+				'require_customer_response' : 0,
+				'awaiting_assignment' : 0,
+		}
+
+		for i in dispositions:
+			i = i[0]
+
+			if i == 'default':
+				final['unassigned_leads'] += 1
+			elif i == 'utility_authorization_needed':
+				final['require_utility_authorization'] += 1
+			elif i == 'appointment_set':
+				final['require_customer_response'] += 1
+			elif i == 'ready_for_assignment' :
+				final['awaiting_assignment'] += 1
+
+		return final
+
+	else:
+
+		sql = 'SELECT status FROM lead_details WHERE agent = %s'
+		sql_params = [user.user_id]
+		dispositions,foo = query(sql,sql_params)
+
+		final = {
+
+			'open_leads' : 0,
+			'appointment_set' : 0,
+			'dnq' : 0,
+			'customer_refused' : 0,
+			'owner_management_refused' : 0,
+		}
+
+		for i in dispositions:
+			i = i[0]
+
+			if i == 'appointment_set':
+				final['appointment_set'] += 1
+			elif i == 'default':
+				final['open_leads'] += 1
+			elif i == 'dnq_out_of_area' or i == 'dnq_other_utility':
+				final['dnq'] += 1
+			elif i == 'customer_refused':
+				final['customer_refused'] += 1
+
+		return final
 
 
 
