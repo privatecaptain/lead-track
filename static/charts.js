@@ -2,26 +2,29 @@
 $(function () {
 
 
-	
-	function get_chart(unit){
+	function get_chart(unit,plotter,kpi){
 
-		var chart_data;
+		kpi = kpi || 'all';
 
 		$.ajax({
-			url: '/charts?unit='+unit,
-			async: false,
+			url: '/charts?unit='+unit+'&kpi='+kpi,
 			success: function (data) {
 				
+				var chart_data;
 				chart_data = JSON.parse(data).chart_data;
 				// console.log(chart_data);
+				plotter(chart_data);
 			}
 		});
-		return chart_data
 	}
 
+	
 
 	$("#month").click(function () {
-			$.plot("#linechart", [get_chart('month')], {
+
+
+			get_chart('month',function(chart_data) {
+				$.plot("#linechart", [chart_data], {
 				xaxis: {mode: "time",
 				minTickSize: [1,"month"],
 				// min: (new Date(2015, 0, 1)).getTime(),
@@ -29,20 +32,13 @@ $(function () {
 
 		}
 			});
-		});
-	$("#week").click(function () {
-			$.plot("#linechart", [get_chart('hour')], {
-				xaxis: {mode: "time",
-				minTickSize: [1,"hour"],
-				twelveHourClock: true,
-				min: (new Date(2015, 6,24)).getTime(),
-					max: (new Date(2015, 6, 25)).getTime()
-
-		}
 			});
 		});
+
 	$("#quarter").click(function () {
-			$.plot("#linechart", [get_chart('quarter')], {
+
+		get_chart('quarter',function(chart_data) {
+			$.plot("#linechart", [chart_data], {
 				xaxis: {mode: "time",
 				minTickSize: [1,"quarter"],
 				min: (new Date(2015, 0, 1)).getTime(),
@@ -51,8 +47,11 @@ $(function () {
 		}
 			});
 		});
+		});
+
 	$("#year").click(function () {
-			$.plot("#linechart", [get_chart('year')], {
+		get_chart('year',function(chart_data) {
+			$.plot("#linechart", [chart_data], {
 				xaxis: {mode: "time",
 				minTickSize: [1,"year"],
 				// min: (new Date(2015, 0, 1)).getTime(),
@@ -60,9 +59,11 @@ $(function () {
 
 		}
 			});
+		});
 			});
 	$("#day").click(function () {
-				$.plot("#linechart", [get_chart('day')], {
+		get_chart('day',function(chart_data) {
+				$.plot("#linechart", [chart_data], {
 					xaxis: {mode: "time",
 					minTickSize: [1,"day"],
 					// min: (new Date(2015, 6, 4)).getTime(),
@@ -71,13 +72,18 @@ $(function () {
 			}
 				});
 			});
+			});
 
+		get_chart('day',function(chart_data) {
+				$.plot("#linechart", [chart_data], {
+					xaxis: {mode: "time",
+					minTickSize: [1,"day"],
+					// min: (new Date(2015, 6, 4)).getTime(),
+					// 	max: (new Date(2015, 6, 11)).getTime()
 
-	$.plot($('#linechart'),[get_chart("day")],{
-		xaxis: {
-			mode: "time"
-		}
-	});
+			}
+				});
+			});
 
 
 });

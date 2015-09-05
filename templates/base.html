@@ -117,6 +117,16 @@
   </div><!-- /.container-fluid -->
 </nav>
 <!-- Navbar end -->
+{% block kpi %}
+<h4 align="center">Key Performance Indicators(KPI's)</h4>
+{% for kpi in kpi_nums %}
+
+<li align="center">{{kpi}} : {{kpi_nums[kpi]}}</li>
+
+{% endfor %}
+
+{% endblock %}
+
 {% block chart %}
 
 <!-- KPI chart start -->

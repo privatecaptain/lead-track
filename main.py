@@ -186,7 +186,8 @@ def display():
 @app.route('/')
 @login_required
 def home():
-	return render_template('admin_dashboard.html')
+	kpi_nums = kpi_numbers(current_user)
+	return render_template('admin_dashboard.html',kpi_nums=kpi_nums)
 
 @app.route('/edit',methods = ['POST'])
 @login_required
@@ -327,16 +328,48 @@ def logout():
     return render_template("login.html")
 
 
+def kpi_numbers(user):
+	'''Provides the KPI numbers based on 
+		the user'''
+
+	user_type =  user.access
+	sql = 'SELECT status FROM lead_details'
+	dispositions,foo = query(sql)
+	sql2 = 'SELECT value,`text` FROM disposition_types WHERE user = %s'
+	sql_params = [user_type]
+	kpis,foo = query(sql2,sql_params)
+
+	kpi_nums = {}
+
+	for i in dispositions:
+		if i[0] not in kpi_nums:
+			kpi_nums[i[0]] = 1
+		else:
+			kpi_nums[i[0]] += 1
+
+	kpis = {i[0]:i[1] for i in kpis}
+
+	final = {} 
+	for i in kpi_nums:
+		if i in kpis:
+			final[kpis[i]] = kpi_nums[i]
+
+	return final
+
+
+
+
 @app.route('/charts', methods=['GET'])
 @login_required
 def charts():
 	time_unit = request.args.get('unit')
-	type_filter = request.args.get('type_filter')
+	kpi = request.args.get('kpi')
+	print kpi
 	params = []
-	if not type_filter:
+	if kpi == 'all':
 		sql = 'SELECT entry_date FROM lead_details'
 	else:
-		params = [type_filter]
+		params = [kpi]
 		sql = 'SELECT entry_date FROM lead_details WHERE status = %s'
 	lead_dates,foo = query(sql,params)
 	lead_dates = data_distribution(lead_dates,time_unit)
@@ -406,7 +439,7 @@ def truncate_datetime(dt,**kwargs):
 def get_dispositions():
 	lead_id = request.args.get('lead_id')
 	params = [lead_id,]
-	sql = 'SELECT dt.text status, ltu.name, dr.timestamp, dr.notes FROM disposition_record dr LEFT JOIN lead_track_users ltu\
+	sql = 'SELECT DISTINCT dt.text status, ltu.name, dr.timestamp, dr.notes FROM disposition_record dr LEFT JOIN lead_track_users ltu\
 																		ON ltu.id = dr.agent_id \
 																		LEFT JOIN disposition_types dt\
 																		ON dr.status = dt.value\

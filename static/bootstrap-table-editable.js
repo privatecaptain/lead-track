@@ -37,7 +37,6 @@
                 status = data;
             }
         });
-        console.log(status);
         $.ajax({
             url:"/agents",
             success: function(data) {
@@ -62,7 +61,6 @@
             column.formatter = function (value, row, index) {
                 var result = _formatter ? _formatter(value, row, index) : value;
                 if (column.field == 'lead_id') {
-                        console.log(column.lead_id)
                         return ['<a href="/profile?lead_id=' + row.lead_id +'"><i class="glyphicon glyphicon-eye-open"></i></a>']
                 }
                 if (column.typo == 'select') {
@@ -119,8 +117,9 @@
                 });
         });
         this.trigger('editable-init');
-        // console.log('Yeah');
+        console.log('Yeah');
         $(function () {
+            console.log('in');
           $table.bootstrapTable('checkAll');
               var checks = {field: 'lead_id',
                             values: getIdSelections()}
@@ -132,6 +131,7 @@
 
               $('a.editable.editable-click').editable({/* options here */}).on('shown', function(event, editable) {
                       editable.input.postrender = function() {
+                        console.log('WTF')
                       var e = document.createEvent('MouseEvents');
                       e.initMouseEvent("mousedown");
                       editable.input.$input.get(0).dispatchEvent(e);
