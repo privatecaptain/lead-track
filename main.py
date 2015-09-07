@@ -51,6 +51,11 @@ TWILIO_AUTH_TOKEN = '67b23de6936fea29f8982a341276c070'
 # Twilio Client Object 
 twilio_client = TwilioRestClient(TWILIO_ACCOUNT_SID,TWILIO_AUTH_TOKEN)
 
+# MailGun Credentials
+
+MG_BASE_URL = 'https://api.mailgun.net/v3/mg.highlandsenergy.com/messages'
+MG_API_KEY = 'key-bd7254f9d0a6d6ea5c74bd6fcdd4dc72'
+
 
 class User(object):
 	"""docstring for User"""
@@ -166,6 +171,23 @@ def lead_details(sql,params=[]):
 		result.append(row)
 	return result
 
+
+def sendmail(text,to,subject):
+	try:
+		requests.post(
+	        MG_BASE_URL,
+	        auth=("api", MG_API_KEY),
+	        data={"from": "Highlands Energy <mailgun@mg.highlandsenergy.com>",
+	              "to": to,
+	              "subject": subject,
+	              "text": text})
+		return True
+	except Exception,e:
+		print e
+		return False
+
+
+
 @app.route('/leads')
 @login_required
 def display():
@@ -197,11 +219,13 @@ def edit():
 	field = params['name']
 	value = params['value']
 	if field == 'agent':
-		sendmail(user_id=value,lead_id=lead_id)
+		lead_assignment_mail(user_id=value,lead_id=lead_id)
 	if field == 'status':
 		# Add in disposition table
 		create_disposition_record(lead_id=lead_id,agent_id=current_user.user_id,time=datetime.datetime.now(),status=value)
 		# Alert Email to the Agent
+		correspondence_routing(value,lead_id,'email')
+		correspondence_routing(value,lead_id,'text')
 		return 'OK'
 	else:
 		save = update_lead(lead_id,field,value)
@@ -418,8 +442,45 @@ def kpi_numbers(user):
 				final['dnq'] += 1
 			elif i == 'customer_refused':
 				final['customer_refused'] += 1
+			else:
+				final['open_leads'] += 1
 
 		return final
+
+
+
+def correspondence_routing(disposition,lead_id,c_type):
+	sql = 'SELECT `text`,`subject` FROM auto_correspondence WHERE type = %s AND status = %s'
+	sql_params = [c_type,disposition]
+	data,foo = query(sql,sql_params)
+	sql = 'SELECT email,phone_number FROM lead_details WHERE lead_id = %s'
+	sql_params = [lead_id,]
+	contact,foo = query(sql,sql_params)
+	try:
+		data = data[0]
+		text,subject = [i for i in data]
+		contact = contact[0]
+		email,phone_number = [i for i in contact]
+	except Exception,e:
+		print e
+		return False
+
+	if c_type == 'email':
+		try:
+			sendmail(to=[email], text=text,subject=subject)
+			return True
+		except Exception,e:
+			print e
+			return False
+	elif c_type == 'text':
+		try:
+			send_text(to=phone_number,body=text)
+			return True
+		except Exception,e:
+			print e
+			return False
+	return False
+
 
 
 
@@ -531,7 +592,7 @@ def create_disposition_record(lead_id,agent_id,status,time,notes=''):
 
 
 
-def sendmail(user_id,lead_id):
+def lead_assignment_mail(user_id,lead_id):
 	conn = mysql.connect()
 	row = query('SELECT name,email FROM lead_track_users WHERE id = %s',[user_id,])
 	print row
@@ -539,12 +600,13 @@ def sendmail(user_id,lead_id):
 	message = message_creator(lead_id,name)
 
 	return requests.post(
-        "https://api.mailgun.net/v3/sandboxf32357e89d9f49879486f38f1affacc0.mailgun.org/messages",
-        auth=("api", "key-49df66c0deb773d5ee957597be27f9e9"),
-        data={"from": "Lead Track<mailgun@sandboxf32357e89d9f49879486f38f1affacc0.mailgun.org>",
+        MG_BASE_URL,
+        auth=("api", MG_API_KEY),
+        data={"from": "Lead Track - Highlands Energy <mailgun@mg.highlandsenergy.com>",
               "to": [email],
               "subject": "Lead Assignment",
               "text": message})
+
 
 
 
@@ -633,7 +695,7 @@ def text_sms():
 
 		return render_template('test_sms.html',success=True,sid=sid)
 
-def send_text(to,from_,body):
+def send_text(to,body,from_='15595127617'):
 	message = twilio_client.messages.create(
 				to=to,
 				body=body,
