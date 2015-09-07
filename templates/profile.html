@@ -5,17 +5,44 @@
 
 {% block body %}
 
-<h1 align="center">Customer Profile</h1>
-
+<h1 align="center">Customer Profile
 
 <button id="edit" class="btn btn-success" enabled align="center">
             <i class="glyphicon glyphicon-edit"></i> Edit
         </button>
-<div style="padding : 22px;">
+</h1>
 
-{% for i in range(0,18,2) %}
-  <li><b>{{names[i+1]}}</b> : <a href="javascript:void(0)" data-name="{{names[i]}}" data-url="/edit" data-type="text" data-pk="{{details['lead_id']}}" data-value="{{details[names[i]]}}" class="editable editable-click">{{details[names[i]]}}</a></li><br>
+
+
+
+<div class="container">
+
+  <div class="row">
+
+
+<div class="col-md-4">
+{% for i in customer_info %}
+  <li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{customer_info[i]}}" class="editable editable-click">{{customer_info[i]}}</a></li><br>
 {% endfor %}
+</div>
+
+<div class="col-md-4">
+{% for i in referer_info %}
+  <li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{referer_info[i]}}" class="editable editable-click">{{referer_info[i]}}</a></li><br>
+{% endfor %}
+</div>
+
+
+<div class="col-md-4">
+{% for i in landlord_info %}
+  <li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{landlord_info[i]}}" class="editable editable-click">{{landlord_info[i]}}</a></li><br>
+{% endfor %}
+</div>
+
+
+
+
+</div>
 </div>
 
 <!-- Disposition form start -->
@@ -32,7 +59,7 @@
   <div class="form-group">
     <label for="notes">Notes: </label>
     <textarea type="textarea" class="form-control" rows="3" class="form-control" name="notes" placeholder="Notes about the disposition."></textarea>
-    <input type="hidden" name="lead_id" value={{details['lead_id']}}>
+    <input type="hidden" name="lead_id" value="{{lead_id}}">
   </div>
   <button type="submit" class="btn btn-default">Update Disposition</button>
 </form>
@@ -47,7 +74,7 @@
            data-minimum-count-columns="2"
            data-pagination="true"
            data-maintain-selected="true"
-           data-url='/get_dispositions?lead_id={{details['lead_id']}}'
+           data-url='/get_dispositions?lead_id={{lead_id}}'
            data-page-number="1"
 
     />

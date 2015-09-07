@@ -172,6 +172,9 @@ def lead_details(sql,params=[]):
 		result.append(row)
 	return result
 
+@app.context_processor
+def utility_processor():
+	return dict(pretty_name=pretty_name)
 
 def sendmail(text,to,subject):
 	try:
@@ -497,6 +500,7 @@ def correspondence_routing(disposition,lead_id,c_type):
 
 	if c_type == 'email':
 		try:
+			text = custom_text(text=text,disposition=disposition,lead_id=lead_id)
 			sendmail(to=[email], text=text,subject=subject)
 			return True
 		except Exception,e:
@@ -504,6 +508,7 @@ def correspondence_routing(disposition,lead_id,c_type):
 			return False
 	elif c_type == 'text':
 		try:
+			text = custom_text(text=text,disposition=disposition,lead_id=lead_id)
 			send_text(to=phone_number,body=text)
 			return True
 		except Exception,e:
@@ -511,8 +516,23 @@ def correspondence_routing(disposition,lead_id,c_type):
 			return False
 	return False
 
+def custom_text(text,lead_id,disposition):
+	sql = 'SELECT ld.first_name, ld.last_name, dr.notes FROM lead_details ld LEFT JOIN \
+		   disposition_record dr ON ld.lead_id = dr.lead_id WHERE ld.lead_id = %s\
+		   AND dr.status = %s order by dr.timestamp desc LIMIT 1'
+	params = [lead_id,disposition]
 
-
+	data,foo = query(sql,params)
+	try:
+		data = data[0]
+		first_name, last_name, notes = [i for i in data]
+		text = text.replace('first_name',first_name)
+		text = text.replace('last_name',last_name)
+		text = text.replace('disposition_notes',notes)
+		return text
+	except Exception,e:
+		print e
+		return text
 
 @app.route('/charts', methods=['GET'])
 @login_required
@@ -682,27 +702,30 @@ def message_creator(lead_id,name):
 @login_required
 def profile():
 	lead_id = request.args.get('lead_id')
-	sql = 'SELECT * FROM lead_details WHERE lead_id = %s'
+	# Customer
+	customer_sql = 'SELECT first_name,last_name,phone_number,home_phone,email,zip,street,city,\
+				state,country,gas,electric FROM lead_details WHERE lead_id = %s'
 	params = [lead_id,]
-	row,column = query(sql,params)
-	details = dict(zip(column,row[0]))
-	names = [
-		'first_name' , 'Fist Name',
-		'last_name' ,'Last Name',
-		'phone_number' , 'Phone Number',
-		'email' , 'Email',
-		'zip' , 'Zip',
-		'street' , 'Street',
-		'city' , 'City',
-		'state' , 'State',
-		'country', 'Country',
+	customer_info = lead_details(customer_sql,params)[0]
 
-	]
+	# Referrer 
+
+	referer_sql = 'SELECT referer_name,referer_email,referer_phone,referer_relation\
+					FROM lead_details WHERE lead_id = %s'
+
+	referer_info = lead_details(referer_sql,params)[0]
+
+	# LandLord 
+
+	landlord_sql = 'SELECT landlord_name,landlord_contact FROM lead_details WHERE lead_id = %s'
+
+	landlord_info = lead_details(landlord_sql,params)[0]
+	
 	dispositions = d_types('agent')
 	# print dispositions
 
 	# print details
-	return render_template('profile.html',details=details,names=names,dispositions=dispositions)
+	return render_template('profile.html',customer_info=customer_info,landlord_info=landlord_info,referer_info=referer_info,dispositions=dispositions,lead_id=lead_id)
 
 @app.route('/create_disposition',methods=['POST'])
 @login_required
@@ -714,6 +737,7 @@ def create_disposition():
 	print notes,status,lead_id
 	agent_id = current_user.user_id
 	edit_method(lead_id=lead_id,field='status',value=status,notes=notes)
+	return 'OK'
 
 @app.route('/test',methods=['GET','POST'])
 @login_required
@@ -881,6 +905,8 @@ def add_details(params,extras):
 	city = params['city']
 	state = params['state']
 	country = 'Unites States'
+	gas = params['gas']
+	electric = params['electric']
 
 	sql = 'INSERT INTO lead_details(first_name,\
 									last_name,\
@@ -895,10 +921,11 @@ def add_details(params,extras):
 									state,\
 									Country,\
 									landlord_name,\
-									landlord_contact) \
+									landlord_contact,\
+									gas,electric) \
 						 VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
 
-	sql_params = [first_name,last_name,email,mobile_phone,home_phone,zip_code,members,street,apartment_number,city,state,country,landlord_name,landlord_contact,]
+	sql_params = [first_name,last_name,email,mobile_phone,home_phone,zip_code,members,street,apartment_number,city,state,country,landlord_name,landlord_contact,gas,electric]
 
 	conn = mysql.connect()
 
