@@ -10,6 +10,7 @@ from terminate import terminate
 from twilio.rest import TwilioRestClient
 import difflib
 import locale
+from operator import itemgetter
 
 # Currency Locale set1111
 locale.setlocale( locale.LC_ALL, 'en_CA.UTF-8' )
@@ -218,20 +219,49 @@ def edit():
 	lead_id = params['pk']
 	field = params['name']
 	value = params['value']
+	return edit_method(lead_id=lead_id,field=field,value=value)
+
+
+def edit_method(lead_id,field,value,notes=''):
 	if field == 'agent':
 		lead_assignment_mail(user_id=value,lead_id=lead_id)
 	elif field == 'status':
 		# Add in disposition table
-		create_disposition_record(lead_id=lead_id,agent_id=current_user.user_id,time=datetime.datetime.now(),status=value)
+		create_disposition_record(lead_id=lead_id,agent_id=current_user.user_id,time=datetime.datetime.now(),status=value,notes=notes)
 		# Alert Email to the Agent
 		correspondence_routing(value,lead_id,'email')
 		correspondence_routing(value,lead_id,'text')
 
 	save = update_lead(lead_id,field,value)
+	if field != 'status':
+		action_record(lead_id=lead_id,action=field,agent_id=current_user.user_id)
 	if save:
 		return 'OK'
 	return 'Error updating the lead.'
 	
+
+def pretty_name(name):
+	name = name.replace('_',' ')
+	name = name.capitalize()
+	return name
+
+
+def action_record(lead_id,action,agent_id,notes=''):
+	conn = mysql.connect()
+	cursor = conn.cursor()
+	action = 'Edited ' + pretty_name(action)
+	sql = 'INSERT IGNORE INTO action_record (lead_id,notes,agent_id,action,`timestamp`) VALUES(%s,%s,%s,%s,%s)'
+	params = [lead_id,notes,agent_id,action,datetime.datetime.now()]
+
+	try:
+		with conn:
+			cursor.execute(sql,params)
+			# conn.close()
+			return True
+	except Exception,e:
+		print e
+		# conn.close()
+		return False
 	
 def d_types(user):
 	sql = 'SELECT `text`,value FROM disposition_types WHERE user = %s'
@@ -569,7 +599,20 @@ def get_dispositions():
 																		LEFT JOIN disposition_types dt\
 																		ON dr.status = dt.value\
 																		WHERE lead_id = %s ORDER BY dr.timestamp desc'
-	return json.dumps(lead_details(sql,params))
+	disposition_record = lead_details(sql,params)
+
+	sql = 'SELECT DISTINCT ar.action status, ltu.name, ar.notes, ar.timestamp, ar.notes \
+							FROM action_record ar LEFT JOIN lead_track_users ltu ON\
+															ltu.id = ar.agent_id WHERE\
+															lead_id = %s ORDER BY\
+															ar.timestamp desc'
+	action_record = lead_details(sql,params)
+
+	total_record = disposition_record + action_record
+
+	total_record = sorted(total_record,reverse=True,key=lambda record: datetime.datetime.strptime(record['timestamp'],"%A, %d. %B %Y %I:%M%p"))
+
+	return json.dumps(total_record)
 
 
 def create_disposition_record(lead_id,agent_id,status,time,notes=''):
@@ -670,11 +713,7 @@ def create_disposition():
 	lead_id = params['lead_id']
 	print notes,status,lead_id
 	agent_id = current_user.user_id
-	if create_disposition_record(lead_id=lead_id,time=datetime.datetime.now(),status=status,agent_id=agent_id,notes=notes):
-		return 'OK'
-	else:
-		print 'Error Creating Disposition Record.'
-		return 'OK'
+	edit_method(lead_id=lead_id,field='status',value=status,notes=notes)
 
 @app.route('/test',methods=['GET','POST'])
 @login_required

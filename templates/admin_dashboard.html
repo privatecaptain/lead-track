@@ -13,7 +13,7 @@
 
 {% block body %}
 
-
+<div id="log"></div>
 
  <div class="container">
     <h1 align="center">Lead Tracking</h1>
@@ -25,13 +25,14 @@
     {% if current_user.is_authenticated() %}
     <table id="table"
            data-toggle="table"
-           data-toolbar="#toolbar"
+           data-toolbar="#filter_bar"
            data-search="true"
            data-sortable="true"
            data-show-refresh="true"
            data-show-toggle="true"
            data-show-columns="true"
            data-show-export="true"
+           data-show-filter="true"
            data-minimum-count-columns="2"
            data-show-pagination-switch="true"
            data-pagination="true"
@@ -48,7 +49,7 @@
             <tr>
                 <th data-field="state" data-checkbox="true" ></th>
                 <th data-field="lead_id" data-editable="true"></th>
-                <th data-field="first_name"  data-editable="true" data-typo="text" data-sortable="true">First Name</th>
+                <th data-field="first_name"  data-editable="true" data-typo="text" data-sortable="true" data-filter="first_name">First Name</th>
                 <th data-field="last_name" data-editable="true" data-typo="text" data-sortable="true">Last Name</th>
                 <th data-field="zip" data-editable="true" data-typo="text" data-sortable="true">Zip Code</th>
                 <th data-field="city" data-editable="true" data-typo="text" data-sortable="true">City</th>
@@ -108,6 +109,32 @@ function getIdSelections() {
         });
     }
 
+
+$(function() {
+
+ $('#filter_bar').bootstrapTableFilter({
+
+  filters:[
+                {
+                    field: 'first_name',    // field identifier
+                    label: 'First Name',    // filter label
+                    type: 'search'   // filter type
+                },
+                ],
+
+
+                    // connectTo: '#table',
+                    onAll: function(name, args) {
+                        var d = new Date();
+                        $('#log').prepend(d.toLocaleString() + ': ' + name + "\n");
+                    },
+                    onSubmit: function(data) {
+                        var data = $('#filter_bar').bootstrapTableFilter('getData');
+                        var d = new Date();
+                        $('#log').prepend(d.toLocaleString() + ': ' + JSON.stringify(data) + "\n");
+                    }
+                });
+});
 </script>
 {% endblock %}
 
