@@ -6,10 +6,15 @@
 {% block body %}
 
 <h1 align="center">Customer Profile</h1>
+
+
+<button id="edit" class="btn btn-success" enabled align="center">
+            <i class="glyphicon glyphicon-edit"></i> Edit
+        </button>
 <div style="padding : 22px;">
 
 {% for i in range(0,18,2) %}
-  <li><b>{{names[i+1]}}</b> : {{details[names[i]]}}</li><br>
+  <li><b>{{names[i+1]}}</b> : <a href="javascript:void(0)" data-name="{{names[i]}}" data-url="/edit" data-type="text" data-pk="{{details['lead_id']}}" data-value="{{details[names[i]]}}" class="editable editable-click">{{details[names[i]]}}</a></li><br>
 {% endfor %}
 </div>
 
@@ -74,6 +79,14 @@ $('#create_disposition').submit(function create(){
 	            });
 	        }
 );
+
+$('#edit').click(function() {
+    $('.editable').editable('toggleDisabled');
+});
+
+$(function() {
+  $('.editable').editable('toggleDisabled');
+})
 
 </script>
 

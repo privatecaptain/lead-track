@@ -220,18 +220,18 @@ def edit():
 	value = params['value']
 	if field == 'agent':
 		lead_assignment_mail(user_id=value,lead_id=lead_id)
-	if field == 'status':
+	elif field == 'status':
 		# Add in disposition table
 		create_disposition_record(lead_id=lead_id,agent_id=current_user.user_id,time=datetime.datetime.now(),status=value)
 		# Alert Email to the Agent
 		correspondence_routing(value,lead_id,'email')
 		correspondence_routing(value,lead_id,'text')
-		return 'OK'
-	else:
-		save = update_lead(lead_id,field,value)
-		return 'OK'
 
-	return 'Error updating the Lead'
+	save = update_lead(lead_id,field,value)
+	if save:
+		return 'OK'
+	return 'Error updating the lead.'
+	
 	
 def d_types(user):
 	sql = 'SELECT `text`,value FROM disposition_types WHERE user = %s'
@@ -577,7 +577,6 @@ def create_disposition_record(lead_id,agent_id,status,time,notes=''):
 	cursor = conn.cursor()
 	sql = 'INSERT IGNORE INTO disposition_record (lead_id,notes,agent_id,status,`timestamp`) VALUES(%s,%s,%s,%s,%s)'
 	params = [lead_id,notes,agent_id,status,time]
-	update_lead(lead_id,'status',status)
 
 	try:
 		with conn:
