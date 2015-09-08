@@ -4,6 +4,19 @@
 {% endblock %}
 
 {% block body %}
+<style type="text/css">
+h3 {
+    text-decoration: underline;
+}
+
+hr {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 0;
+    border-top: 1px solid black;
+}
+
+</style>
 
 <h1 align="center">Customer Profile
 
@@ -21,12 +34,15 @@
 
 
 <div class="col-md-4">
+
+  <h3>Customer Section</h3>
 {% for i in customer_info %}
   <li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{customer_info[i]}}" class="editable editable-click">{{customer_info[i]}}</a></li><br>
 {% endfor %}
 </div>
 
 <div class="col-md-4">
+  <h3>Referrer Section</h3>
 {% for i in referer_info %}
   <li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{referer_info[i]}}" class="editable editable-click">{{referer_info[i]}}</a></li><br>
 {% endfor %}
@@ -34,15 +50,28 @@
 
 
 <div class="col-md-4">
+  <h3>Landlord Section</h3>
 {% for i in landlord_info %}
   <li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{landlord_info[i]}}" class="editable editable-click">{{landlord_info[i]}}</a></li><br>
 {% endfor %}
 </div>
 
+</div>
+<hr>
+
+<div class="row">
+
+
+
+
 
 
 
 </div>
+
+
+
+
 </div>
 
 <!-- Disposition form start -->

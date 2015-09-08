@@ -63,6 +63,7 @@ var waves_script_data = {"menu_padding":"38","header_height":"90"};
 <script type='text/javascript' src='http://henergy.staging.wpengine.com/wp-includes/js/jquery/jquery.js?ver=1.11.2'></script>
 <script type='text/javascript' src='http://henergy.staging.wpengine.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.2.1'></script>
 <script type='text/javascript' src='http://henergy.staging.wpengine.com/wp-content/plugins/LayerSlider/static/js/layerslider.kreaturamedia.jquery.js?ver=5.1.1'></script>
+<!-- MAPs API -->
 <script type='text/javascript' src='http://henergy.staging.wpengine.com/wp-content/plugins/LayerSlider/static/js/greensock.js?ver=1.11.2'></script>
 <script type='text/javascript' src='http://henergy.staging.wpengine.com/wp-content/plugins/LayerSlider/static/js/layerslider.transitions.js?ver=5.1.1'></script>
 <link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://henergy.staging.wpengine.com/xmlrpc.php?rsd" />
@@ -362,9 +363,14 @@ vertical-align: top!important;
 <p class="aboutesap" style="text-align: center; color: #000; font-size: 30px; font-weight: 300;">See if you qualify now!</p>
 
 
+
+
+<!-- End -->
+
 {% if terminate == False %}
 <form method="post" action="/esap">
 {% if step == 1%}
+
 <input type="hidden" name="step" value="1">
 <label class='gfield_label' for='zip_code' >Let&#039;s start with your Zip Code:<span class='gfield_required'>*</span></label>
 <input type="text" name="zip_code" maxlength="5">
@@ -439,12 +445,112 @@ Is your home at least five-years old?
 {% for key in params %}
 <input type="hidden" name="{{key}}" value="{{params[key]}}">
 {% endfor %}
+
+<!-- SCript -->
+
+
+ <script>
+// This example displays an address form, using the autocomplete feature
+// of the Google Places API to help users fill in the information.
+
+var placeSearch, autocomplete;
+var componentForm = {
+  street_number: 'short_name',
+  route: 'long_name',
+  locality: 'long_name',
+  administrative_area_level_1: 'short_name',
+};
+
+function initAutocomplete() {
+  // Create the autocomplete object, restricting the search to geographical
+  // location types.
+  autocomplete = new google.maps.places.Autocomplete(
+      /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+      {types: ['geocode']});
+
+  // When the user selects an address from the dropdown, populate the address
+  // fields in the form.
+  autocomplete.addListener('place_changed', fillInAddress);
+}
+
+// [START region_fillform]
+function fillInAddress() {
+  // Get the place details from the autocomplete object.
+  var place = autocomplete.getPlace();
+
+  for (var component in componentForm) {
+    document.getElementById(component).value = '';
+    document.getElementById(component).disabled = false;
+  }
+
+  // Get each component of the address from the place details
+  // and fill the corresponding field on the form.
+  for (var i = 0; i < place.address_components.length; i++) {
+    var addressType = place.address_components[i].types[0];
+    if (componentForm[addressType]) {
+      var val = place.address_components[i][componentForm[addressType]];
+      document.getElementById(addressType).value = val;
+    }
+  }
+}
+// [END region_fillform]
+
+// [START region_geolocation]
+// Bias the autocomplete object to the user's geographical location,
+// as supplied by the browser's 'navigator.geolocation' object.
+function geolocate() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var geolocation = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      var circle = new google.maps.Circle({
+        center: geolocation,
+        radius: position.coords.accuracy
+      });
+      autocomplete.setBounds(circle.getBounds());
+    });
+  }
+}
+// [END region_geolocation]
+
+    </script>
+
+<!-- 
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?&libraries=places"></script>
+ -->
+
+    <script src="https://maps.googleapis.com/maps/api/js?signed_in=true&libraries=places&callback=initAutocomplete&key=AIzaSyDXDznbc18k0aW_ofRaKR5Uf3aAZ6i9xMA"
+        async defer></script>
+
+
+
 <label class='gfield_label' for='own' >What is your Property Address ?:
 <span class='gfield_required'></span></label>
 
-<label class='gfield_label' for='own' >Street: 
+<!-- MAPs Autocomplete -->
+<div id="locationField">
+      <input id="autocomplete" placeholder="Start Typing your Address..."
+             onFocus="geolocate()" type="text" style="width: 100%;" autocomplete="off"></input>
+    </div>
+
+
+
+   
+
+
+
+
+
+<label class='gfield_label' for='own' >Street Number: 
 <span class='gfield_required'>*</span></label>
-<input type="text" name="street" required>
+<input type="text" name="street_number" id="street_number" required>
+
+
+<label class='gfield_label' for='own' >Street Address: 
+<span class='gfield_required'>*</span></label>
+<input type="text" name="street_name" id="route" required>
 
 <label class='gfield_label' for='own' >Apartment/Unit/Space #: 
 <span class='gfield_required'></span></label>
@@ -453,10 +559,10 @@ Is your home at least five-years old?
 
 <label class='gfield_label' for='own' >City: 
 <span class='gfield_required'>*</span></label>
-<input type="text" name="city" value="{{params['city']}}" required>
+<input type="text" name="city" value="{{params['city']}}" id="locality" required>
 <label class='gfield_label' for='own' >State:
 <span class='gfield_required'>*</span></label>
-<input type="text" name="state" value="California" required>
+<input type="text" name="state" value="California" id="administrative_area_level_1" required>
 
 {% endif %}
 
@@ -498,9 +604,13 @@ Is your home at least five-years old?
 <input type="text" name="landlord_contact" required>
 
 {% endif %}
-<label class='gfield_label' for='own' >Street: 
+<label class='gfield_label' for='own' >Street Number: 
 <span class='gfield_required'>*</span></label>
-<input type="text" name="street" value="{{params['street']}}" required>
+<input type="text" name="street_number" value="{{params['street_number']}}" required>
+
+<label class='gfield_label' for='own' >Street Name: 
+<span class='gfield_required'>*</span></label>
+<input type="text" name="street_name" value="{{params['street_name']}}" required>
 
 <label class='gfield_label' for='own' >Apartment/Unit/Space #: 
 <span class='gfield_required'></span></label>

@@ -51,8 +51,20 @@
                 <th data-field="lead_id" data-editable="true"></th>
                 <th data-field="first_name"  data-editable="true" data-typo="text" data-sortable="true" data-filter="first_name">First Name</th>
                 <th data-field="last_name" data-editable="true" data-typo="text" data-sortable="true">Last Name</th>
-                <th data-field="zip" data-editable="true" data-typo="text" data-sortable="true">Zip Code</th>
+                                <th data-field="street_number" data-editable="true" data-typo="text" data-sortable="true">Address 1</th>
+
+                                 <th data-field="street_name" data-editable="true" data-typo="text" data-sortable="true">Address 2</th>
+
+
                 <th data-field="city" data-editable="true" data-typo="text" data-sortable="true">City</th>
+
+
+                 <th data-field="gas" data-editable="true" data-typo="text" data-sortable="true">Gas Utility</th>
+
+                  <th data-field="electric" data-editable="true" data-typo="text" data-sortable="true">Electric Utility</th>
+
+
+
                 <th data-field="entry_date" data-typo="text" >Entry Date</th>
                 <th data-field="status" data-typo="select" data-editable="true" data-sortable="true">Disposition</th>
                 {% if current_user.access == 'admin' or current_user.access == 'superadmin' %}

@@ -703,7 +703,7 @@ def message_creator(lead_id,name):
 def profile():
 	lead_id = request.args.get('lead_id')
 	# Customer
-	customer_sql = 'SELECT first_name,last_name,phone_number,home_phone,email,zip,street,city,\
+	customer_sql = 'SELECT first_name,last_name,phone_number,home_phone,email,zip,street_number,street_name,city,\
 				state,country,gas,electric FROM lead_details WHERE lead_id = %s'
 	params = [lead_id,]
 	customer_info = lead_details(customer_sql,params)[0]
@@ -720,6 +720,8 @@ def profile():
 	landlord_sql = 'SELECT landlord_name,landlord_contact FROM lead_details WHERE lead_id = %s'
 
 	landlord_info = lead_details(landlord_sql,params)[0]
+
+	addon_sql = 'SELECT members'
 	
 	dispositions = d_types('agent')
 	# print dispositions
@@ -845,7 +847,7 @@ def home_age(params):
 	return False
 
 def match_address(address):
-	sql = 'SELECT apartment_number,street,city,state,lead_id from lead_details'
+	sql = 'SELECT apartment_number,street_number,street_name,city,state,lead_id from lead_details'
 	rows = query(sql)[0]
 
 	suspects = {}
@@ -862,7 +864,7 @@ def match_address(address):
 
 
 def make_address(params):
-	return params['street'] + params['city'] + params['state']
+	return params['street_number'] + params['street_name'] + params['city'] + params['state']
 
 
 def check_address(params):
@@ -890,7 +892,10 @@ def add_details(params,extras):
 	zip_code = params['zip_code']
 	members = params['members']
 
-	street = params['street']
+	street_number = params['street_number']
+	street_name = params['street_name']
+
+	print street_number,street_name
 	if 'apartment_number' in params.keys():
 		apartment_number = params['apartment_number']
 	else:
@@ -915,7 +920,7 @@ def add_details(params,extras):
 									home_phone,\
 									zip,\
 									members,\
-									street,\
+									street_number,street_name,\
 									apartment_number,\
 									city,\
 									state,\
@@ -923,9 +928,9 @@ def add_details(params,extras):
 									landlord_name,\
 									landlord_contact,\
 									gas,electric) \
-						 VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+						 VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
 
-	sql_params = [first_name,last_name,email,mobile_phone,home_phone,zip_code,members,street,apartment_number,city,state,country,landlord_name,landlord_contact,gas,electric]
+	sql_params = [first_name,last_name,email,mobile_phone,home_phone,zip_code,members,street_number,street_name,apartment_number,city,state,country,landlord_name,landlord_contact,gas,electric]
 
 	conn = mysql.connect()
 
