@@ -400,6 +400,46 @@ vertical-align: top!important;
 {% endfor %}
 <label class='gfield_label' for='members' >Now, tell us how many people live in your home:<span class='gfield_required'>*</span></label>
 <input type="text" name="members" required>
+
+<P>Public Assistance Programs, check all that apply:</P>
+
+
+<ul>
+<input type="checkbox" name="public_assistance1"  value="Medi-Cal/Medicaid">
+<li>Medi-Cal/Medicaid</li>
+</input>
+<input type="checkbox" name="public_assistance2"  value="Medi-Cal for Families A&B">
+<li>Medi-Cal for Families A&B</li>
+</input>
+<input type="checkbox" name="public_assistance3"  value="Women, Infants, & Children (WIC)" >
+<li>Women, Infants, & Children (WIC)</li>
+</input>
+<input type="checkbox" name="public_assistance4"  value="CalWORKs (TANF) or Tribal TANF">
+<li>CalWORKs (TANF) or Tribal TANF</li>
+</input>
+<input type="checkbox" name="public_assistance5"  value="Head Start Income Eligible - Tribal Only">
+<li>Head Start Income Eligible - Tribal Only</li>
+</input>
+<input type="checkbox" name="public_assistance6"  value="Bureau of Indian Affairs General Assistance">
+<li>Bureau of Indian Affairs General Assistance</li>
+</input>
+<input type="checkbox" name="public_assistance7"  value="CalFresh, SNAP, Food Stamps">
+<li>CalFresh, SNAP, Food Stamps</li>
+</input>
+<input type="checkbox" name="public_assistance8"  value="National School Lunch Program (NSLP)">
+<li>National School Lunch Program (NSLP)</li>
+</input>
+<input type="checkbox" name="public_assistance9"  value="Low-Income Home Energy Assistance Program (LIHEAP)" >
+<li>Low-Income Home Energy Assistance Program (LIHEAP)</li>
+</input>
+<input type="checkbox" name="public_assistance10"  value="Supplemental Security Income (SSI)">
+<li>Supplemental Security Income (SSI)</li>
+</input>
+</ul>
+
+
+
+
 {% endif %}
 
 {% if step == 4 %}
@@ -412,6 +452,8 @@ vertical-align: top!important;
 <p>{{extras['required_income']}}</p><br>
 <input type="radio" name="income" value="yes" required>Yes<br>
 <input type="radio" name="income" value="no" required>No<br>  
+<input type="hidden" name="required_income" value="{{extras['required_income']}}">
+<input type="hidden" name="public_assistance" value="{{extras['public_assistance']}}">
 {% endif %}
 
 

@@ -728,7 +728,7 @@ def profile():
 
 	landlord_info = lead_details(landlord_sql,params)[0]
 
-	addon_sql = 'SELECT members,own,income FROM lead_details WHERE lead_id = %s'
+	addon_sql = 'SELECT public_assistance,members,own,income FROM lead_details WHERE lead_id = %s'
 
 	addon_info = lead_details(addon_sql,params)[0]
 	
@@ -846,7 +846,16 @@ def check_provider(params,extras):
 	return True
 
 def members(params,extras):
+	public_assistance = ''
+	for i in range(1,11):
+		q = 'public_assistance' + str(i)
+		try:
+			public_assistance += params[q] + ';'
+		except:
+			pass
+	print public_assistance
 	extras['required_income'] = required_income(params)
+	extras['public_assistance'] = public_assistance
 	return True
 
 def home_age(params):
@@ -923,6 +932,7 @@ def add_details(params,extras):
 	electric = params['electric']
 	own = params['own']
 	income = params['required_income']
+	public_assistance = params['public_assistance']
 
 
 	sql = 'INSERT INTO lead_details(first_name,\
@@ -939,10 +949,10 @@ def add_details(params,extras):
 									Country,\
 									landlord_name,\
 									landlord_contact,\
-									gas,electric,own,income,) \
-						 VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s.%s,%s)'
+									gas,electric,own,income,public_assistance) \
+						 VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
 
-	sql_params = [first_name,last_name,email,mobile_phone,home_phone,zip_code,members,street_number,street_name,apartment_number,city,state,country,landlord_name,landlord_contact,gas,electric]
+	sql_params = [first_name,last_name,email,mobile_phone,home_phone,zip_code,members,street_number,street_name,apartment_number,city,state,country,landlord_name,landlord_contact,gas,electric,own,income,public_assistance]
 
 	conn = mysql.connect()
 
