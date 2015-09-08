@@ -109,12 +109,12 @@ class User(object):
 
 
 
-def create_user(name,email,access,password):
+def create_user(name,email,access,password,phone_number):
 	conn = mysql.connect()
 	with conn:
 		cursor = conn.cursor()
-		params = [name,email,access,password]
-		sql = 'INSERT INTO lead_track_users(id,name,email,access,password) VALUES (NULL,%s,%s,%s,%s);'
+		params = [name,email,phone_number,access,password]
+		sql = 'INSERT INTO lead_track_users(id,name,email,phone_number,access,password) VALUES (NULL,%s,%s,%s,%s,%s);'
 		cursor.execute(sql ,params)
 	return True
 
@@ -327,10 +327,11 @@ def create():
 		print params
 		name = params['name']
 		email = params['email']
+		phone_number = params['phone_number']
 		access = params['access']
 		password = params['password']
 		pwd_hash = bcrypt.generate_password_hash(password)
-		if create_user(name=name,email=email,access=access,password=pwd_hash):
+		if create_user(name=name,email=email,phone_number=phone_number,access=access,password=pwd_hash):
 			return 'Success Creating User'
 		else:
 			return 'Failed'
