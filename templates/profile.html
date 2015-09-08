@@ -61,15 +61,20 @@ hr {
 
 <div class="row">
 
+{% for i in addon_info %}
 
+<div class="col-md-3">
 
+<li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{addon_info[i]}}" class="editable editable-click">{{addon_info[i]}}</a></li><br>
 
+</div>
 
+{% endfor %}
 
 
 </div>
 
-
+<hr>
 
 
 </div>

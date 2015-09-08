@@ -191,6 +191,12 @@ def sendmail(text,to,subject):
 		return False
 
 
+@app.route('/mailgun_webhook',methods=['POST'])
+def show():
+	print request.form
+	return 'OK'
+
+
 
 @app.route('/leads')
 @login_required
@@ -722,13 +728,15 @@ def profile():
 
 	landlord_info = lead_details(landlord_sql,params)[0]
 
-	addon_sql = 'SELECT members'
+	addon_sql = 'SELECT members,own,income FROM lead_details WHERE lead_id = %s'
+
+	addon_info = lead_details(addon_sql,params)[0]
 	
 	dispositions = d_types('agent')
 	# print dispositions
 
 	# print details
-	return render_template('profile.html',customer_info=customer_info,landlord_info=landlord_info,referer_info=referer_info,dispositions=dispositions,lead_id=lead_id)
+	return render_template('profile.html',customer_info=customer_info,landlord_info=landlord_info,referer_info=referer_info,addon_info=addon_info,dispositions=dispositions,lead_id=lead_id)
 
 @app.route('/create_disposition',methods=['POST'])
 @login_required
@@ -913,6 +921,9 @@ def add_details(params,extras):
 	country = 'Unites States'
 	gas = params['gas']
 	electric = params['electric']
+	own = params['own']
+	income = params['required_income']
+
 
 	sql = 'INSERT INTO lead_details(first_name,\
 									last_name,\
@@ -928,8 +939,8 @@ def add_details(params,extras):
 									Country,\
 									landlord_name,\
 									landlord_contact,\
-									gas,electric) \
-						 VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+									gas,electric,own,income,) \
+						 VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s.%s,%s)'
 
 	sql_params = [first_name,last_name,email,mobile_phone,home_phone,zip_code,members,street_number,street_name,apartment_number,city,state,country,landlord_name,landlord_contact,gas,electric]
 
@@ -1045,7 +1056,7 @@ def process_resolution(step,params,extras):
 
 
 if __name__== '__main__':
-	app.run()
+	app.run('0.0.0.0')
 
 
 # Lead Detail Pivot SQL
