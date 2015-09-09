@@ -399,7 +399,7 @@ vertical-align: top!important;
 <input type="hidden" name="{{key}}" value="{{params[key]}}">
 {% endfor %}
 <label class='gfield_label' for='members' >Now, tell us how many people live in your home:<span class='gfield_required'>*</span></label>
-<input type="text" name="members" required>
+<input type="number" name="members" required min="1">
 
 <P>Public Assistance Programs, check all that apply:</P>
 
