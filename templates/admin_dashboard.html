@@ -6,7 +6,7 @@
 <h4 align="center">Key Performance Indicators(KPI's)</h4>
 {% for kpi in kpi_nums %}
 
-<li align="center">{{kpi}} : {{kpi_nums[kpi]}}</li>
+<li align="center">{{pretty_name(kpi)}} : {{kpi_nums[kpi]}}</li>
 
 {% endfor %}
 {% endblock %}
