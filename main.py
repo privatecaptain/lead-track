@@ -724,7 +724,7 @@ def profile():
 
 	# LandLord 
 
-	landlord_sql = 'SELECT landlord_name,landlord_contact FROM lead_details WHERE lead_id = %s'
+	landlord_sql = 'SELECT landlord_name,landlord_phone,landlord_email FROM lead_details WHERE lead_id = %s'
 
 	landlord_info = lead_details(landlord_sql,params)[0]
 
@@ -921,9 +921,11 @@ def add_details(params,extras):
 
 	if params['own'] == 'no':
 		landlord_name = params['landlord_name']
-		landlord_contact = params['landlord_contact']
+		landlord_phone = params['landlord_phone']
+		landlord_email = params['landlord_email']
 	else:
-		landlord_contact = ''
+		landlord_phone = ''
+		landlord_email = ''
 		landlord_name = ''
 	city = params['city']
 	state = params['state']
@@ -948,11 +950,11 @@ def add_details(params,extras):
 									state,\
 									Country,\
 									landlord_name,\
-									landlord_contact,\
+									landlord_phone,landlord_email,\
 									gas,electric,own,income,public_assistance) \
-						 VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+						 VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
 
-	sql_params = [first_name,last_name,email,mobile_phone,home_phone,zip_code,members,street_number,street_name,apartment_number,city,state,country,landlord_name,landlord_contact,gas,electric,own,income,public_assistance]
+	sql_params = [first_name,last_name,email,mobile_phone,home_phone,zip_code,members,street_number,street_name,apartment_number,city,state,country,landlord_name,landlord_phone,landlord_email,gas,electric,own,income,public_assistance]
 
 	conn = mysql.connect()
 
