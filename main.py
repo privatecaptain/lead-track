@@ -833,7 +833,6 @@ def check_zip(params,extras):
 	sql_params = [zip_code,]
 	q = query(sql,sql_params)[0]
 	if q:
-		extras['city'] = guess_address(zip_code)
 		return True
 	return False
 
@@ -865,14 +864,14 @@ def home_age(params):
 	return False
 
 def match_address(address):
-	sql = 'SELECT apartment_number,street_number,street_name,city,state,lead_id from lead_details'
+	sql = 'SELECT street_number,street_name,city,state,lead_id from lead_details'
 	rows = query(sql)[0]
 
 	suspects = {}
 
 	for row in rows:
-		suspect = row[0] + row[1] + row[2] + row[3] + row[4]
-		suspects[suspect] = row[5]
+		suspect = row[0] + row[1] + row[2] + row[3]
+		suspects[suspect] = row[4]
 	
 	matches = difflib.get_close_matches(address,suspects.keys(),cutoff=0.95)
 
@@ -888,6 +887,7 @@ def make_address(params):
 def check_address(params):
 	
 	address = make_address(params)
+	print address
 	match = match_address(address)
 
 	if match:

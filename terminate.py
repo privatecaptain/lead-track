@@ -70,7 +70,7 @@ Thank you.
 
 [Record Details] (ability for applicant to edit)
 ''',
-'authorization_needed' : ''' We have received your application and have sent the request to your Property Mangager / Landlord.
+'utility_authorization_needed' : ''' We have received your application and have sent the request to your Property Mangager / Landlord.
 
 We will contact you as soon as they follow up with us.
 
@@ -109,4 +109,7 @@ Thank you.
 
 
 def terminate(status):
-	return msg[status]
+	if status in msg.keys():
+		return msg[status]
+	return msg['default']
+
