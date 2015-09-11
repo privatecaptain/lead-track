@@ -871,8 +871,8 @@ def match_address(address):
 	suspects = {}
 
 	for row in rows:
-		suspect = row[0] + row[1] + row[2] + row[3]
-		suspects[suspect] = row[4]
+		suspect = row[0] + row[1] + row[2] + row[3] + row[4]
+		suspects[suspect] = row[5]
 	
 	matches = difflib.get_close_matches(address,suspects.keys(),cutoff=0.95)
 
@@ -1003,10 +1003,10 @@ member_income = {
 def required_income(params):
 	members = int(params['members'])
 	required_income = 0
-	if members <= 9:
+	if members < 9:
 		required_income = member_income[members]
 	else:
-		difference = members - 9
+		difference = members - 8
 		extra_income = difference * 8320
 		required_income = member_income[8] + extra_income
 	return locale.currency(required_income,grouping=True)

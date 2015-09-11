@@ -93,7 +93,16 @@ In the mean time, If you have any friends or family in Stanislaus, San Joaquin, 
  'customer_refused' : ''' Our records indicate that the person we contacted refused this program.  
 
 You are qualfied to ttake advantage of this free program.   Would you like tohave someone enroll you into this program now?
-'''
+''',
+
+'default' : '''  "We have received your application and will contact you shortly.
+
+No further action is necessary.
+
+Thank you.
+" '''
+
+
 }
 
 

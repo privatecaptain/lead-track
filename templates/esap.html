@@ -43,6 +43,10 @@ img.emoji {
 	background: none !important;
 	padding: 0 !important;
 }
+
+.error_message{
+	color: red;
+}
 </style>
 <link rel='stylesheet' id='layerslider-css'  href='http://henergy.staging.wpengine.com/wp-content/plugins/LayerSlider/static/css/layerslider.css?ver=5.1.1' type='text/css' media='all' />
 <link rel='stylesheet' id='ls-google-fonts-css'  href='http://fonts.googleapis.com/css?family=Lato:100,300,regular,700,900|Open+Sans:300|Indie+Flower:regular|Oswald:300,regular,700&#038;subset=latin,latin-ext' type='text/css' media='all' />
@@ -55,17 +59,188 @@ img.emoji {
 <link rel='stylesheet' id='themewaves-css'  href='http://henergy.staging.wpengine.com/wp-content/themes/esap/style.css?ver=4.2.2' type='text/css' media='all' />
 <link rel='stylesheet' id='waves-responsive-css'  href='http://henergy.staging.wpengine.com/wp-content/themes/esap/assets/css/responsive.css?ver=4.2.2' type='text/css' media='all' />
 <link rel='stylesheet' id='google-font-css'  href='http://fonts.googleapis.com/css?family=Oswald%3A400%2C400italic%7COswald%3A400%2C400italic%7COswald%3A400%2C400italic%7COswald%3A400%2C400italic%7COpen+Sans%3A400%2C400italic&#038;subset&#038;ver=4.2.2' type='text/css' media='all' />
-<script type='text/javascript'>
-/* <![CDATA[ */
-var waves_script_data = {"menu_padding":"38","header_height":"90"};
-/* ]]> */
-</script>
 <script type='text/javascript' src='http://henergy.staging.wpengine.com/wp-includes/js/jquery/jquery.js?ver=1.11.2'></script>
 <script type='text/javascript' src='http://henergy.staging.wpengine.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.2.1'></script>
 <script type='text/javascript' src='http://henergy.staging.wpengine.com/wp-content/plugins/LayerSlider/static/js/layerslider.kreaturamedia.jquery.js?ver=5.1.1'></script>
 <!-- MAPs API -->
 <script type='text/javascript' src='http://henergy.staging.wpengine.com/wp-content/plugins/LayerSlider/static/js/greensock.js?ver=1.11.2'></script>
 <script type='text/javascript' src='http://henergy.staging.wpengine.com/wp-content/plugins/LayerSlider/static/js/layerslider.transitions.js?ver=5.1.1'></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<script type='text/javascript'>
+/* <![CDATA[ */
+var waves_script_data = {"menu_padding":"38","header_height":"90"};
+/* ]]> */
+
+
+function validateEmail(email) {
+ 			   var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+    			return re.test(email);
+				}
+
+function validatePhonenumber(inputtxt) {
+  var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+
+ return phoneno.test(inputtxt);
+}
+
+
+// Safari fix
+
+function formValidate(e){
+
+	form = document.getElementById('esap_form');
+	nodes = form.children
+
+	for (var i = 0; i < nodes.length; i++) {
+
+		element = nodes[i];
+
+
+
+		if (element.name == 'members') {
+
+			if (element.value < 1) {
+				console.log('oyeee');
+				var inhtml = 'No. of Members should be greater than 0.<br>';
+				if (element.previousSibling.tagName == 'SPAN') {
+					element.previousSibling.innerHTML = inhtml;
+					e.preventDefault();
+					return;
+				};
+				var spanTag = document.createElement('span');
+				spanTag.innerHTML = inhtml;
+				spanTag.className = 'error_message';
+				element.parentNode.insertBefore(spanTag,element);
+
+				e.preventDefault();
+				return;
+			}
+		};
+
+		if (element.name == 'email') {
+
+			if (!validateEmail(element.value)) {
+
+
+				var inhtml = element.value + 'is not a valid email!<br>';
+				if (element.previousSibling.tagName == 'SPAN') {
+					element.previousSibling.innerHTML = inhtml;
+					e.preventDefault();
+					return;
+				};
+				var spanTag = document.createElement('span');
+				spanTag.innerHTML = inhtml;
+				spanTag.className = 'error_message';
+				element.parentNode.insertBefore(spanTag,element);
+
+				e.preventDefault();
+				return;
+
+
+
+			};
+		};
+
+
+		if (element.name == 'phone_number') {
+
+			if (!validatePhonenumber(element.value)) {
+
+				var inhtml = element.value + 'is not a phone number.<br>';
+				if (element.previousSibling.tagName == 'SPAN') {
+					element.previousSibling.innerHTML = inhtml;
+					e.preventDefault();
+					return;
+				};
+				var spanTag = document.createElement('span');
+				spanTag.innerHTML = inhtml;
+				spanTag.className = 'error_message';
+				element.parentNode.insertBefore(spanTag,element);
+
+				e.preventDefault();
+				return;
+
+
+
+			};
+
+		};
+
+		if (element.name == 'home_phone') {
+
+			if (!validatePhonenumber(element.value)) {
+
+				var inhtml = element.value + ' is not a phone number.<br>';
+				if (element.previousSibling.tagName == 'SPAN') {
+					element.previousSibling.innerHTML = inhtml;
+					e.preventDefault();
+					return;
+				};
+				var spanTag = document.createElement('span');
+				spanTag.innerHTML = inhtml;
+				spanTag.className = 'error_message';
+				element.parentNode.insertBefore(spanTag,element);
+
+				e.preventDefault();
+				return;
+
+
+
+			};
+
+		};
+
+		if(element.tagName == 'INPUT'){
+			if (element.hasAttribute('required')) {
+				var spanTag = document.createElement('span');
+				spanTag.innerHTML = 'This Field is required<br>';
+				spanTag.className = 'error_message';
+				if (element.value == '' || element.value == null) {
+
+					console.log('in');
+					if (element.previousSibling.tagName != 'SPAN') {
+						element.parentNode.insertBefore(spanTag,element);	
+					};
+					// alert('Please fill the required fields !!!');
+					e.preventDefault();
+					return;
+				};
+
+
+				if (element.type == 'radio') {
+					var checkbox = true;
+					var radios = document.getElementsByName(element.name);
+
+					for (var rad = 0; rad < radios.length; rad++) {
+						if (radios[rad].checked) {
+							checkbox = false;
+						}
+
+					}
+
+					if (checkbox) {
+						var spanTag = document.createElement('span');
+						spanTag.innerHTML = 'This Field is required<br>';
+						spanTag.className = 'error_message';
+						if (element.previousSibling.tagName != 'SPAN') {
+						element.parentNode.insertBefore(spanTag,element);	
+					};
+						// alert('Please select the appropriate option :)');
+						e.preventDefault();
+						return;
+					};
+				};
+			};
+		}
+	};
+	return true;
+}
+
+
+</script>
+
 <link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://henergy.staging.wpengine.com/xmlrpc.php?rsd" />
 <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://henergy.staging.wpengine.com/wp-includes/wlwmanifest.xml" /> 
 <link rel='canonical' href='http://henergy.staging.wpengine.com/esap/' />
@@ -368,12 +543,12 @@ vertical-align: top!important;
 <!-- End -->
 
 {% if terminate == False %}
-<form method="post" action="/esap">
+<form method="post" action="/esap" id="esap_form" onsubmit="return formValidate(event);">
 {% if step == 1%}
 
 <input type="hidden" name="step" value="1">
 <label class='gfield_label' for='zip_code' >Let&#039;s start with your Zip Code:<span class='gfield_required'>*</span></label>
-<input type="text" name="zip_code" maxlength="5">
+<input type="text" name="zip_code" maxlength="5" required>
 {% endif %}
 
 {% if step == 2 %}
@@ -401,40 +576,40 @@ vertical-align: top!important;
 <label class='gfield_label' for='members' >Now, tell us how many people live in your home:<span class='gfield_required'>*</span></label>
 <input type="number" name="members" required min="1">
 
-<P>Public Assistance Programs, check all that apply:</P>
+<P>and tell us if anyone in the home receives any of the public assistance programs listed below:</P>
 
 
 <ul>
-<input type="checkbox" name="public_assistance1"  value="Medi-Cal/Medicaid">
-<li>Medi-Cal/Medicaid</li>
-</input>
+
+<input type="checkbox" name="public_assistance1"  value="Medi-Cal/Medicaid">Medi-Cal/Medicaid
+</input><br>
 <input type="checkbox" name="public_assistance2"  value="Medi-Cal for Families A&B">
-<li>Medi-Cal for Families A&B</li>
-</input>
+Medi-Cal for Families A&B
+</input><br>
 <input type="checkbox" name="public_assistance3"  value="Women, Infants, & Children (WIC)" >
-<li>Women, Infants, & Children (WIC)</li>
-</input>
+Women, Infants, & Children (WIC)
+</input><br>
 <input type="checkbox" name="public_assistance4"  value="CalWORKs (TANF) or Tribal TANF">
-<li>CalWORKs (TANF) or Tribal TANF</li>
-</input>
+CalWORKs (TANF) or Tribal TANF
+</input><br>
 <input type="checkbox" name="public_assistance5"  value="Head Start Income Eligible - Tribal Only">
-<li>Head Start Income Eligible - Tribal Only</li>
-</input>
+Head Start Income Eligible - Tribal Only
+</input><br>
 <input type="checkbox" name="public_assistance6"  value="Bureau of Indian Affairs General Assistance">
-<li>Bureau of Indian Affairs General Assistance</li>
-</input>
+Bureau of Indian Affairs General Assistance
+</input><br>
 <input type="checkbox" name="public_assistance7"  value="CalFresh, SNAP, Food Stamps">
-<li>CalFresh, SNAP, Food Stamps</li>
-</input>
+CalFresh, SNAP, Food Stamps
+</input><br>
 <input type="checkbox" name="public_assistance8"  value="National School Lunch Program (NSLP)">
-<li>National School Lunch Program (NSLP)</li>
-</input>
+National School Lunch Program (NSLP)
+</input><br>
 <input type="checkbox" name="public_assistance9"  value="Low-Income Home Energy Assistance Program (LIHEAP)" >
-<li>Low-Income Home Energy Assistance Program (LIHEAP)</li>
-</input>
+Low-Income Home Energy Assistance Program (LIHEAP)
+</input><br>
 <input type="checkbox" name="public_assistance10"  value="Supplemental Security Income (SSI)">
-<li>Supplemental Security Income (SSI)</li>
-</input>
+Supplemental Security Income (SSI)
+</input><br>
 </ul>
 
 
@@ -584,27 +759,18 @@ function geolocate() {
 
 
 
-
-<label class='gfield_label' for='own' >Street Number: 
-<span class='gfield_required'>*</span></label>
-<input type="text" name="street_number" id="street_number" required>
+<input type="hidden" name="street_number" id="street_number" required>
 
 
-<label class='gfield_label' for='own' >Street Address: 
-<span class='gfield_required'>*</span></label>
-<input type="text" name="street_name" id="route" required>
+<input type="hidden" name="street_name" id="route" required>
 
-<label class='gfield_label' for='own' >Apartment/Unit/Space #: 
-<span class='gfield_required'></span></label>
-<input type="text" name="apartment_number">
+<input type="hidden" name="apartment_number">
 
 
-<label class='gfield_label' for='own' >City: 
-<span class='gfield_required'>*</span></label>
-<input type="text" name="city" value="{{params['city']}}" id="locality" required>
-<label class='gfield_label' for='own' >State:
-<span class='gfield_required'>*</span></label>
-<input type="text" name="state" value="California" id="administrative_area_level_1" required>
+
+<input type="hidden" name="city"  id="locality" required>
+
+<input type="hidden" name="state" id="administrative_area_level_1" required>
 
 {% endif %}
 
@@ -646,26 +812,6 @@ function geolocate() {
 <input type="text" name="landlord_contact" required>
 
 {% endif %}
-<label class='gfield_label' for='own' >Street Number: 
-<span class='gfield_required'>*</span></label>
-<input type="text" name="street_number" value="{{params['street_number']}}" required>
-
-<label class='gfield_label' for='own' >Street Name: 
-<span class='gfield_required'>*</span></label>
-<input type="text" name="street_name" value="{{params['street_name']}}" required>
-
-<label class='gfield_label' for='own' >Apartment/Unit/Space #: 
-<span class='gfield_required'></span></label>
-<input type="text" name="apartment_number">
-
-
-
-<label class='gfield_label' for='own' >City: 
-<span class='gfield_required'>*</span></label>
-<input type="text" name="city" value="{{params['city']}}" required>
-<label class='gfield_label' for='own' >State:
-<span class='gfield_required'>*</span></label>
-<input type="text" name="state" value="California" required>
 
 
 
