@@ -371,9 +371,9 @@ def create():
 		password = params['password']
 		pwd_hash = bcrypt.generate_password_hash(password)
 		if create_user(name=name,email=email,phone_number=phone_number,access=access,password=pwd_hash):
-			return 'Success Creating User'
+			return render_template('create_user.html',success=True)
 		else:
-			return 'Failed'
+			return render_template('create_user.html',success=False)
 
 
 

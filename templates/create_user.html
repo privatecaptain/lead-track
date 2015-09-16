@@ -3,6 +3,14 @@
 {% endblock %}
 {% block body %}
 
+{% if success == True %}
+    <div class="alert alert-success" role="alert">User successfully created !</div>
+
+{% else %}
+  <div class="alert alert-danger" role="alert">There was an error creating the user,please contact the Website Admin, Thank You.</div>
+    {% endif %}
+
+
 <form class="form-horizontal" align="center" action='/create_user' id="create_user" method="POST">
   <fieldset>
     <div id="legend">
