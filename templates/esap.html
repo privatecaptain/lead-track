@@ -119,7 +119,7 @@ function formValidate(e){
 			}
 		};
 
-		if (element.name == 'email') {
+		if (element.name == 'email' || element.name == 'referer_email') {
 
 			if (!validateEmail(element.value)) {
 
@@ -144,7 +144,7 @@ function formValidate(e){
 		};
 
 
-		if (element.name == 'phone_number') {
+		if (element.name == 'phone_number' || element.name == 'referer_phone_number') {
 
 			if (!validatePhonenumber(element.value)) {
 
@@ -803,17 +803,17 @@ function geolocate() {
 
 <label class='gfield_label' for='own' >Landlord's Name: 
 <span class='gfield_required'>*</span></label>
-<input type="text" name="landlord_name" required>
+<input type="text" name="landlord_name">
 
 
 <label class='gfield_label' for='own' >Landlord's Phone: 
 <span class='gfield_required'>*</span></label>
-<input type="text" name="landlord_phone" required>
+<input type="text" name="landlord_phone" >
 
 
 <label class='gfield_label' for='own' >Landlord's Email: 
 <span class='gfield_required'>*</span></label>
-<input type="text" name="landlord_email" required>
+<input type="text" name="landlord_email" >
 
 {% endif %}
 
@@ -840,23 +840,24 @@ function geolocate() {
 <input type="hidden" name="{{key}}" value="{{params[key]}}">
 {% endfor %}
 
-<label class='gfield_label' for='own' >Referrer's Name: 
+<label class='gfield_label' for='own' >Your Name: 
 <span class='gfield_required'>*</span></label>
 <input type="text" name="referer_name" required>
 
-<label class='gfield_label' for='own' >Referrer's Email: 
+<label class='gfield_label' for='own' >Your Email: 
 <span class='gfield_required'>*</span></label>
 <input type="email" name="referer_email" required>
 
 
-<label class='gfield_label' for='own' >Referrer's Relationship to the Authorized Person: 
+<label class='gfield_label' for='own' >Your Phone Number: 
+<span class='gfield_required'>*</span></label>
+<input type="text" name="referer_phone_number" maxlength="10" pattern="[0-9]{10}" required>
+
+<label class='gfield_label' for='own' >Your Relationship to the Applicant: 
 <span class='gfield_required'>*</span></label>
 <input type="text" name="referer_relation" required>
 
 
-<label class='gfield_label' for='own' >Referer's Phone Number: 
-<span class='gfield_required'>*</span></label>
-<input type="text" name="referer_phone_number" maxlength="10" pattern="[0-9]{10}" required>
 
 {% endif %}
 

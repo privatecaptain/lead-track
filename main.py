@@ -174,7 +174,7 @@ def lead_details(sql,params=[]):
 
 @app.context_processor
 def utility_processor():
-	return dict(pretty_name=pretty_name)
+	return dict(pretty_name=pretty_name,format_number=format_number)
 
 def sendmail(text,to,subject):
 	try:
@@ -189,6 +189,16 @@ def sendmail(text,to,subject):
 	except Exception,e:
 		print e
 		return False
+
+def format_number(number):
+	if number == '':
+		return ''
+	result = '(123) 456-789t'
+	result = result.replace('123',number[0:3])
+	result = result.replace('456',number[3:6])
+	result = result.replace('789t',number[6:])
+	return result
+
 
 
 @app.route('/mailgun_webhook',methods=['POST'])
@@ -710,33 +720,43 @@ def message_creator(lead_id,name):
 def profile():
 	lead_id = request.args.get('lead_id')
 	# Customer
-	customer_sql = 'SELECT first_name,last_name,phone_number,home_phone,email,zip,street_number,street_name,city,\
-				state,country,gas,electric FROM lead_details WHERE lead_id = %s'
+	customer_sql = 'SELECT first_name,last_name,phone_number mobile_phone,home_phone,email,zip,CONCAT(street_number," ",street_name) AS address,city,\
+				state FROM lead_details WHERE lead_id = %s'
 	params = [lead_id,]
 	customer_info = lead_details(customer_sql,params)[0]
 
 	# Referrer 
 
-	referer_sql = 'SELECT referer_name,referer_email,referer_phone,referer_relation\
+	referer_sql = 'SELECT referer_name name,referer_email email,referer_phone phone_number,referer_relation relation\
 					FROM lead_details WHERE lead_id = %s'
 
 	referer_info = lead_details(referer_sql,params)[0]
 
 	# LandLord 
 
-	landlord_sql = 'SELECT landlord_name,landlord_phone,landlord_email FROM lead_details WHERE lead_id = %s'
+	landlord_sql = 'SELECT landlord_name name,landlord_phone phone_number,landlord_email email FROM lead_details WHERE lead_id = %s'
 
 	landlord_info = lead_details(landlord_sql,params)[0]
 
-	addon_sql = 'SELECT public_assistance,members,own,income FROM lead_details WHERE lead_id = %s'
+	addon_sql = 'SELECT gas,electric,public_assistance,members,own,income FROM lead_details WHERE lead_id = %s'
 
 	addon_info = lead_details(addon_sql,params)[0]
 	
 	dispositions = d_types('agent')
+
+	customer_order = ['first_name','last_name','address','city','state','zip', 'email', 'mobile_phone' ,'home_phone']
+	referer_order = ['name','relation','phone','email']
+	
+	landlord_order = ['name','phone_number','email']
 	# print dispositions
 
 	# print details
-	return render_template('profile.html',customer_info=customer_info,landlord_info=landlord_info,referer_info=referer_info,addon_info=addon_info,dispositions=dispositions,lead_id=lead_id)
+	return render_template('profile.html',customer_info=customer_info,
+							customer_order=customer_order,
+							landlord_info=landlord_info,landlord_order=landlord_order,
+							referer_info=referer_info,referer_order=referer_order,
+							addon_info=addon_info,dispositions=dispositions,
+							lead_id=lead_id)
 
 @app.route('/create_disposition',methods=['POST'])
 @login_required
@@ -748,7 +768,7 @@ def create_disposition():
 	print notes,status,lead_id
 	agent_id = current_user.user_id
 	edit_method(lead_id=lead_id,field='status',value=status,notes=notes)
-	return 'OK'
+	return redirect('profile?lead_id='+lead_id)
 
 @app.route('/test',methods=['GET','POST'])
 @login_required
@@ -1061,6 +1081,12 @@ def process_resolution(step,params,extras):
 	elif step == 10:
 		return add_referer(params,extras)
 	elif step == 11:
+		correspondence_routing(disposition='new_application',
+								lead_id=params['lead_id'],
+								c_type='email')
+		correspondence_routing(disposition='new_application',
+								lead_id=params['lead_id'],
+								c_type='text')
 		return False
 
 

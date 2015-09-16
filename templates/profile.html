@@ -36,23 +36,30 @@ hr {
 <div class="col-md-4">
 
   <h3>Customer Section</h3>
-{% for i in customer_info %}
-  <li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{customer_info[i]}}" class="editable editable-click">{{customer_info[i]}}</a></li><br>
+{% for i in customer_order %}
+
+{%if i == 'mobile_phone' or i == 'home_phone' %}
+<li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{addon_info[i]}}" class="editable editable-click">{{ format_number(customer_info[i]) }}</a></li>
+
+{% else %}
+  <li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{customer_info[i]}}" class="editable editable-click">{{customer_info[i]}}</a></li>
+
+{% endif %}
 {% endfor %}
 </div>
 
 <div class="col-md-4">
   <h3>Referrer Section</h3>
-{% for i in referer_info %}
-  <li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{referer_info[i]}}" class="editable editable-click">{{referer_info[i]}}</a></li><br>
+{% for i in referer_order %}
+  <li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{referer_info[i]}}" class="editable editable-click">{{referer_info[i]}}</a></li>
 {% endfor %}
 </div>
 
 
 <div class="col-md-4">
   <h3>Landlord Section</h3>
-{% for i in landlord_info %}
-  <li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{landlord_info[i]}}" class="editable editable-click">{{landlord_info[i]}}</a></li><br>
+{% for i in landlord_order %}
+  <li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{landlord_info[i]}}" class="editable editable-click">{{landlord_info[i]}}</a></li>
 {% endfor %}
 </div>
 
@@ -64,9 +71,18 @@ hr {
 {% for i in addon_info %}
 
 <div class="col-md-3">
+  <!-- OWN or RENT -->
+{% if addon_info[i] == 'yes' %}
+<li><b>OWN</b></li>
 
+{% elif addon_info[i] == 'no' %}
+<li><b>RENT</b></li>
+
+
+{% else %}
 <li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{addon_info[i]}}" class="editable editable-click">{{addon_info[i]}}</a></li><br>
 
+{% endif %}
 </div>
 
 {% endfor %}
@@ -81,7 +97,7 @@ hr {
 
 <!-- Disposition form start -->
 
-<form align="center"class="form-inline" id="create_disposition" >
+<form align="center"class="form-inline" id="create_disposition" method="POST" action="/create_disposition">
   <div class="form-group">
     <label for="status">Status: </label>
     <select class="form-control" name="status" data-editable="true">
@@ -116,7 +132,7 @@ hr {
 
    <thead>
             <tr>
-                <th data-field="name" >Agent</th>
+                <th data-field="name" >User</th>
                 <th data-field="status">Actions/Disposition</th>
                 <th data-field="timestamp">Timestamp</th>
                 <th data-field="notes">Notes</th>
@@ -129,17 +145,17 @@ hr {
 
 <script type="text/javascript">
 
-$('#create_disposition').submit(function create(){
-	            $.ajax({
-	                url:'/create_disposition',
-	                type:'POST',
-	                data:$('#create_disposition').serialize(),
-	                success:function(){
-	                    //Nothing to do
-	                }
-	            });
-	        }
-);
+// $('#create_disposition').submit(function create(){
+// 	            $.ajax({
+// 	                url:'/create_disposition',
+// 	                type:'POST',
+// 	                data:$('#create_disposition').serialize(),
+// 	                success:function(){
+// 	                    //Nothing to do
+// 	                }
+// 	            });
+// 	        }
+// );
 
 $('#edit').click(function() {
     $('.editable').editable('toggleDisabled');
