@@ -238,7 +238,26 @@ def edit():
 	lead_id = params['pk']
 	field = params['name']
 	value = params['value']
+	if field == 'address':
+		field1 = 'street_number'
+		field2 = 'street_name'
+		value1,value2 = [i for i in getstno(value)]
+		print value1,value2
+		edit_method(lead_id=lead_id,field=field1,value=value1)
+		return edit_method(lead_id=lead_id,field=field2,value=value2)
+
 	return edit_method(lead_id=lead_id,field=field,value=value)
+
+def getstno(address):
+	street_name = ''
+	street_number = ''
+	for idx,i in enumerate(address):
+		if i == ' ':
+			delimiter = idx
+			break
+	street_number = address[:idx]
+	street_name = address[idx:]
+	return (street_number,street_name)
 
 
 def edit_method(lead_id,field,value,notes=''):
@@ -250,7 +269,6 @@ def edit_method(lead_id,field,value,notes=''):
 		# Alert Email to the Agent
 		correspondence_routing(value,lead_id,'email')
 		correspondence_routing(value,lead_id,'text')
-
 	save = update_lead(lead_id,field,value)
 	if field != 'status':
 		action_record(lead_id=lead_id,action=field,agent_id=current_user.user_id)
