@@ -699,18 +699,17 @@ def message_creator(lead_id,name):
 	details = tuple(details[0])
 	print details
 
-	message = "Hello {0} , you have been assigned a new lead for Highlands Enrgy Prooject.\
+	message = "Hello {0} , you have been assigned a new lead for Highlands Energy Project.\n\
 			   The Details about the customer are as follows: ".format(name)
 
 	print message
 	info  = '''
 				  Name : {0} {1} 
-				  Email : {2}
-				  Zip Code : {3}
 				  Address : {4}
 				  City : {5}
 				  State : {6}
-				  Country : {7}
+				  Zip Code : {3}
+				  Email : {2}
 				  No. of Members in the Family: {8}
 				  Disposition: {9}
 			   '''.format(*details)
@@ -870,7 +869,7 @@ def members(params,extras):
 	for i in range(1,11):
 		q = 'public_assistance' + str(i)
 		try:
-			public_assistance += params[q] + ';'
+			public_assistance += params[q] + '\n'
 		except:
 			pass
 	print public_assistance
