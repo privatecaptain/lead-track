@@ -38,8 +38,8 @@ hr {
   <h3>Customer Section</h3>
 {% for i in customer_order %}
 
-{%if i == 'mobile_phone' or i == 'home_phone' %}
-<li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{addon_info[i]}}" class="editable editable-click">{{ format_number(customer_info[i]) }}</a></li>
+{%if i == 'phone_number' or i == 'home_phone' %}
+<li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{customer_info[i]}}" class="editable editable-click">{{ format_number(customer_info[i]) }}</a></li>
 
 {% else %}
   <li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{customer_info[i]}}" class="editable editable-click">{{customer_info[i]}}</a></li>
@@ -51,7 +51,15 @@ hr {
 <div class="col-md-4">
   <h3>Referrer Section</h3>
 {% for i in referer_order %}
+
+{%if i == 'referer_phone' %}
+<li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{referer_info[i]}}" class="editable editable-click">{{ format_number(referer_info[i]) }}</a></li>
+
+
+{% else %}
   <li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{referer_info[i]}}" class="editable editable-click">{{referer_info[i]}}</a></li>
+{% endif %}
+
 {% endfor %}
 </div>
 
@@ -59,7 +67,15 @@ hr {
 <div class="col-md-4">
   <h3>Landlord Section</h3>
 {% for i in landlord_order %}
+
+{%if i == 'landlord_phone' %}
+<li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{landlord_info[i]}}" class="editable editable-click">{{ format_number(landlord_info[i]) }}</a></li>
+
+{% else %}
+
   <li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{landlord_info[i]}}" class="editable editable-click">{{landlord_info[i]}}</a></li>
+
+{% endif %}
 {% endfor %}
 </div>
 

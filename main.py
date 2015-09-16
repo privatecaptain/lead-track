@@ -259,6 +259,7 @@ def edit_method(lead_id,field,value,notes=''):
 	return 'Error updating the lead.'
 	
 
+
 def pretty_name(name):
 	name = name.replace('_',' ')
 	name = name.capitalize()
@@ -692,7 +693,7 @@ def lead_assignment_mail(user_id,lead_id):
 
 def message_creator(lead_id,name):
 	params = [lead_id,]
-	sql = 'SELECT first_name,last_name,email,zip,street,city,state,country,members,status FROM lead_details WHERE lead_id = %s'
+	sql = 'SELECT first_name,last_name,email,zip,CONCAT(street_number," ",street_name) AS address,city,state,country,members,status FROM lead_details WHERE lead_id = %s'
 
 	details,columns = query(sql,params)
 	details = tuple(details[0])
@@ -720,21 +721,21 @@ def message_creator(lead_id,name):
 def profile():
 	lead_id = request.args.get('lead_id')
 	# Customer
-	customer_sql = 'SELECT first_name,last_name,phone_number mobile_phone,home_phone,email,zip,CONCAT(street_number," ",street_name) AS address,city,\
+	customer_sql = 'SELECT first_name,last_name,phone_number,home_phone,email,zip,CONCAT(street_number," ",street_name) AS address,city,\
 				state FROM lead_details WHERE lead_id = %s'
 	params = [lead_id,]
 	customer_info = lead_details(customer_sql,params)[0]
 
 	# Referrer 
 
-	referer_sql = 'SELECT referer_name name,referer_email email,referer_phone phone_number,referer_relation relation\
+	referer_sql = 'SELECT referer_name,referer_email,referer_phone,referer_relation \
 					FROM lead_details WHERE lead_id = %s'
 
 	referer_info = lead_details(referer_sql,params)[0]
 
 	# LandLord 
 
-	landlord_sql = 'SELECT landlord_name name,landlord_phone phone_number,landlord_email email FROM lead_details WHERE lead_id = %s'
+	landlord_sql = 'SELECT landlord_name,landlord_phone,landlord_email FROM lead_details WHERE lead_id = %s'
 
 	landlord_info = lead_details(landlord_sql,params)[0]
 
@@ -744,10 +745,10 @@ def profile():
 	
 	dispositions = d_types('agent')
 
-	customer_order = ['first_name','last_name','address','city','state','zip', 'email', 'mobile_phone' ,'home_phone']
-	referer_order = ['name','relation','phone','email']
+	customer_order = ['first_name','last_name','address','city','state','zip', 'email', 'phone_number' ,'home_phone']
+	referer_order = ['referer_name','referer_relation','referer_phone','referer_email']
 	
-	landlord_order = ['name','phone_number','email']
+	landlord_order = ['landlord_name','landlord_phone','landlord_email']
 	# print dispositions
 
 	# print details
