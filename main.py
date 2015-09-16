@@ -214,10 +214,14 @@ def display():
 	user_id = request.args.get('user_id')
 	params = []
 	if current_user.access != 'agent':
-		sql = 'SELECT * FROM lead_details \
+		sql = 'SELECT lead_id,first_name,last_name,CONCAT(street_number,street_name) address, \
+								city, gas, electric , entry_date, status,\
+								agent,apartment_number FROM lead_details \
 								ORDER BY `lead_details`.`entry_date` DESC'
 	else:
-		sql = 'SELECT * FROM lead_details \
+		sql = 'SELECT lead_id, first_name,last_name,CONCAT(street_number,street_name) address, \
+								city, gas, electric , entry_date, status,\
+								agent,apartment_number FROM lead_details \
 						WHERE agent = %s							 \
 								ORDER BY `lead_details`.`entry_date` DESC'
 		params = [user_id]
@@ -739,7 +743,7 @@ def profile():
 	lead_id = request.args.get('lead_id')
 	# Customer
 	customer_sql = 'SELECT first_name,last_name,phone_number,home_phone,email,zip,CONCAT(street_number," ",street_name) AS address,city,\
-				state FROM lead_details WHERE lead_id = %s'
+				state,apartment_number FROM lead_details WHERE lead_id = %s'
 	params = [lead_id,]
 	customer_info = lead_details(customer_sql,params)[0]
 
