@@ -800,8 +800,8 @@ function geolocate() {
 <input type="text" name="home_phone" maxlength="10" pattern="[0-9]{10}" required>
 
 <label class='gfield_label' for='own' >Apartment/Unit#: 
-<span class='gfield_required'>*</span></label>
-<input type="email" name="apartment_number" >
+<span class='gfield_required'></span></label>
+<input type="text" name="apartment_number" >
 
 
 
@@ -830,6 +830,7 @@ function geolocate() {
 
 {% if step == 9 %}
 <input type="hidden" name="step" value="9">
+<input type="hidden" name="lead_id" value="{{extras['lead_id']}}">
 {% for key in params %}
 <input type="hidden" name="{{key}}" value="{{params[key]}}">
 {% endfor %}
@@ -841,7 +842,6 @@ function geolocate() {
 
 {% if step == 10 %}
 <input type="hidden" name="step" value="10">
-<input type="hidden" name="lead_id" value="{{extras['lead_id']}}">
 {% for key in params %}
 <input type="hidden" name="{{key}}" value="{{params[key]}}">
 {% endfor %}

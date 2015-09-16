@@ -522,16 +522,21 @@ def kpi_numbers(user):
 
 
 
-def correspondence_routing(disposition,lead_id,c_type):
+def correspondence_routing(disposition,lead_id,c_type,referer=False):
 	sql = 'SELECT `text`,`subject` FROM auto_correspondence WHERE type = %s AND status = %s'
 	sql_params = [c_type,disposition]
 	data,foo = query(sql,sql_params)
-	sql = 'SELECT email,phone_number FROM lead_details WHERE lead_id = %s'
+	if referer:
+		sql = 'SELECT referer_email,referer_phone FROM lead_details WHERE lead_id = %s'
+	else:
+		sql = 'SELECT email,phone_number FROM lead_details WHERE lead_id = %s'
 	sql_params = [lead_id,]
 	contact,foo = query(sql,sql_params)
 	try:
 		data = data[0]
-		text,subject = [i for i in data]
+		text = data[0]
+		if len(data) == 2:
+			subject = data[1]
 		contact = contact[0]
 		email,phone_number = [i for i in contact]
 	except Exception,e:
@@ -566,13 +571,15 @@ def custom_text(text,lead_id,disposition):
 	try:
 		data = data[0]
 		first_name, last_name, notes = [i for i in data]
-		text = text.replace('first_name',first_name)
-		text = text.replace('last_name',last_name)
-		text = text.replace('disposition_notes',notes)
-		return text
 	except Exception,e:
-		print e
-		return text
+		first_name = ''
+		last_name = ''
+		notes = ''
+
+	text = text.replace('first_name',first_name)
+	text = text.replace('last_name',last_name)
+	text = text.replace('disposition_notes',notes)
+	return text
 
 @app.route('/charts', methods=['GET'])
 @login_required
@@ -1005,16 +1012,26 @@ def add_details(params,extras):
 		cursor.execute(sql,sql_params)
 		extras['lead_id'] = cursor.lastrowid
 		print 'id : ',cursor.lastrowid
+
+	correspondence_routing(disposition='new_application',
+								lead_id=extras['lead_id'],
+								c_type='email')
+	correspondence_routing(disposition='new_application',
+								lead_id=extras['lead_id'],
+								c_type='text')
+
 		
 	return True
 
 def add_referer(params,extras):
 
 	lead_id = params['lead_id']
+	print 'lead_id', lead_id
 	referer_name = params['referer_name']
 	referer_email = params['referer_email']
 	referer_phone_number = params['referer_phone_number']
 	referer_relation = params['referer_relation']
+	print referer_name
 
 	sql = 'UPDATE lead_details set referer_name = %s,\
 									referer_email = %s,\
@@ -1029,6 +1046,13 @@ def add_referer(params,extras):
 	with conn:
 		cursor = conn.cursor()
 		cursor.execute(sql,sql_params)
+
+	correspondence_routing(disposition='new_application',
+								lead_id=lead_id,
+								c_type='email',referer=True)
+	correspondence_routing(disposition='new_application',
+								lead_id=lead_id,
+								c_type='text',referer=True)
 
 	return False
 
@@ -1101,14 +1125,9 @@ def process_resolution(step,params,extras):
 	elif step == 9:
 		return check_referer(params)
 	elif step == 10:
+		print 'add_referer'
 		return add_referer(params,extras)
 	elif step == 11:
-		correspondence_routing(disposition='new_application',
-								lead_id=params['lead_id'],
-								c_type='email')
-		correspondence_routing(disposition='new_application',
-								lead_id=params['lead_id'],
-								c_type='text')
 		return False
 
 
