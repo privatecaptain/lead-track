@@ -42,7 +42,7 @@ hr {
 <li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{customer_info[i]}}" class="editable editable-click">{{ format_number(customer_info[i]) }}</a></li>
 
 {%elif i == 'address' %}
-<li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{customer_info[i]}}" class="editable editable-click">{{customer_info[i]}}</a>  - 
+<li><b>{{pretty_name(i)}}</b> : <a href="javascript:void(0)" data-name="{{i}}" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{customer_info[i]}}" class="editable editable-click">{{format_address(customer_info[i])}}</a>  - 
 
 <a href="javascript:void(0)" data-name="apartment_number" data-url="/edit" data-type="text" data-pk="{{lead_id}}" data-value="{{customer_info['apartment_number']}}" class="editable editable-click">{{customer_info[apartment_number]}}</a>  
 

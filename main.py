@@ -11,6 +11,7 @@ from twilio.rest import TwilioRestClient
 import difflib
 import locale
 from operator import itemgetter
+from address import AddressParser
 
 # Currency Locale set1111
 locale.setlocale( locale.LC_ALL, 'en_CA.UTF-8' )
@@ -174,7 +175,9 @@ def lead_details(sql,params=[]):
 
 @app.context_processor
 def utility_processor():
-	return dict(pretty_name=pretty_name,format_number=format_number)
+	return dict(pretty_name=pretty_name,
+				format_number=format_number,
+				format_address=format_address)
 
 def sendmail(text,to,subject):
 	try:
@@ -199,6 +202,14 @@ def format_number(number):
 	result = result.replace('789t',number[6:])
 	return result
 
+def format_address(address):
+	ap = AddressParser()
+	address = ap.parse_address(address).full_address()
+	result = ''
+	for i in address:
+		if i != '.':
+			result += i
+	return result
 
 
 @app.route('/mailgun_webhook',methods=['POST'])
@@ -216,17 +227,21 @@ def display():
 	if current_user.access != 'agent':
 		sql = 'SELECT lead_id,first_name,last_name,CONCAT(street_number," ",street_name) address, \
 								city, gas, electric , entry_date, status,\
-								agent,apartment_number FROM lead_details \
+								agent,apartment_number,zip FROM lead_details \
 								ORDER BY `lead_details`.`entry_date` DESC'
 	else:
 		sql = 'SELECT lead_id, first_name,last_name,CONCAT(street_number," ",street_name) address, \
 								city, gas, electric , entry_date, status,\
-								agent,apartment_number FROM lead_details \
+								agent,apartment_number,zip,\
+								home_phone,phone_number,own FROM lead_details \
 						WHERE agent = %s							 \
 								ORDER BY `lead_details`.`entry_date` DESC'
 		params = [user_id]
 
-	return json.dumps(lead_details(sql,params))
+	ld = lead_details(sql,params)
+	# for i in ld:
+	# 	i['address'] = format_address(i['address'])
+	return json.dumps(ld)
 
 
 @app.route('/')
@@ -982,6 +997,10 @@ def add_details(params,extras):
 	gas = params['gas']
 	electric = params['electric']
 	own = params['own']
+	if own == 'yes':
+		own = 'OWN'
+	else:
+		own = 'RENT'
 	income = params['required_income']
 	public_assistance = params['public_assistance']
 

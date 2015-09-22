@@ -51,18 +51,34 @@
                 <th data-field="lead_id" data-editable="true"></th>
                 <th data-field="first_name"  data-editable="true" data-typo="text" data-sortable="true" data-filter="first_name">First Name</th>
                 <th data-field="last_name" data-editable="true" data-typo="text" data-sortable="true">Last Name</th>
+
+                {% if current_user.access == 'agent' %}
+
+            <th data-field="home_phone" data-editable="true" data-typo="text" data-sortable="true">Home Phone</th>
+            <th data-field="phone_number" data-editable="true" data-typo="text" data-sortable="true">Mobile Phone</th>
+            <th data-field="own" data-editable="true" data-typo="text" data-sortable="true">Own/Rent</th>
+
+
+              {% endif %}
+
+                {% if current_user.access != 'agent' %}
                                 <th data-field="address" data-editable="true" data-typo="text" data-sortable="true">Address 1</th>
 
                                  <th data-field="apartment_number" data-editable="true" data-typo="text" data-sortable="true">Address 2</th>
-
+                {% endif %}
 
                 <th data-field="city" data-editable="true" data-typo="text" data-sortable="true">City</th>
 
+                {% if current_user.access != 'agent' %}
+                <th data-field="zip" data-typo="text" data-editable="true" >Zip Code</th>
+                {% endif %}
+
+                {% if current_user.access != 'agent' %}
 
                  <th data-field="gas" data-editable="true" data-typo="text" data-sortable="true">Gas Utility</th>
 
                   <th data-field="electric" data-editable="true" data-typo="text" data-sortable="true">Electric Utility</th>
-
+                {% endif %}
 
 
                 <th data-field="entry_date" data-typo="text" >Entry Date</th>
