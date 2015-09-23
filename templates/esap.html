@@ -763,13 +763,18 @@ function geolocate() {
 
 <input type="hidden" name="street_name" id="route" required>
 
-<input type="hidden" name="apartment_number">
 
 
 
 <input type="hidden" name="city"  id="locality" required>
 
 <input type="hidden" name="state" id="administrative_area_level_1" required>
+
+<label class='gfield_label' for='own' >Apartment/Unit/Space #: 
+<span class='gfield_required'></span></label>
+<input type="text" name="apartment_number" >
+
+
 
 {% endif %}
 
@@ -799,26 +804,22 @@ function geolocate() {
 <span class='gfield_required'>*</span></label>
 <input type="text" name="home_phone" maxlength="10" pattern="[0-9]{10}" required>
 
-<label class='gfield_label' for='own' >Apartment/Unit/Space #: 
-<span class='gfield_required'></span></label>
-<input type="text" name="apartment_number" >
-
 
 
 {% if params['own'] != 'yes' %}
 
 <label class='gfield_label' for='own' >Landlord's Name: 
-<span class='gfield_required'>*</span></label>
+<span class='gfield_required'></span></label>
 <input type="text" name="landlord_name">
 
 
 <label class='gfield_label' for='own' >Landlord's Phone: 
-<span class='gfield_required'>*</span></label>
+<span class='gfield_required'></span></label>
 <input type="text" name="landlord_phone" >
 
 
 <label class='gfield_label' for='own' >Landlord's Email: 
-<span class='gfield_required'>*</span></label>
+<span class='gfield_required'></span></label>
 <input type="text" name="landlord_email" >
 
 {% endif %}

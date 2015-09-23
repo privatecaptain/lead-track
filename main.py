@@ -239,6 +239,10 @@ def display():
 								ORDER BY `timestamp` DESC LIMIT 1,1) as last_disposition
 								 FROM lead_details 
 		  					  	 WHERE agent = %s
+		  					  	 AND status = 'unable_to_reach'
+		  					  	 OR status = 'ready_for_assignment'
+		  					  	 OR status = 'address_not_valid'
+		  					  	 OR status = 'utility_authorization_needed'
 								 ORDER BY `lead_details`.`entry_date` DESC'''
 		params = [user_id]
 
@@ -991,6 +995,7 @@ def add_details(params,extras):
 	else:
 		apartment_number = ''
 
+	print params['apartment_number']
 	if params['own'] == 'no':
 		landlord_name = params['landlord_name']
 		landlord_phone = params['landlord_phone']
@@ -1024,7 +1029,7 @@ def add_details(params,extras):
 									apartment_number,\
 									city,\
 									state,\
-									Country,\
+									country,\
 									landlord_name,\
 									landlord_phone,landlord_email,\
 									gas,electric,own,income,public_assistance) \
