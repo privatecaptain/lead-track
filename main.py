@@ -212,6 +212,7 @@ def format_address(address):
 	return result
 
 
+
 @app.route('/mailgun_webhook',methods=['POST'])
 def show():
 	print request.form
@@ -223,6 +224,8 @@ def show():
 @login_required
 def display():
 	user_id = request.args.get('user_id')
+	limit = request.args.get('limit')
+	offset = request.args.get('offset')
 	params = []
 	if current_user.access != 'agent':
 		sql = 'SELECT lead_id,first_name,last_name,CONCAT(street_number," ",street_name) address, \
@@ -244,7 +247,11 @@ def display():
 		  					  	 OR status = 'address_not_valid'
 		  					  	 OR status = 'utility_authorization_needed'
 								 ORDER BY `lead_details`.`entry_date` DESC'''
-		params = [user_id]
+		
+		if current_user.access == 'agent':
+			params = [user_id,offset]
+		else:
+			params = params[user_id]
 
 
 
@@ -987,7 +994,7 @@ def add_details(params,extras):
 	members = params['members']
 
 	street_number = params['street_number']
-	street_name = params['street_name']
+	street_name = format_address(params['street_name'])
 
 	print street_number,street_name
 	if 'apartment_number' in params.keys():
