@@ -230,17 +230,25 @@ def display():
 								agent,apartment_number,zip FROM lead_details \
 								ORDER BY `lead_details`.`entry_date` DESC'
 	else:
-		sql = 'SELECT lead_id, first_name,last_name,CONCAT(street_number," ",street_name) address, \
-								city, gas, electric , entry_date, status,\
-								agent,apartment_number,zip,\
-								home_phone,phone_number,own FROM lead_details \
-						WHERE agent = %s							 \
-								ORDER BY `lead_details`.`entry_date` DESC'
+		sql = '''SELECT lead_id, first_name,last_name,CONCAT(street_number," ",street_name) address,
+								city, gas, electric , entry_date, status,
+								agent,apartment_number,zip,
+								home_phone,phone_number,own,
+								(SELECT status FROM disposition_record WHERE lead_id = lead_id
+								ORDER BY `timestamp` DESC LIMIT 1,1) as last_disposition
+								 FROM lead_details 
+		  					  	 WHERE agent = %s
+								 ORDER BY `lead_details`.`entry_date` DESC'''
 		params = [user_id]
 
+
+
 	ld = lead_details(sql,params)
-	# for i in ld:
-	# 	i['address'] = format_address(i['address'])
+	for i in ld:
+		# i['address'] = format_address(i['address'])
+		i['home_phone'] = format_number(i['home_phone'])
+		i['phone_number'] = format_number(i['phone_number'])
+		i['last_disposition'] = pretty_name(i['last_disposition'])
 	return json.dumps(ld)
 
 

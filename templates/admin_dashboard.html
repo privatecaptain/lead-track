@@ -82,6 +82,10 @@
 
 
                 <th data-field="entry_date" data-typo="text" >Entry Date</th>
+                {% if current_user.access == 'agent' %}
+                                <th data-field="last_disposition" data-typo="text" data-editable="true" data-sortable="true">Last Disposition</th>
+
+                {% endif %}
                 <th data-field="status" data-typo="select" data-editable="true" data-sortable="true">Disposition</th>
                 {% if current_user.access == 'admin' or current_user.access == 'superadmin' %}
                 <th data-field="agent" data-typo="select" data-editable="true" >Assigned To</th>
