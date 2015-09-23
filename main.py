@@ -227,7 +227,8 @@ def display():
 	if current_user.access != 'agent':
 		sql = 'SELECT lead_id,first_name,last_name,CONCAT(street_number," ",street_name) address, \
 								city, gas, electric , entry_date, status,\
-								agent,apartment_number,zip FROM lead_details \
+								agent,apartment_number,zip,home_phone,\
+								phone_number,last_disposition FROM lead_details \
 								ORDER BY `lead_details`.`entry_date` DESC'
 	else:
 		sql = '''SELECT lead_id, first_name,last_name,CONCAT(street_number," ",street_name) address,
