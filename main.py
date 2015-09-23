@@ -601,7 +601,7 @@ def custom_text(text,lead_id,disposition):
 
 	print data
 	for i in data:
-		text = text.replace(i,str(data[i])
+		text = text.replace(i,str(data[i]))
 	return text
 
 @app.route('/charts', methods=['GET'])
