@@ -228,7 +228,7 @@ def display():
 		sql = 'SELECT lead_id,first_name,last_name,CONCAT(street_number," ",street_name) address, \
 								city, gas, electric , entry_date, status,\
 								agent,apartment_number,zip,home_phone,\
-								phone_number,last_disposition FROM lead_details \
+								phone_number FROM lead_details \
 								ORDER BY `lead_details`.`entry_date` DESC'
 	else:
 		sql = '''SELECT lead_id, first_name,last_name,CONCAT(street_number," ",street_name) address,
@@ -249,7 +249,8 @@ def display():
 		# i['address'] = format_address(i['address'])
 		i['home_phone'] = format_number(i['home_phone'])
 		i['phone_number'] = format_number(i['phone_number'])
-		i['last_disposition'] = pretty_name(i['last_disposition'])
+		if current_user.access == 'agent':
+			i['last_disposition'] = pretty_name(i['last_disposition'])
 	return json.dumps(ld)
 
 
