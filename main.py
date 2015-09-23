@@ -587,23 +587,21 @@ def correspondence_routing(disposition,lead_id,c_type,referer=False):
 	return False
 
 def custom_text(text,lead_id,disposition):
-	sql = 'SELECT ld.first_name, ld.last_name, dr.notes FROM lead_details ld LEFT JOIN \
-		   disposition_record dr ON ld.lead_id = dr.lead_id WHERE ld.lead_id = %s\
+	sql = 'SELECT ld.first_name, ld.last_name, dr.notes disposition_notes, ld.home_phone, ld.phone_number, ltu.name agent_name,\
+				ltu.email agent_email ,ltu.phone_number agent_number FROM lead_details ld LEFT JOIN \
+		   disposition_record dr ON ld.lead_id = dr.lead_id LEFT JOIN lead_Track_users ltu ON \
+		   ld.agent = ltu.id WHERE ld.lead_id = %s\
 		   AND dr.status = %s order by dr.timestamp desc LIMIT 1'
 	params = [lead_id,disposition]
 
-	data,foo = query(sql,params)
-	try:
-		data = data[0]
-		first_name, last_name, notes = [i for i in data]
-	except Exception,e:
-		first_name = ''
-		last_name = ''
-		notes = ''
+	data = lead_details(sql,params)
 
-	text = text.replace('first_name',first_name)
-	text = text.replace('last_name',last_name)
-	text = text.replace('disposition_notes',notes)
+	if data:
+		data = data[0]
+
+	print data
+	for i in data:
+		text = text.replace(i,data[i])
 	return text
 
 @app.route('/charts', methods=['GET'])
