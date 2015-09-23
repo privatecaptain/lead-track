@@ -247,9 +247,9 @@ def display():
 	ld = lead_details(sql,params)
 	for i in ld:
 		# i['address'] = format_address(i['address'])
-		i['home_phone'] = format_number(i['home_phone'])
-		i['phone_number'] = format_number(i['phone_number'])
 		if current_user.access == 'agent':
+			i['home_phone'] = format_number(i['home_phone'])
+			i['phone_number'] = format_number(i['phone_number'])
 			i['last_disposition'] = pretty_name(i['last_disposition'])
 	return json.dumps(ld)
 
