@@ -589,7 +589,7 @@ def correspondence_routing(disposition,lead_id,c_type,referer=False):
 def custom_text(text,lead_id,disposition):
 	sql = 'SELECT ld.first_name, ld.last_name, dr.notes disposition_notes, ld.home_phone, ld.phone_number, ltu.name agent_name,\
 				ltu.email agent_email ,ltu.phone_number agent_number FROM lead_details ld LEFT JOIN \
-		   disposition_record dr ON ld.lead_id = dr.lead_id LEFT JOIN lead_Track_users ltu ON \
+		   disposition_record dr ON ld.lead_id = dr.lead_id LEFT JOIN lead_track_users ltu ON \
 		   ld.agent = ltu.id WHERE ld.lead_id = %s\
 		   AND dr.status = %s order by dr.timestamp desc LIMIT 1'
 	params = [lead_id,disposition]
