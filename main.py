@@ -67,7 +67,7 @@ class User(object):
 		try:
 			conn = mysql.connect()
 			cursor = conn.cursor()
-			cursor.execute('SELECT id,email,access,authenticated,name,password FROM lead_track_users WHERE email = %s',[email,])
+			cursor.execute('SELECT id,email,access,authenticated,name,password,phone_number FROM lead_track_users WHERE email = %s',[email,])
 			user = cursor.fetchone()
 			conn.close()
 			self.email = user[1]
@@ -76,6 +76,7 @@ class User(object):
 			self.access = user[2]
 			self.name = user[4]
 			self.password = user[5]
+			self.phone_number = user[6]
 			return True
 
 		except:
@@ -98,8 +99,8 @@ class User(object):
 		try:
 			with conn:
 				cursor = conn.cursor()
-				params = [self.email, self.access, self.authenticated, self.name, self.user_id]
-				save_sql = 'UPDATE lead_track_users SET email = %s , access = %s , authenticated = %s , name = %s WHERE id = %s'
+				params = [self.email, self.access, self.authenticated, self.name,self.phone_number,  self.user_id]
+				save_sql = 'UPDATE lead_track_users SET email = %s , access = %s , authenticated = %s , name = %s , phone_number = %s WHERE id = %s'
 				cursor.execute(save_sql,params)
 				# conn.close()
 			return True
@@ -296,7 +297,7 @@ def getstno(address):
 			delimiter = idx
 			break
 	street_number = address[:idx]
-	street_name = address[idx:]
+	street_name = address[idx+1:]
 	return (street_number,street_name)
 
 
@@ -412,6 +413,32 @@ def create():
 			return render_template('create_user.html',success=False)
 
 
+@app.route('/user',methods=['POST','GET'])
+@login_required
+def update():
+
+	if request.method == 'GET':
+		user = User()
+		details = {}
+		user.get(current_user.email)
+		details['name'] = user.name
+		details['email'] = user.email
+		details['phone_number'] = user.phone_number
+		return render_template('user_profile.html',user=details)
+
+	if request.method == 'POST':
+		user = User()
+		params = request.form
+		name = params['name']
+		email = params['email']
+		phone_number = params['phone_number']
+		user.get(current_user.email)
+		print user.name
+		user.name = name
+		user.email = email
+		user.phone_number = phone_number
+		user.save()			
+		return redirect('/user')
 
 
 @login_manager.user_loader
@@ -751,6 +778,10 @@ def lead_assignment_mail(user_id,lead_id):
               "text": message})
 
 
+# HTML rendering for Emails.
+
+def html_markdown(text):
+	return render_template('email.html',text=text)
 
 
 
@@ -947,24 +978,26 @@ def home_age(params):
 	return False
 
 def match_address(address):
-	sql = 'SELECT street_number,street_name,city,state,lead_id from lead_details'
+	address = format_address(address)
+	sql = 'SELECT street_number,street_name,city,state,lead_id,apartment_number from lead_details'
 	rows = query(sql)[0]
 
 	suspects = {}
 
 	for row in rows:
-		suspect = row[0] + row[1] + row[2] + row[3]
+		suspect = row[0] + row[1] + row[2] + row[3] + row[5]
 		suspects[suspect] = row[4]
 	
-	matches = difflib.get_close_matches(address,suspects.keys(),cutoff=0.95)
-
-	if matches:
-		return suspects[matches[0]]
+	match = difflib.get_close_matches(address,suspects.keys(),cutoff=0.85,n=1)
+	print address
+	if match:
+		print match
+		return suspects[match[0]]
 	return False
 
 
 def make_address(params):
-	return params['street_number'] + params['street_name'] + params['city'] + params['state']
+	return params['street_number'] + params['street_name'] + params['city'] + params['state'] + params['apartment_number']
 
 
 def check_address(params):

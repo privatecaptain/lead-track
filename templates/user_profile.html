@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block chart %}
+{% endblock %}
+
+{% block body %}
+
+<form class="form-horizontal" align="center" action='/user' id="create_user" method="POST">
+  <fieldset>
+    <div id="legend">
+      <legend class="">Update Details</legend>
+    </div>
+    <div class="control-group">
+      <!-- Username -->
+      <label class="control-label"  for="username">Name</label>
+      <div class="controls">
+        <input type="text" id="name" name="name" placeholder="" class="input-xlarge" value="{{user['name']}}" required>
+      </div>
+    </div>
+ 
+    <div class="control-group">
+      <!-- E-mail -->
+      <label class="control-label" for="email">E-mail</label>
+      <div class="controls">
+        <input type="text" id="email" name="email" placeholder="" class="input-xlarge" value="{{user['email']}}" required>
+      </div>
+    </div>
+
+     <div class="control-group">
+      <!-- E-mail -->
+      <label class="control-label" for="email">Phone Number</label>
+      <div class="controls">
+        <input type="text" id="email" name="phone_number" placeholder="" class="input-xlarge" value="{{user['phone_number']}}" required>
+      </div>
+    </div>
+ 
+   
+    
+
+
+
+    <div class="control-group">
+      <!-- Button -->
+      <div class="controls">
+        <button class="btn btn-success">Update Profile</button>
+      </div>
+    </div>
+  </fieldset>
+</form>
+
+{% endblock %}
