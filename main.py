@@ -992,7 +992,6 @@ def home_age(params):
 	return False
 
 def match_address(address):
-	address = format_address(address)
 	sql = 'SELECT street_number,street_name,city,state,lead_id,apartment_number from lead_details'
 	rows = query(sql)[0]
 
@@ -1002,8 +1001,8 @@ def match_address(address):
 		suspect = row[0] + row[1] + row[2] + row[3] + row[5]
 		suspects[suspect] = row[4]
 	
-	match = difflib.get_close_matches(address,suspects.keys(),cutoff=0.85,n=1)
-	print address
+	match = difflib.get_close_matches(address,suspects.keys(),cutoff=0.95,n=1)
+	print 'address',address
 	if match:
 		print match
 		return suspects[match[0]]
@@ -1011,13 +1010,13 @@ def match_address(address):
 
 
 def make_address(params):
-	return params['street_number'] + params['street_name'] + params['city'] + params['state'] + params['apartment_number']
+
+	return format_address(params['street_number'] + ' ' + params['street_name']) + params['city'] + params['state'] + params['apartment_number']
 
 
 def check_address(params):
 	
 	address = make_address(params)
-	print address
 	match = match_address(address)
 
 	if match:
