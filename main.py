@@ -188,7 +188,7 @@ def sendmail(text,to,subject):
 	        data={"from": "Highlands Energy <mailgun@mg.highlandsenergy.com>",
 	              "to": to,
 	              "subject": subject,
-	              "text": text})
+	              "html": html_markdown(text)})
 		return True
 	except Exception,e:
 		print e
@@ -625,12 +625,21 @@ def correspondence_routing(disposition,lead_id,c_type,referer=False):
 	return False
 
 def custom_text(text,lead_id,disposition):
-	sql = 'SELECT ld.first_name, ld.last_name, dr.notes disposition_notes, ld.home_phone, ld.phone_number, ltu.name agent_name,\
+	if disposition == 'new_application':
+
+		sql = 'SELECT ld.first_name, ld.last_name, dr.notes disposition_notes, ld.home_phone, ld.phone_number, ltu.name agent_name,\
+				ltu.email agent_email ,ltu.phone_number agent_number FROM lead_details ld LEFT JOIN \
+		   disposition_record dr ON ld.lead_id = dr.lead_id LEFT JOIN lead_track_users ltu ON \
+		   ld.agent = ltu.id WHERE ld.lead_id = %s order by dr.timestamp desc LIMIT 1'
+		params = [lead_id,]
+
+	else:
+		sql = 'SELECT ld.first_name, ld.last_name, dr.notes disposition_notes, ld.home_phone, ld.phone_number, ltu.name agent_name,\
 				ltu.email agent_email ,ltu.phone_number agent_number FROM lead_details ld LEFT JOIN \
 		   disposition_record dr ON ld.lead_id = dr.lead_id LEFT JOIN lead_track_users ltu ON \
 		   ld.agent = ltu.id WHERE ld.lead_id = %s\
 		   AND dr.status = %s order by dr.timestamp desc LIMIT 1'
-	params = [lead_id,disposition]
+		params = [lead_id,disposition]
 
 	data = lead_details(sql,params)
 
@@ -781,7 +790,12 @@ def lead_assignment_mail(user_id,lead_id):
 # HTML rendering for Emails.
 
 def html_markdown(text):
-	return render_template('email.html',text=text)
+	result = ''
+	for i in text:
+		if i == '\n':
+			result += '<br>'
+		result += i
+	return render_template('email.html',text=result)
 
 
 
