@@ -21,9 +21,10 @@
         <button id="remove" class="btn btn-danger" disabled>
             <i class="glyphicon glyphicon-remove"></i> Delete
         </button>
+        {% if current_user.access == 'agent' %}
         <a href="/?viewall=True" class="btn btn-default" role="button">View All</a>
         <a href="/" class="btn btn-default" role="button">View Less</a>
-
+        {% endif %}
     </div>
     {% if current_user.is_authenticated() %}
     <table id="table"
