@@ -246,11 +246,11 @@ def display():
 		  					  	 AND IF(status = 'unable_to_reach'
 		  					  	 OR status = 'ready_for_assignment'
 		  					  	 OR status = 'address_not_valid'
-		  					  	 OR status = 'utility_authorization_needed',%s,%s)
+		  					  	 OR status = 'utility_authorization_needed',TRUE,%s)
 								 ORDER BY `lead_details`.`entry_date` DESC'''
 		
 		if current_user.access == 'agent':
-			params = [user_id,not view_all,view_all]
+			params = [user_id,view_all]
 		else:
 			params = []
 
@@ -571,7 +571,7 @@ def kpi_numbers(user):
 			'customer_refused' : 0,
 			'owner_management_refused' : 0,
 		}
-
+		print 'Agent Disposition',dispositions
 		for i in dispositions:
 			i = i[0]
 
