@@ -225,8 +225,8 @@ def show():
 @login_required
 def display():
 	user_id = request.args.get('user_id')
-	limit = request.args.get('limit')
-	offset = request.args.get('offset')
+	view_all = bool(request.args.get('viewall'))
+	print 'viewall',view_all
 	params = []
 	if current_user.access != 'agent':
 		sql = 'SELECT lead_id,first_name,last_name,CONCAT(street_number," ",street_name) address, \
@@ -243,16 +243,16 @@ def display():
 								ORDER BY `timestamp` DESC LIMIT 1,1) as last_disposition
 								 FROM lead_details 
 		  					  	 WHERE agent = %s
-		  					  	 AND status = 'unable_to_reach'
+		  					  	 AND IF(status = 'unable_to_reach'
 		  					  	 OR status = 'ready_for_assignment'
 		  					  	 OR status = 'address_not_valid'
-		  					  	 OR status = 'utility_authorization_needed'
+		  					  	 OR status = 'utility_authorization_needed',%s,%s)
 								 ORDER BY `lead_details`.`entry_date` DESC'''
 		
 		if current_user.access == 'agent':
-			params = [user_id,offset]
+			params = [user_id,not view_all,view_all]
 		else:
-			params = params[user_id]
+			params = []
 
 
 
@@ -269,8 +269,12 @@ def display():
 @app.route('/')
 @login_required
 def home():
+	view_all = request.args.get('viewall')
+	if not view_all:
+		view_all = ''
+	view_all = 'viewall=' + view_all
 	kpi_nums = kpi_numbers(current_user)
-	return render_template('admin_dashboard.html',kpi_nums=kpi_nums)
+	return render_template('admin_dashboard.html',kpi_nums=kpi_nums,view_all=view_all)
 
 @app.route('/edit',methods = ['POST'])
 @login_required
@@ -320,8 +324,9 @@ def edit_method(lead_id,field,value,notes=''):
 
 
 def pretty_name(name):
-	name = name.replace('_',' ')
-	name = name.capitalize()
+	if name:
+		name = name.replace('_',' ')
+		name = name.capitalize()
 	return name
 
 

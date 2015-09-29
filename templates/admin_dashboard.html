@@ -21,6 +21,9 @@
         <button id="remove" class="btn btn-danger" disabled>
             <i class="glyphicon glyphicon-remove"></i> Delete
         </button>
+        <a href="/?viewall=True" class="btn btn-default" role="button">View All</a>
+        <a href="/" class="btn btn-default" role="button">View Less</a>
+
     </div>
     {% if current_user.is_authenticated() %}
     <table id="table"
@@ -39,7 +42,7 @@
            data-side-pagination="client"
            data-maintain-selected="true"
            data-search="true"
-           data-url={{ '/leads?user_id=' + current_user.user_id }}
+           data-url="{{ '/leads?user_id=' + current_user.user_id + '&' + view_all }}"
            data-page-number="1"
 
     />
