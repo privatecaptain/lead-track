@@ -58,6 +58,10 @@ twilio_client = TwilioRestClient(TWILIO_ACCOUNT_SID,TWILIO_AUTH_TOKEN)
 MG_BASE_URL = 'https://api.mailgun.net/v3/mg.highlandsenergy.com/messages'
 MG_API_KEY = 'key-bd7254f9d0a6d6ea5c74bd6fcdd4dc72'
 
+# SoCal Gas Email
+SOCAL_GAS = 'esapleads@semprautilities.com'
+
+# Production Variable imported from config.
 
 class User(object):
 	"""docstring for User"""
@@ -614,7 +618,10 @@ def correspondence_routing(disposition,lead_id,c_type,referer=False):
 	if c_type == 'email':
 		try:
 			text = custom_text(text=text,disposition=disposition,lead_id=lead_id)
-			sendmail(to=[email], text=text,subject=subject)
+			if PRODUCTION and disposition == 'utility_authorization_needed':
+				sendmail(to=[email,SOCAL_GAS], text=text,subject=subject)
+			else:
+				sendmail(to=[email], text=text,subject=subject)
 			return True
 		except Exception,e:
 			print e
