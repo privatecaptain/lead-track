@@ -125,7 +125,7 @@
 {% endblock %}
 
 {% block chart %}
-{% if current_user.access !=  'agent' %}
+{% if current_user.access ==  'superadmin' %}
 
 <!-- KPI chart start -->
 <div class="demo-container">
