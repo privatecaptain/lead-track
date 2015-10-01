@@ -6,8 +6,8 @@
 {% if success == True %}
     <div class="alert alert-success" role="alert">User successfully created !</div>
 
-{% else %}
-  <div class="alert alert-danger" role="alert">There was an error creating the user,please contact the Website Admin, Thank You.</div>
+{% elif success == False %}
+  <div class="alert alert-danger" role="alert">There was an error creating the user. Please contact the Webmaster, Thank You for your patience.</div>
     {% endif %}
 
 
