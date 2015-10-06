@@ -199,6 +199,8 @@ def sendmail(text,to,subject):
 		return False
 
 def format_number(number):
+	if '(' in number:
+		return number
 	if number == '':
 		return ''
 	result = '(123) 456-789t'
@@ -1237,7 +1239,7 @@ if __name__== '__main__':
 
 # Lead Detail Pivot SQL
 
-# INSERT INTO lead_details (lead_id,first_name,last_name,zip,street,city,state,country,phone_number,email,members,status,entry_date)
+# INSERT INTO lead_details (lead_id,first_name,last_name,zip,street_name,city,state,country,phone_number,email,members,entry_date)
 
 
 
@@ -1246,7 +1248,7 @@ if __name__== '__main__':
 # MAX(CASE WHEN field_number = '19.3' THEN value END) first_name,
 # MAX(CASE WHEN field_number = '19.6' THEN value END) last_name,
 # MAX(CASE WHEN field_number = '1' THEN value END) zip,
-# MAX(CASE WHEN field_number = '20.1' THEN value END) street,
+# MAX(CASE WHEN field_number = '20.1' THEN value END) street_name,
 # MAX(CASE WHEN field_number = '20.3' THEN value END) city,
 # MAX(CASE WHEN field_number = '20.4' THEN value END) state,
 # MAX(CASE WHEN field_number = '20.6' THEN value END) country,
@@ -1256,7 +1258,6 @@ if __name__== '__main__':
 # email,
 # MAX(CASE WHEN field_number = '2' THEN value END)
 # members,
-# l.status,
 # l.date_created entry_date
 
 # FROM wp_rg_lead_detail ld LEFT JOIN wp_rg_lead l ON l.id = ld.lead_id 
