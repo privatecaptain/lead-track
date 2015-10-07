@@ -257,6 +257,7 @@ def display():
 		  					  	 AND IF(status = 'unable_to_reach'
 		  					  	 OR status = 'ready_for_assignment'
 		  					  	 OR status = 'address_not_valid'
+		  					  	 OR status = 'default'
 		  					  	 OR status = 'utility_authorization_needed',TRUE,%s)
 								 ORDER BY `lead_details`.`entry_date` DESC'''
 		
