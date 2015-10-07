@@ -27,7 +27,8 @@
         {% endif %}
     </div>
     {% if current_user.is_authenticated() %}
-    <table id="table"
+    <div class="table-responsive">
+    <table id="table" class="table"
            data-toggle="table"
            data-toolbar="#filter_bar"
            data-search="true"
@@ -100,11 +101,12 @@
 
 
     </table>
+  </div>
 </div>
 
 
     
-  </body>
+</body>
 </html>
 
 <script type="text/javascript">
