@@ -235,11 +235,16 @@ def display():
 	print 'viewall',view_all
 	params = []
 	if current_user.access != 'agent':
-		sql = 'SELECT lead_id,first_name,last_name,CONCAT(street_number," ",street_name) address, \
+		sql = '''SELECT lead_id,first_name,last_name,CONCAT(street_number," ",street_name) address, \
 								city, gas, electric , entry_date, status,\
 								agent,apartment_number,zip,home_phone,\
-								phone_number FROM lead_details \
-								ORDER BY `lead_details`.`entry_date` DESC'
+								phone_number FROM lead_details 
+								WHERE IF(status = 'unable_to_reach'
+		  					  	 OR status = 'ready_for_assignment'
+		  					  	 OR status = 'address_not_valid'
+		  					  	 OR status = 'default'
+		  					  	 OR status = 'utility_authorization_needed',TRUE,%s)
+								ORDER BY `lead_details`.`entry_date` DESC'''
 	else:
 		sql = '''SELECT lead_id, first_name,last_name,CONCAT(street_number," ",street_name) address,
 								city, gas, electric , entry_date, status,
@@ -255,12 +260,10 @@ def display():
 		  					  	 OR status = 'utility_authorization_needed',TRUE,%s)
 								 ORDER BY `lead_details`.`entry_date` DESC'''
 		
-		if current_user.access == 'agent':
-			params = [user_id,view_all]
-		else:
-			params = []
-
-
+	if current_user.access == 'agent':
+		params = [user_id,view_all]
+	else:
+		params = [view_all]
 
 	ld = lead_details(sql,params)
 	for i in ld:
