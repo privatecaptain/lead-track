@@ -1096,7 +1096,7 @@ def add_details(params,extras):
 	public_assistance = params['public_assistance']
 
 
-	sql = 'INSERT INTO lead_details(first_name,\
+	sql = 'INSERT IGNORE INTO lead_details(first_name,\
 									last_name,\
 									email,\
 									phone_number,\
