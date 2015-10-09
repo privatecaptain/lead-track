@@ -672,7 +672,7 @@ def custom_text(text,lead_id,disposition):
 	if not data['agent_email']:
 		data['agent_email'] = current_user.email
 	for i in data:
-		text = text.replace(i,str(data[i]))
+		text = text.replace(i,unicode(data[i]))
 	print text
 	return text
 
