@@ -3,6 +3,7 @@ from flaskext.mysql import MySQL
 from flask.ext.login import LoginManager,login_user,logout_user,login_required,current_user
 import json
 import datetime
+import pytz
 from flask.ext.bcrypt import Bcrypt
 import requests
 from config import *
@@ -62,6 +63,12 @@ MG_API_KEY = 'key-bd7254f9d0a6d6ea5c74bd6fcdd4dc72'
 SOCAL_GAS = 'esapleads@semprautilities.com'
 
 # Production Variable imported from config.
+
+# TimeZone Settings
+
+UTC = pytz.utc
+PST = pytz.timezone('US/Pacific')
+
 
 class User(object):
 	"""docstring for User"""
@@ -173,6 +180,8 @@ def lead_details(sql,params=[]):
 	for row in rows:
 		for idx,element in enumerate(row):
 			if type(element) == datetime.datetime:
+				element = UTC.localize(element)
+				element = element.astimezone(PST)
 				row[idx] = element.strftime("%A, %d. %B %Y %I:%M%p")
 		row = dict(zip(columns,row))
 		result.append(row)
