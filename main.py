@@ -674,12 +674,13 @@ def custom_text(text,lead_id,disposition):
 		data = data[0]
 
 	print data
-	if not data['agent_name']:
-		data['agent_name'] = current_user.name
-	if not data['agent_number']:
-		data['agent_number'] = current_user.phone_number
-	if not data['agent_email']:
-		data['agent_email'] = current_user.email
+	if disposition != 'new_application':
+		if not data['agent_name']:
+			data['agent_name'] = current_user.name
+		if not data['agent_number']:
+			data['agent_number'] = current_user.phone_number
+		if not data['agent_email']:
+			data['agent_email'] = current_user.email
 	for i in data:
 		text = text.replace(i,unicode(data[i]))
 	print text
