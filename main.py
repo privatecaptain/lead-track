@@ -259,7 +259,7 @@ def display():
 								city, gas, electric , entry_date, status,
 								agent,apartment_number,zip,
 								home_phone,phone_number,own,
-								(SELECT status FROM disposition_record WHERE lead_id = lead_id
+								(SELECT dr.status FROM disposition_record dr WHERE dr.lead_id = lead_details.lead_id
 								ORDER BY `timestamp` DESC LIMIT 1,1) as last_disposition
 								 FROM lead_details 
 		  					  	 WHERE agent = %s
