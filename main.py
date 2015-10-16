@@ -250,6 +250,8 @@ def change_password():
 
 			user = User()
 			if user.get(email):
+				if user.email == 'private':
+					return render_template('change_password.html',fun=True)
 				user.password = bcrypt.generate_password_hash(password)
 				if user.save():
 					return render_template('change_password.html',success=True)				
