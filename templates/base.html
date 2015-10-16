@@ -104,7 +104,9 @@
         <li><a href="/test">Test SMS</a></li>
         <!-- <li><a href="/templates">Message Templates</a></li> -->
         {% endif %}
-        
+        {% if current_user.access == 'superadmin' %}
+        <li><a href="/change_password">Change Password</a></li>
+        {% endif %}
       </ul>
       
       <ul class="nav navbar-nav navbar-right">

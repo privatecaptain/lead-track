@@ -107,14 +107,14 @@ class User(object):
 
 	def save(self):
 		conn = mysql.connect()
+		cursor = conn.cursor()
+		params = [self.email, self.access, self.authenticated, self.name,self.phone_number, self.password , self.user_id]
+		save_sql = '''UPDATE lead_track_users SET email = %s , access = %s , authenticated = %s , name = %s , phone_number = %s , password = %s WHERE id = %s'''
+
 		try:
 			with conn:
-				cursor = conn.cursor()
-				params = [self.email, self.access, self.authenticated, self.name,self.phone_number,  self.user_id]
-				save_sql = 'UPDATE lead_track_users SET email = %s , access = %s , authenticated = %s , name = %s , phone_number = %s WHERE id = %s'
 				cursor.execute(save_sql,params)
-				# conn.close()
-			return True
+				return True
 
 		except Exception,e:
 			print e
@@ -233,6 +233,28 @@ def format_address(address):
 def show():
 	print request.form
 	return 'OK'
+
+@app.route('/change_password',methods=['GET','POST'])
+@login_required
+def change_password():
+	if request.method == 'GET':
+		if current_user.access != 'superadmin':
+			return redirect('/')
+		return render_template('change_password.html')
+	
+	# Actual request to change the password.
+	if request.method == 'POST':
+		if current_user.access == 'superadmin':
+			email = request.form['email']
+			password = request.form['password']
+
+			user = User()
+			if user.get(email):
+				user.password = bcrypt.generate_password_hash(password)
+				if user.save():
+					return render_template('change_password.html',success=True)				
+				return render_template('change_password.html',success=False)
+		return render_template('change_password.html')
 
 
 
