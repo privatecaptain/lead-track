@@ -276,7 +276,8 @@ def display():
 		  					  	 OR status = 'ready_for_assignment'
 		  					  	 OR status = 'address_not_valid'
 		  					  	 OR status = 'default'
-		  					  	 OR status = 'utility_authorization_needed',TRUE,%s)
+		  					  	 OR status = 'utility_authorization_needed'
+		  					  	 OR status = 'site_visit',TRUE,%s)
 								ORDER BY `lead_details`.`entry_date` DESC'''
 	else:
 		sql = '''SELECT lead_id, first_name,last_name,CONCAT(street_number," ",street_name) address,
@@ -291,6 +292,7 @@ def display():
 		  					  	 OR status = 'ready_for_assignment'
 		  					  	 OR status = 'address_not_valid'
 		  					  	 OR status = 'default'
+		  					  	 OR status = 'site_visit'
 		  					  	 OR status = 'utility_authorization_needed',TRUE,%s)
 								 ORDER BY `lead_details`.`entry_date` DESC'''
 		
