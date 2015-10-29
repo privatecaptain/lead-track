@@ -866,7 +866,13 @@ def message_creator(lead_id,name):
 
 	details,columns = query(sql,params)
 	details = details[0]
-	details = [unicode(i,errors='ignore') for i in details]
+	print details
+	d2 = []
+	for i in details:
+		try:
+			d2.append(unicode(i,'utf-8',errors='ignore'))
+		except TypeError:
+			d2.append(i)
 	print details
 
 	message = "Hello {0} , you have been assigned a new lead for Highlands Energy Project.\n\
