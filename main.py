@@ -865,6 +865,7 @@ def message_creator(lead_id,name):
 	sql = 'SELECT first_name,last_name,email,zip,CONCAT(street_number," ",street_name) AS address,city,state,country,members,status FROM lead_details WHERE lead_id = %s'
 
 	details,columns = query(sql,params)
+	details = details[0]
 	details = [i.encode(errors='ignore') for i in details]
 	print details
 
