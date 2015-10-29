@@ -873,13 +873,14 @@ def message_creator(lead_id,name):
 			d2.append(unicode(i,'utf-8',errors='ignore'))
 		except TypeError:
 			d2.append(i)
+	details = d2
 	print details
 
-	message = "Hello {0} , you have been assigned a new lead for Highlands Energy Project.\n\
+	message = u"Hello {0} , you have been assigned a new lead for Highlands Energy Project.\n\
 			   The Details about the customer are as follows: ".format(name)
 
 	print message
-	info  = '''
+	info  = u'''
 				  Name : {0} {1} 
 				  Address : {4}
 				  City : {5}
