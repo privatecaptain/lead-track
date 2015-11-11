@@ -1,0 +1,180 @@
+{% extends 'base2.html' %}
+{% block body %}
+
+<section id="main">
+            <div id="page">
+<!-- END HEADER.PHP -->
+<!-- START PAGE TEMPLATE -->
+<!-- Start -->
+<div class="row-container light bg-scroll" style="">
+<div class="container-fluid"><div class="row"><div class="col-md-9" style="background-color: #fff; margin-bottom:0px;">
+    <div class="col-md-12 "><div class="row"><div class="tw-element waves-heading center col-md-12" style="" ><h3 class="heading-title" style="font-weight:400;font-style:normal">Which Utilities do you use?<span class="title-seperator"></span></h3>
+
+<p><b>Select your Electric Utility:</b></p>
+</div>
+</div>
+</div>
+<form role="form" action="/esap" method="POST" id="esap_form">
+
+    <div class="row">
+            <input name="step" value="2" type="hidden">
+<input type="hidden" name="electric" id="electric" value="" required>
+
+<input type="hidden" name="gas" id="gas" value="" required>
+
+  
+  </div>
+</form>
+
+
+<div class="row" align="center">
+  <div class="col-xs-6">
+    <button class="btn btn-default" name="electric" value="pg&e">PG&E</button>
+  </div>
+  <div class="col-xs-6">
+    <button class="btn btn-default" value="other" name="electric">Other</button>
+  </div>
+</div>
+
+<div class="row" align="center"> 
+<p><b>Select Gas Utilty:</b></p>
+
+</div>
+
+
+<div class="row" align="center">
+  <div class="col-xs-4">
+    <button class="btn btn-default" name="gas" value="pg&e">PG&e</button>
+  </div>
+  <div class="col-xs-4">
+    <button class="btn btn-default" name="gas" value="socal_gas">SCG</button>
+  </div>
+
+   <div class="col-xs-4">
+    <button class="btn btn-default" name="gas" value="other">Other</button>
+  </div>
+
+</div>
+
+<div class="row">
+<div class="red col-md-6 col-md-offset-3" align="center" style="visibility: hidden;" id="alert"><p>At this time, we are only contracted with PGE and SCG. Contact your utility company to find a local provider.</p></div>
+</div>
+
+
+
+</div>
+
+<div class="col-md-3" id="sidebar">
+
+  <div class="row">
+    <h3 class="heading-title" style="font-weight:400; font-style:normal">QUALIFICATION STEPS</h3>
+  </div>
+
+  <div class="row" >
+            <i class="fa fa-check"></i>
+    Service Territory
+  </div>
+
+  <div class="row" >
+            <i class="fa fa-check"></i>
+    Utility Company
+  </div>
+
+  <div class="row" >
+            <i class="fa fa-check"></i>
+    Income Eligibity
+  </div>
+
+  <div class="row" >
+        <i class="fa fa-check"></i>
+    Age of Home
+  </div>
+
+  <div class="row" >
+    <i class="fa fa-check"></i>
+      Property Eligibility
+  </div>
+
+  <div class="row" >
+        <i class="fa fa-check"></i>
+    Application & Next Steps
+  </div>
+
+  </div>
+
+</div>
+</div>
+</div>
+
+<style type="text/css">
+.btn{
+    font-size: 15px;
+    text-align: center;
+    background-color: #c4c4c4;
+}
+</style>
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+    var electric = $('button[name="electric"]');
+    var gas = $('button[name="gas"]');
+
+    for (var i = electric.length - 1; i >= 0; i--) {
+        
+        electric[i].onclick = function() {
+
+            greyAll(this.name);
+            this.style.backgroundColor = '#30BDFF';
+
+            $('input[name="electric"]')[0].value = this.value;
+            check();
+        }
+    };
+
+    for (var i = gas.length - 1; i >= 0; i--) {
+        
+        gas[i].onclick = function() {
+
+            greyAll(this.name);
+            this.style.backgroundColor = '#30BDFF';
+
+
+            $('input[name="gas"]')[0].value = this.value;
+            check();
+
+        }
+    };
+
+    function greyAll(name){
+
+        var b = $('button[name="'+name+'"]');
+        for (var i = b.length - 1; i >= 0; i--) {
+            b[i].style.backgroundColor = '#c4c4c4';
+        };
+    }
+
+    function check(){
+        var gas = $('#gas')[0].value;
+        var electric = $('#electric')[0].value;
+
+        if ((gas != 'other' || electric != 'other') && gas != '' && electric != '') {
+            
+            $('#esap_form').submit();
+        };
+
+        if (gas == 'other' && electric == 'other') {
+            $('#alert')[0].style.visibility = 'visible';
+               $('html, body').animate({
+                scrollTop: $("#alert").offset().top
+            }, 2000);
+        };
+
+        return false;
+    }
+
+});
+
+</script>
+
+{% endblock %}

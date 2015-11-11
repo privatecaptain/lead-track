@@ -1,0 +1,163 @@
+{% extends 'base2.html' %}
+{% block body %}
+
+<section id="main">
+            <div id="page">
+<!-- END HEADER.PHP -->
+<!-- START PAGE TEMPLATE -->
+<!-- Start -->
+<div class="row-container light bg-scroll" style=""><div class="container-fluid"><div class="row"><div class="col-md-9" style="background-color: #fff; margin-bottom:0px;">
+  <div class="row"><div class="tw-element waves-heading center col-md-12" style="" ><h3 class="heading-title" style="font-weight:400;font-style:normal">Are you income eligible?<span class="title-seperator"></span></h3>
+
+<p><b>Enter the number of people that live in your home:</b></p>
+</div>
+</div>
+
+<form role="form" action="/esap" method="POST" id="esap_form">
+
+  <input type="hidden" name="step" value="3">
+  
+    <div class="row" align="center">
+        <div class="col-md-6 col-md-offset-3">
+  <div class="form-group">
+    <label for="members" class="red" style="visibility: hidden;">Invalid Input!</label>
+    <input type="tel" class="form-control" name="members" onfocus="this.placeholder = ''" 
+    onblur="this.placeholder = 'HOUSEHOLD SIZE'"  placeholder="HOUSEHOLD SIZE" autocomplete="off" tabindex="1" maxlength="2" required>
+  </div>
+</div>
+</div>
+<div class="row" align="center"> 
+<p><b>Is your total Gross Income before taxes, less than :</b></p>
+
+</div>
+<div class="row" align="center">
+  <div class="col-md-6 col-md-offset-3">
+  <input type="text" class="form-control" name="required_income" placeholder="$0" autocomplete="off"  readonly="true" value="$0" required>
+</div>
+</div>
+
+</form>
+
+<div class="row" align="center">
+  <div class="col-xs-6">
+    <button class="btn btn-default" id="yes">Yes</button>
+  </div>
+  <div class="col-xs-6">
+    <button class="btn btn-default" id="no">No</button>
+  </div>
+</div>
+
+<div class="row">
+<div class="red col-md-6 col-md-offset-3" align="center" style="visibility: hidden;" id="alert"><p>At this time, you don not meet the income guidelines. These change every year in June. Please try again then.</p></div>
+</div>
+
+
+
+</div>
+  <div class="col-md-3" id="sidebar">
+
+  <div class="row">
+    <h3 class="heading-title" style="font-weight:400; font-style:normal">QUALIFICATION STEPS</h4>
+  </div>
+
+  <div class="row" >
+            <i class="fa fa-check"></i>
+    Service Territory
+  </div>
+
+  <div class="row" >
+            <i class="fa fa-check"></i>
+    Utility Company
+  </div>
+
+  <div class="row" >
+            <i class="fa fa-check"></i>
+    Income Eligibity
+  </div>
+
+  <div class="row" >
+        <i class="fa fa-check"></i>
+    Age of Home
+  </div>
+
+  <div class="row" >
+    <i class="fa fa-check"></i>
+      Property Eligibility
+  </div>
+
+  <div class="row" >
+        <i class="fa fa-check"></i>
+    Application & Next Steps
+  </div>
+
+
+
+
+  </div>
+
+
+</div>
+</div>
+<style type="text/css">
+
+.btn{
+  max-width: 100%;
+}
+input[type="tel"],
+input[type="text"]{
+  height: 63px;
+  font-size: 27px;
+}
+
+
+</style>
+<script type="text/javascript">
+
+
+var members = $('[name="members"]')[0];
+var income = $('[name="required_income"]')[0];
+
+
+members.onkeyup = function() {
+
+        if (!checkInt(members.value) || parseInt(members.value) == 0 ) {
+              $('label[class="red"]')[0].style.visibility = 'visible';
+
+        }
+        else{
+              $('label[class="red"]')[0].style.visibility = 'hidden';
+              $.ajax({
+              url: '/required_income?members=' + members.value,
+              success: function(data){
+                income.value = data;
+              },
+              error: function(){
+                income.value = '$0';
+              }
+            })
+
+        }
+  
+}
+
+$('#no')[0].onclick = function() {
+      if (income.value == '$0') {
+        return;
+      };
+      $('#alert')[0].style.visibility = 'visible';
+       $('html, body').animate({
+        scrollTop: $("#alert").offset().top
+    }, 2000);
+}
+
+$('#yes')[0].onclick = function() {
+      if (income.value != '$0') {
+        
+        console.log('yes');
+        $('#esap_form').submit();
+
+      };
+}
+</script>
+
+{% endblock %}

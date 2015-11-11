@@ -1,0 +1,36 @@
+{% extends 'base2.html' %}
+{% block body %}
+
+<!-- Start Main -->
+        <section id="main">
+            <div id="page">
+<!-- END HEADER.PHP -->
+<!-- START PAGE TEMPLATE -->
+<!-- Start -->
+<div class="row-container light bg-scroll" style=""><div class="container"><div class="row"><div class="tw-element waves-heading center col-md-12" style="" ><h3 class="heading-title" style="font-weight:400;font-style:normal">Check Application Status<span class="title-seperator"></span></h3>
+
+</div>
+</div>
+
+
+<div class="row" align="center">
+{% if lead['status'] == 'default' %}
+<p><b>RECIEVED AND AWAITING PROCESSING</b></p>
+<p>Date Recieved: {{lead['entry_date']}}</p>
+{% endif %}
+
+{% if lead['status'] == 'appointment_set' %}
+<p><b>Enrollment Scheduled</b></p>
+<p>Appointment set: {{lead['notes']}}</p>
+{% endif %}
+</div>
+
+
+</div>
+</div>
+
+
+</div>
+</section>
+<!-- End Main -->
+{% endblock %}
