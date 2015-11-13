@@ -227,7 +227,10 @@ def format_address(address):
 			result += i
 	return result
 
-
+@app.route('/format_address')
+def format_addr():
+	address = request.args.get('address')
+	return str(format_address(address))
 
 @app.route('/mailgun_webhook',methods=['POST'])
 def show():
@@ -708,7 +711,8 @@ def custom_text(text,lead_id,disposition):
 		if not data['agent_email']:
 			data['agent_email'] = current_user.email
 	for i in data:
-		text = text.replace(i,(data[i]).encode(errors='ignore'))
+		if data[i] != None:
+			text = text.replace(i,(data[i]).encode(errors='ignore'))
 	print text
 	return text
 
@@ -979,29 +983,47 @@ def send_text(to,body,from_='15595127617'):
 def esap_process():
 	if request.method == 'GET':
 		step = request.args.get('step')
+		lang = request.cookies.get('lang')
 		if not step:
 			step = 1
-		return render_template('esap.html',step=step,terminate=False)
+		if not lang:
+			lang = 'en'
+		return render_template(get_templte(lang,step),step=step,terminate=False)
 	
 	if request.method == 'POST':
 		params = request.form
 		extras = {}
 		step = int(params['step'])
+		lang = request.cookies.get('lang')
 		print step
 
 		if process_resolution(step=step,params=params,extras=extras):
-			step += 1
-			return render_template('esap.html',step=step,params=params,terminate=False,extras=extras)
+			try:
+				if params['own'] == 'yes' and step == 6:
+					step += 2
+				else:
+					step += 1
+			except:
+				step += 1
+			return render_template(get_templte(lang,step),step=step,params=params,terminate=False,extras=extras)
 
 		terminate_message = ''
-		if step == 7:
+		if step == 5:
 			lead_id = match_address(make_address(params))
-			terminate_message = status_terminate(lead_id=lead_id)
+			print lead_id
+			return render_template('status.html',lead=get_lead('','',lead_id=lead_id))
 
-		return render_template('esap.html',
+		return render_template(get_templte(lang,step),
 								terminate=True,
 								step=step,
 								terminate_message=terminate_message)
+
+
+def get_templte(lang,step):
+	if lang == 'es':
+		return 'step_' + str(step) + '_es.html'
+	else:
+		return 'step_' + str(step) + '.html'
 
 
 def status_terminate(lead_id):
@@ -1086,6 +1108,7 @@ def make_address(params):
 def check_address(params):
 	
 	address = make_address(params)
+	print address
 	match = match_address(address)
 
 	if match:
@@ -1095,7 +1118,7 @@ def check_address(params):
 
 def add_details(params,extras):
 
-
+	print params
 	first_name = params['first_name']
 	last_name = params['last_name']
 
@@ -1118,14 +1141,16 @@ def add_details(params,extras):
 		apartment_number = ''
 
 	print params['apartment_number']
-	if params['own'] == 'no':
-		landlord_name = params['landlord_name']
-		landlord_phone = params['landlord_phone']
-		landlord_email = params['landlord_email']
+	if params['referrer'] == 'yes':
+		referer_name = params['r_first_name'] +' '+ params['r_last_name']
+		referer_phone_number = params['referrer_phone']
+		referer_email = params['referrer_email']
+		referer_relation = params['relationship']
 	else:
-		landlord_phone = ''
-		landlord_email = ''
-		landlord_name = ''
+		referer_name = ''
+		referer_phone_number = ''
+		referer_email = ''
+		referer_relation = ''
 	city = params['city']
 	state = params['state']
 	country = 'Unites States'
@@ -1137,10 +1162,11 @@ def add_details(params,extras):
 	else:
 		own = 'RENT'
 	income = params['required_income']
-	public_assistance = params['public_assistance']
+	# public_assistance = params['public_assistance']
+	public_assistance = ''
 
 
-	sql = 'INSERT IGNORE INTO lead_details(first_name,\
+	sql = 'INSERT  INTO lead_details(first_name,\
 									last_name,\
 									email,\
 									phone_number,\
@@ -1152,12 +1178,12 @@ def add_details(params,extras):
 									city,\
 									state,\
 									country,\
-									landlord_name,\
-									landlord_phone,landlord_email,\
+									referer_name,\
+									referer_phone,referer_email,referer_relation,\
 									gas,electric,own,income,public_assistance) \
-						 VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+						 VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
 
-	sql_params = [first_name,last_name,email,mobile_phone,home_phone,zip_code,members,street_number,street_name,apartment_number,city,state,country,landlord_name,landlord_phone,landlord_email,gas,electric,own,income,public_assistance]
+	sql_params = [first_name,last_name,email,mobile_phone,home_phone,zip_code,members,street_number,street_name,apartment_number,city,state,country,referer_name,referer_phone_number,referer_email,referer_relation,gas,electric,own,income,public_assistance]
 
 	conn = mysql.connect()
 
@@ -1177,23 +1203,21 @@ def add_details(params,extras):
 		
 	return True
 
-def add_referer(params,extras):
+def add_landlord(params,extras):
 
 	lead_id = params['lead_id']
 	print 'lead_id', lead_id
-	referer_name = params['referer_name']
-	referer_email = params['referer_email']
-	referer_phone_number = params['referer_phone_number']
-	referer_relation = params['referer_relation']
-	print referer_name
+	landlord_name = params['l_first_name']+ ' ' + params['l_last_name']
+	landlord_email = params['l_email']
+	landlord_phone = params['l_phone_number']
+	print landlord_name
 
-	sql = 'UPDATE lead_details set referer_name = %s,\
-									referer_email = %s,\
-									referer_phone = %s,\
-									referer_relation = %s \
+	sql = 'UPDATE lead_details set landlord_name = %s,\
+									landlord_email = %s,\
+									landlord_phone = %s\
 									 WHERE lead_id = %s'
 
-	sql_params = [referer_name,referer_email,referer_phone_number,referer_relation,lead_id]
+	sql_params = [landlord_name,landlord_email,landlord_phone,lead_id]
 
 	conn = mysql.connect()
 
@@ -1201,14 +1225,7 @@ def add_referer(params,extras):
 		cursor = conn.cursor()
 		cursor.execute(sql,sql_params)
 
-	correspondence_routing(disposition='new_application',
-								lead_id=lead_id,
-								c_type='email',referer=True)
-	correspondence_routing(disposition='new_application',
-								lead_id=lead_id,
-								c_type='text',referer=True)
-
-	return False
+	return True
 
 
 member_income = {
@@ -1221,6 +1238,18 @@ member_income = {
 		7 : 73460,
 		8 : 81780
 	}
+
+@app.route('/required_income')
+def income():
+	members = request.args.get('members')
+	try:
+		members = int(members)
+		ri = required_income({'members' : members})
+	except:
+		ri = '$0'
+	return str(ri)
+
+
 
 def required_income(params):
 	members = int(params['members'])
@@ -1262,29 +1291,79 @@ def process_resolution(step,params,extras):
 
 	elif step == 3:
 		return members(params,extras)
-	elif step == 4:
-		return check_income(params)
 
-	elif step == 5:
+	elif step == 4:
 		return home_age(params)
 
-	elif step == 6:
-		return check_own(params)
-
-	elif step == 7:
+	elif step == 5:
 		return check_address(params)
 	
-	elif step == 8:
+	elif step == 6:
 		return add_details(params,extras)
-	elif step == 9:
-		return check_referer(params)
-	elif step == 10:
-		print 'add_referer'
-		return add_referer(params,extras)
-	elif step == 11:
+
+	elif step == 7:
+		return add_landlord(params,extras)
+	elif step == 8:
 		return False
 
 
+@app.route('/check_status', methods=['GET','POST'])
+def check_status():
+
+	if request.method == 'GET':
+		return render_template('check_status.html')
+
+	if request.method == 'POST':
+
+		params = request.form
+		last_name = params['last_name']
+		phone_number = params['phone_number']
+
+		lead = get_lead(last_name,phone_number)
+
+		if lead:
+			return render_template('status.html',lead=lead,match=True)
+		else:
+			return render_template('check_status.html',match=False)
+
+
+@app.route('/es',methods=['GET'])
+def spanish():
+	resp = make_response(render_template('step_1_es.html'))
+	resp.set_cookie('lang','es')
+	return resp
+
+@app.route('/en',methods=['GET'])
+def english():
+	resp = make_response(render_template('step_1.html'))
+	resp.set_cookie('lang','en')
+	return resp
+
+
+
+
+def get_lead(last_name,phone_number,lead_id=''):
+	if lead_id != '':
+		params = [lead_id]
+		sql = '''SELECT status,first_name,last_name,
+			phone_number,lead_id,entry_date,
+			 (select dr.notes from disposition_record dr where dr.status = lead_details.status order by dr.timestamp desc limit 1) as notes
+			  from  lead_details WHERE 
+			lead_id = %s
+			order by entry_date desc limit 1'''
+	else:
+		params = [last_name,phone_number]
+		sql = '''SELECT status,first_name,last_name,
+				phone_number,lead_id,entry_date,
+				 (select dr.notes from disposition_record dr where dr.status = lead_details.status order by dr.timestamp desc limit 1) as notes
+				  from  lead_details WHERE 
+				last_name = %s AND
+				phone_number = %s
+				order by entry_date desc limit 1
+					'''
+	lead = lead_details(sql,params)
+
+	return lead[0]
 
 
 

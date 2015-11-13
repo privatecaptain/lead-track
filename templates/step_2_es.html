@@ -1,4 +1,4 @@
-{% extends 'base2.html' %}
+{% extends 'base2_es.html' %}
 {% block body %}
 
 <section id="main">
@@ -8,16 +8,17 @@
 <!-- Start -->
 <div class="row-container light bg-scroll" style="">
 <div class="container-fluid"><div class="row"><div class="col-md-9" style="background-color: #fff; margin-bottom:0px;">
-    <div class="col-md-12 "><div class="row"><div class="tw-element waves-heading center col-md-12" style="" ><h3 class="heading-title" style="font-weight:400;font-style:normal">Which Utilities do you use?<span class="title-seperator"></span></h3>
+    <div class="col-md-12 "><div class="row"><div class="tw-element waves-heading center col-md-12" style="" ><h3 class="heading-title" style="font-weight:400;font-style:normal">¿Que compañía de servicios públicos tiene?<span class="title-seperator"></span></h3>
 
-<p><b>Select your Electric Utility:</b></p>
+<p><b>Seleccione su compañía de electricidad:</b></p>
 </div>
 </div>
 </div>
 <form role="form" action="/esap" method="POST" id="esap_form">
-            <input name="step" value="2" type="hidden">
 
+   <input name="step" value="2" type="hidden">
 
+  <input name="lang" value="es" type="hidden">
 {% for key in params %}
 <input type="hidden" name="{{key}}" value="{{params[key]}}">
 {% endfor %}
@@ -41,7 +42,7 @@
 </div>
 
 <div class="row" align="center"> 
-<p><b>Select Gas Utilty:</b></p>
+<p><b>Seleccione su compañía de gas:</b></p>
 
 </div>
 
@@ -61,7 +62,9 @@
 </div>
 
 <div class="row">
-<div class="red col-md-6 col-md-offset-3" align="center" style="visibility: hidden;" id="alert"><p>At this time, we are only contracted with PGE and SCG. Contact your utility company to find a local provider.</p></div>
+<div class="red col-md-6 col-md-offset-3" align="center" style="visibility: hidden;" id="alert"><p>Mil disculpas, pero no nos encontramos en su
+area. Comunique se con su compañía de servicios
+públicos.</p></div>
 </div>
 
 
@@ -71,37 +74,38 @@
 <div class="col-md-3" id="sidebar">
 
   <div class="row">
-    <h3 class="heading-title" style="font-weight:400; font-style:normal">QUALIFICATION STEPS</h3>
+    <h3 class="heading-title" style="font-weight:400; font-style:normal">PASOS A TOMAR PARA SOMETER
+SOLICITUD</h3>
   </div>
 
   <div class="row" >
             <i class="fa fa-check"></i>
-    Service Territory
+    Elegibilidad de Territorio
   </div>
 
   <div class="row" >
             <i class="fa fa-check"></i>
-    Utility Company
+    Elegibilidad de servicios públicos
   </div>
 
   <div class="row" >
             <i class="fa fa-check"></i>
-    Income Eligibity
+    Elegibilidad de Ingresos
   </div>
 
   <div class="row" >
         <i class="fa fa-check"></i>
-    Age of Home
+    Elegibilidad de antigüedad de su casa
   </div>
 
   <div class="row" >
     <i class="fa fa-check"></i>
-      Property Eligibility
+      Elegibilidad del predio
   </div>
 
   <div class="row" >
         <i class="fa fa-check"></i>
-    Application & Next Steps
+    Próximos pasos
   </div>
 
   </div>

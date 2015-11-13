@@ -1,4 +1,4 @@
-{% extends 'base2.html' %}
+{% extends 'base2_es.html' %}
 {% block body %}
 
 <section id="main">
@@ -9,11 +9,11 @@
 <div class="row-container light bg-scroll" style=""><div class="container-fluid"><div class="row"><div class="col-md-9" style="background-color: #fff; margin-bottom:0px;">
   <div class="row"><div class="tw-element waves-heading center col-md-12" style="" ><h3 class="heading-title" style="font-weight:400;font-style:normal">Are you income eligible?<span class="title-seperator"></span></h3>
 
-<p><b>Enter the number of people that live in your home:</b></p>
+<p><b>Ponga el numero de personas que viven en su casa:</b></p>
 </div>
 </div>
 
-<form role="form" action="/esap" method="POST" id="esap_form">
+<form role="form" action="/esap" method="POST" id="esap_form"><input name="lang" value="es" type="hidden">
 
   <input type="hidden" name="step" value="3">
 
@@ -21,7 +21,6 @@
 {% for key in params %}
 <input type="hidden" name="{{key}}" value="{{params[key]}}">
 {% endfor %}
-
   
     <div class="row" align="center">
         <div class="col-md-6 col-md-offset-3">
@@ -33,7 +32,8 @@
 </div>
 </div>
 <div class="row" align="center"> 
-<p><b>Is your total Gross Income before taxes, less than :</b></p>
+<p><b>La cantidad de sus ingresos anuales, antes de
+deducir impuestos menos que:</b></p>
 
 </div>
 <div class="row" align="center">
@@ -63,37 +63,38 @@
   <div class="col-md-3" id="sidebar">
 
   <div class="row">
-    <h3 class="heading-title" style="font-weight:400; font-style:normal">QUALIFICATION STEPS</h4>
+    <h3 class="heading-title" style="font-weight:400; font-style:normal">PASOS A TOMAR PARA SOMETER
+SOLICITUD</h4>
   </div>
 
   <div class="row" >
             <i class="fa fa-check"></i>
-    Service Territory
+    Elegibilidad de Territorio
   </div>
 
   <div class="row" >
             <i class="fa fa-check"></i>
-    Utility Company
+    Elegibilidad de servicios públicos
   </div>
 
   <div class="row" >
             <i class="fa fa-check"></i>
-    Income Eligibity
+    Elegibilidad de Ingresos
   </div>
 
   <div class="row" >
         <i class="fa fa-check"></i>
-    Age of Home
+    Elegibilidad de antigüedad de su casa
   </div>
 
   <div class="row" >
     <i class="fa fa-check"></i>
-      Property Eligibility
+      Elegibilidad del predio
   </div>
 
   <div class="row" >
         <i class="fa fa-check"></i>
-    Application & Next Steps
+    Próximos pasos
   </div>
 
 

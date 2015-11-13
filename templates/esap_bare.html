@@ -1,0 +1,435 @@
+
+<!-- Start -->
+
+{% if terminate == False %}
+<form method="post" action="/esap" id="esap_form" onsubmit="return formValidate(event);">
+{% if step == 1%}
+
+<input type="hidden" name="step" value="1">
+<label class='gfield_label' for='zip_code' >Let&#039;s start with your Zip Code:<span class='gfield_required'>*</span></label>
+<input type="text" name="zip_code" maxlength="5" required>
+{% endif %}
+
+{% if step == 2 %}
+<input type="hidden" name="step" value="2">
+{% for key in params %}
+<input type="hidden" name="{{key}}" value="{{params[key]}}">
+{% endfor %}
+<label class='gfield_label' for='members' >Select your Electric and Gas Provider:<span class='gfield_required'></span></label>
+<p>Electric:*</p>
+<input type="radio" name="electric" value="pg&e" required>PG&E<br>
+<input type="radio" name="electric" value="other" required>Other<br><br>
+<p>Gas:*</p>
+<input type="radio" name="gas" value="pg&e" required>PG&E<br>
+<input type="radio" name="gas" value="socal_gas" required>SoCAL Gas<br>
+<input type="radio" name="gas" value="other" required>Other<br>
+
+{% endif %}
+
+{% if step == 3 %}
+<input type="hidden" name="step" value="3">
+{% for key in params %}
+<input type="hidden" name="{{key}}" value="{{params[key]}}">
+{% endfor %}
+<label class='gfield_label' for='members' >Now, tell us how many people live in your home:<span class='gfield_required'>*</span></label>
+<input type="number" name="members" required min="1">
+
+<P>and tell us if anyone in the home receives any of the public assistance programs listed below:</P>
+
+
+<ul>
+
+<input type="checkbox" name="public_assistance1"  value="Medi-Cal/Medicaid">Medi-Cal/Medicaid
+</input><br>
+<input type="checkbox" name="public_assistance2"  value="Medi-Cal for Families A&B">
+Medi-Cal for Families A&B
+</input><br>
+<input type="checkbox" name="public_assistance3"  value="Women, Infants, & Children (WIC)" >
+Women, Infants, & Children (WIC)
+</input><br>
+<input type="checkbox" name="public_assistance4"  value="CalWORKs (TANF) or Tribal TANF">
+CalWORKs (TANF) or Tribal TANF
+</input><br>
+<input type="checkbox" name="public_assistance5"  value="Head Start Income Eligible - Tribal Only">
+Head Start Income Eligible - Tribal Only
+</input><br>
+<input type="checkbox" name="public_assistance6"  value="Bureau of Indian Affairs General Assistance">
+Bureau of Indian Affairs General Assistance
+</input><br>
+<input type="checkbox" name="public_assistance7"  value="CalFresh, SNAP, Food Stamps">
+CalFresh, SNAP, Food Stamps
+</input><br>
+<input type="checkbox" name="public_assistance8"  value="National School Lunch Program (NSLP)">
+National School Lunch Program (NSLP)
+</input><br>
+<input type="checkbox" name="public_assistance9"  value="Low-Income Home Energy Assistance Program (LIHEAP)" >
+Low-Income Home Energy Assistance Program (LIHEAP)
+</input><br>
+<input type="checkbox" name="public_assistance10"  value="Supplemental Security Income (SSI)">
+Supplemental Security Income (SSI)
+</input><br>
+</ul>
+
+
+
+
+{% endif %}
+
+{% if step == 4 %}
+<input type="hidden" name="step" value="4">
+{% for key in params %}
+<input type="hidden" name="{{key}}" value="{{params[key]}}">
+{% endfor %}
+<label class='gfield_label' for='members' >Is the total income, before taxes, for all the people in the home less than:
+:<span class='gfield_required'>*</span></label>
+<p>{{extras['required_income']}}</p><br>
+<input type="radio" name="income" value="yes" required>Yes<br>
+<input type="radio" name="income" value="no" required>No<br>  
+<input type="hidden" name="required_income" value="{{extras['required_income']}}">
+<input type="hidden" name="public_assistance" value="{{extras['public_assistance']}}">
+{% endif %}
+
+
+{% if step == 5 %}
+<input type="hidden" name="step" value="5">
+{% for key in params %}
+<input type="hidden" name="{{key}}" value="{{params[key]}}">
+{% endfor %}
+<label class='gfield_label' for='age' >You're qualfied based on income. 
+Is your home at least five-years old?
+<span class='gfield_required'>*</span></label>
+<input type="radio" name="age" value="yes" required>Yes<br>
+<input type="radio" name="age" value="no" required>No<br>
+{% endif %}
+
+
+{% if step == 6 %}
+<input type="hidden" name="step" value="6">
+{% for key in params %}
+<input type="hidden" name="{{key}}" value="{{params[key]}}">
+{% endfor %}
+<label class='gfield_label' for='own' >Do You Rent or Own ?:
+<span class='gfield_required'>*</span></label>
+<input type="radio" name="own" value="yes" required>Own<br>
+<input type="radio" name="own" value="no" required>Rent<br>
+{% endif %}
+
+
+{% if step == 7 %}
+<input type="hidden" name="step" value="7">
+{% for key in params %}
+<input type="hidden" name="{{key}}" value="{{params[key]}}">
+{% endfor %}
+
+<!-- SCript -->
+
+
+ <script>
+// This example displays an address form, using the autocomplete feature
+// of the Google Places API to help users fill in the information.
+
+var placeSearch, autocomplete;
+var componentForm = {
+  street_number: 'short_name',
+  route: 'long_name',
+  locality: 'long_name',
+  administrative_area_level_1: 'short_name',
+};
+
+function initAutocomplete() {
+  // Create the autocomplete object, restricting the search to geographical
+  // location types.
+  autocomplete = new google.maps.places.Autocomplete(
+      /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+      {types: ['geocode']});
+
+  // When the user selects an address from the dropdown, populate the address
+  // fields in the form.
+  autocomplete.addListener('place_changed', fillInAddress);
+}
+
+// [START region_fillform]
+function fillInAddress() {
+  // Get the place details from the autocomplete object.
+  var place = autocomplete.getPlace();
+
+  for (var component in componentForm) {
+    document.getElementById(component).value = '';
+    document.getElementById(component).disabled = false;
+  }
+
+  // Get each component of the address from the place details
+  // and fill the corresponding field on the form.
+  for (var i = 0; i < place.address_components.length; i++) {
+    var addressType = place.address_components[i].types[0];
+    if (componentForm[addressType]) {
+      var val = place.address_components[i][componentForm[addressType]];
+      document.getElementById(addressType).value = val;
+    }
+  }
+}
+// [END region_fillform]
+
+// [START region_geolocation]
+// Bias the autocomplete object to the user's geographical location,
+// as supplied by the browser's 'navigator.geolocation' object.
+function geolocate() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var geolocation = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      var circle = new google.maps.Circle({
+        center: geolocation,
+        radius: position.coords.accuracy
+      });
+      autocomplete.setBounds(circle.getBounds());
+    });
+  }
+}
+// [END region_geolocation]
+
+    </script>
+
+<!-- 
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?&libraries=places"></script>
+ -->
+
+    <script src="https://maps.googleapis.com/maps/api/js?signed_in=true&libraries=places&callback=initAutocomplete&key=AIzaSyDXDznbc18k0aW_ofRaKR5Uf3aAZ6i9xMA"
+        async defer></script>
+
+
+
+<label class='gfield_label' for='own' >What is your Property Address ?:
+<span class='gfield_required'></span></label>
+
+<!-- MAPs Autocomplete -->
+<div id="locationField">
+      <input id="autocomplete" placeholder="Start Typing your Address..."
+             onFocus="geolocate()" type="text" style="width: 100%;" autocomplete="off"></input>
+    </div>
+
+
+
+   
+
+
+
+
+<input type="hidden" name="street_number" id="street_number" required>
+
+
+<input type="hidden" name="street_name" id="route" required>
+
+
+
+
+<input type="hidden" name="city"  id="locality" required>
+
+<input type="hidden" name="state" id="administrative_area_level_1" required>
+
+<label class='gfield_label' for='own' >Apartment/Unit/Space #: 
+<span class='gfield_required'></span></label>
+<input type="text" name="apartment_number" >
+
+
+
+{% endif %}
+
+{% if step == 8 %}
+<input type="hidden" name="step" value="8">
+{% for key in params %}
+<input type="hidden" name="{{key}}" value="{{params[key]}}">
+{% endfor %}
+
+<label class='gfield_label' for='own' >First Name: 
+<span class='gfield_required'>*</span></label>
+<input type="text" name="first_name" required>
+
+<label class='gfield_label' for='own' >Last Name: 
+<span class='gfield_required'>*</span></label>
+<input type="text" name="last_name" required>
+
+<label class='gfield_label' for='own' >Email: 
+<span class='gfield_required'>*</span></label>
+<input type="email" name="email" required>
+
+<label class='gfield_label' for='own' >Mobile Phone: 
+<span class='gfield_required'>*</span></label>
+<input type="text" name="phone_number" maxlength="10" pattern="[0-9]{10}" required>
+
+<label class='gfield_label' for='own' >Home Phone: 
+<span class='gfield_required'>*</span></label>
+<input type="text" name="home_phone" maxlength="10" pattern="[0-9]{10}" required>
+
+
+
+{% if params['own'] != 'yes' %}
+
+<label class='gfield_label' for='own' >Landlord's Name: 
+<span class='gfield_required'></span></label>
+<input type="text" name="landlord_name">
+
+
+<label class='gfield_label' for='own' >Landlord's Phone: 
+<span class='gfield_required'></span></label>
+<input type="text" name="landlord_phone" >
+
+
+<label class='gfield_label' for='own' >Landlord's Email: 
+<span class='gfield_required'></span></label>
+<input type="text" name="landlord_email" >
+
+{% endif %}
+
+
+
+
+{% endif %}
+
+{% if step == 9 %}
+<input type="hidden" name="step" value="9">
+<input type="hidden" name="lead_id" value="{{extras['lead_id']}}">
+{% for key in params %}
+<input type="hidden" name="{{key}}" value="{{params[key]}}">
+{% endfor %}
+<label class='gfield_label' for='own' >Are you Refering Someone:
+<span class='gfield_required'>*</span></label>
+<input type="radio" name="referer" value="yes" required>Yes<br>
+<input type="radio" name="referer" value="no" required>No<br>
+{% endif %}
+
+{% if step == 10 %}
+<input type="hidden" name="step" value="10">
+{% for key in params %}
+<input type="hidden" name="{{key}}" value="{{params[key]}}">
+{% endfor %}
+
+<label class='gfield_label' for='own' >Your Name: 
+<span class='gfield_required'>*</span></label>
+<input type="text" name="referer_name" required>
+
+<label class='gfield_label' for='own' >Your Email: 
+<span class='gfield_required'>*</span></label>
+<input type="email" name="referer_email" required>
+
+
+<label class='gfield_label' for='own' >Your Phone Number: 
+<span class='gfield_required'>*</span></label>
+<input type="text" name="referer_phone_number" maxlength="10" pattern="[0-9]{10}" required>
+
+<label class='gfield_label' for='own' >Your Relationship to the Applicant: 
+<span class='gfield_required'>*</span></label>
+<input type="text" name="referer_relation" required>
+
+
+
+{% endif %}
+
+<input type="submit"  tabindex="2" value="Next" class="medium">
+
+</form>
+{% endif %}
+
+{% if terminate == True %}
+
+{% if step == 1 or step == 2 %}
+
+Thank you for inquiring about the Energy Savings Assistance Program.  Your utility company has contracted with another company to service homes in your area.  You can visit your utility company's website to find a an authorized contractor in your area.<br>
+
+<a href="http://www.pge.com/en/myhome/saveenergymoney/financialassistance/energysavingsassistanceprogram/index.page">PG&E</a><br>
+
+<a href="https://www.sce.com/wps/portal/home/residential/assistance/energy-saving-program/!ut/p/b1/hc_NCoJAFAXgZ2nhMufoRFm7kdRGIimjbDahYaNgTpglvX0WbaK_uzuX78C9RJCIiDK-5DKuc1XGxT2L_tawPDbhIbhlUwfcRjBjCwbPGbRg0wJ8GYZ__TURr8RzjTG4vzLCKcbouXgDi4F5B840sA0TlvkEQw_OxA9asJxTcDrHLGSMAv0n-HGkT4QsVPJ4eMPKhFqSiCrdp1Va6eeqXWd1fTyNNGhomkaXSski1XfqoOFTJVOnmkSvkhwPEXLeFcm16dwACNTqCA!!/dl4/d5/L2dBISEvZ0FBIS9nQSEh/?from=esap">SCE</a><br>
+
+<a href="http://www.socalgas.com/for-your-home/assistance-programs/esap/">SoCal Gas</a><br>
+
+<a href="http://www.sdge.com/energy-savings-assistance-program">SD G&E </a><br>
+
+Thank you again for the inquiry.  If you have any friends or family in Stanislaus, San Joaquin, Fresno, Kings, Tulare and Kern county please let them know and we can help them directly!
+
+{% endif %}
+
+{% if step == 3 or step == 4 %}
+
+Thank you for inquiring about the Energy Savings Assistance Program.  
+
+At this time, you do not meet the income requires for this program.  These guidelines are updated every year in June.  Please try again then.
+
+For more information about this program you can visit PG&E and/or SoCal Gas's website below:<br>
+
+<a href="http://www.pge.com/en/myhome/saveenergymoney/financialassistance/energysavingsassistanceprogram/index.page">PG&E</a><br>
+
+<a href="http://www.socalgas.com/for-your-home/assistance-programs/esap/">SoCal Gas</a><br>
+
+Thank you again for the inquiry.  If you have any friends or family in Stanislaus, San Joaquin, Fresno, Kings, Tulare and Kern county please let them know and we can help them directly!
+
+
+{% endif %}
+
+{% if step == 5 %}
+
+Thank you for inquiring about the Energy Savings Assistance Program.  
+
+The age of the home is verfied during the enrollment process and must be at least 5 years old at the time of enrollment.  
+
+For more information about this program you can visit PG&E and/or SoCal Gas's website below:<br>
+<a href="http://www.pge.com/en/myhome/saveenergymoney/financialassistance/energysavingsassistanceprogram/index.page">PG&E</a><br>
+
+<a href="http://www.socalgas.com/for-your-home/assistance-programs/esap/">SoCal Gas</a><br>
+
+Thank you again for the inquiry.  If you have any friends or family in Stanislaus, San Joaquin, Fresno, Kings, Tulare and Kern county please let them know and we can help them directly!
+
+
+{% endif %}
+
+{% if step == 7 %}
+
+{{terminate_message}}
+
+{% endif %}
+
+
+{% if step == 8 or step == 9 or step == 10 %}
+
+By submitting this form you are opting in to receive updates and notifications regarding your application by email and text message.  SMS text message rates may apply. Please check with your carrier for rates, if any.<br>
+
+<form action="/esap" method="post">
+	<input type="hidden" name="step" value="11">
+<button type="submit" name="opt-in" value="True">Submit</button>
+</form>
+
+<!-- Facebook Conversion Code for Webleads -->
+<script>(function() {
+var _fbq = window._fbq || (window._fbq = []);
+if (!_fbq.loaded) {
+var fbds = document.createElement('script');
+fbds.async = true;
+fbds.src = '//connect.facebook.net/en_US/fbds.js';
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(fbds, s);
+_fbq.loaded = true;
+}
+})();
+window._fbq = window._fbq || [];
+window._fbq.push(['track', '6025147422634', {'value':'0.00','currency':'USD'}]);
+</script>
+<noscript><img height="1" width="1" alt="" style="display:none" src="https://www.facebook.com/tr?ev=6025147422634&amp;cd[value]=0.00&amp;cd[currency]=USD&amp;noscript=1" /></noscript>
+
+
+{% endif %}
+
+{% if step == 11 %}
+
+Thats it!
+
+What to expect next:
+A specialist will contact you within 2 business days.  
+We are are open Monday – Friday 9am – 6pm 
+Please note that your return call will have a FRESNO (559) area code.
+
+{% endif %}
+
+{% endif %}
+
+<!-- End -->

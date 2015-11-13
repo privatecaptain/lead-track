@@ -1,4 +1,4 @@
-{% extends 'base2.html' %}
+{% extends 'base2_es.html' %}
 {% block body %}
 
 <section id="main">
@@ -7,37 +7,36 @@
 <!-- START PAGE TEMPLATE -->
 <!-- Start -->
 <div class="row-container light bg-scroll" style=""><div class="container-fluid"><div class="row"><div class="col-md-9" style="background-color: #fff; margin-bottom:0px;">
-  <div class="row"><div class="tw-element waves-heading center col-md-12" style="" ><h3 class="heading-title" style="font-weight:400;font-style:normal">What is your address?<span class="title-seperator"></span></h3>
+  <div class="row"><div class="tw-element waves-heading center col-md-12" style="" ><h3 class="heading-title" style="font-weight:400;font-style:normal">Domicilio?<span class="title-seperator"></span></h3>
 
-<p><b>Enter your home address:</b></p>
+<p><b>Domicilio:</b></p>
 
 </div>
 </div>
 
-<form role="form" action="/esap" method="POST" id="esap_form">
+<form role="form" action="/esap" method="POST" id="esap_form"><input name="lang" value="es" type="hidden">
+
   <input type="hidden" name="step" value="5">
-
-
+  <input type="hidden" name="own" id="own_value">
 {% for key in params %}
 <input type="hidden" name="{{key}}" value="{{params[key]}}">
 {% endfor %}
-  <input type="hidden" name="own" id="own_value">
     
           <div class="form-group">
 
     <div class="row" align="center">
 
               <div class="col-md-6 col-md-offset-3">
-                <label for="autocomplete" class="red" style="visibility: hidden;">Invalid Address!</label>
+
                 <input type="text" class="form-control"  onfocus="geolocate()" 
-                onblur="this.placeholder = 'ADDRESS'"  placeholder="ADDRESS" autocomplete="off" tabindex="1" id="autocomplete" required>
+                onblur="this.placeholder = 'Domicilio'"  placeholder="Domicilio" autocomplete="off" tabindex="1" id="autocomplete" required>
               </div>
     </div>
     <div class="row" align="center">
 
               <div class="col-md-6 col-md-offset-3">
                 <input type="text" class="form-control" name="apartment_number" onfocus="this.placeholder = ''" 
-              onblur="this.placeholder = 'Apartment/Unit/Space #'"  placeholder="Apartment/Unit/Space #" autocomplete="off" tabindex="2" required>
+              onblur="this.placeholder = 'Departamento/ Unidad/ Espacio #'"  placeholder="Departamento/ Unidad/ Espacio #" autocomplete="off" tabindex="2" required>
               </div>
 
           </div>
@@ -60,7 +59,7 @@
 
 <div class="row" align="center">
   <div class="col-md-6 col-md-offset-3">
-<p><b>Do you Own or Rent?</b></p>
+<p><b>¿Es el propietario o el inquilino?</b></p>
 </div>
 </div>
 
@@ -79,37 +78,38 @@
 <div class="col-md-3" id="sidebar">
 
   <div class="row">
-    <h3 class="heading-title" style="font-weight:400; font-style:normal">QUALIFICATION STEPS</h3>
+    <h3 class="heading-title" style="font-weight:400; font-style:normal">PASOS A TOMAR PARA SOMETER
+SOLICITUD</h3>
   </div>
 
   <div class="row" >
             <i class="fa fa-check"></i>
-    Service Territory
+    Elegibilidad de Territorio
   </div>
 
   <div class="row" >
             <i class="fa fa-check"></i>
-    Utility Company
+    Elegibilidad de servicios públicos
   </div>
 
   <div class="row" >
             <i class="fa fa-check"></i>
-    Income Eligibity
+    Elegibilidad de Ingresos
   </div>
 
   <div class="row" >
         <i class="fa fa-check"></i>
-    Age of Home
+    Elegibilidad de antigüedad de su casa
   </div>
 
   <div class="row" >
     <i class="fa fa-check"></i>
-      Property Eligibility
+      Elegibilidad del predio
   </div>
 
   <div class="row" >
         <i class="fa fa-check"></i>
-    Application & Next Steps
+     Próximos pasos
   </div>
 
 
@@ -132,7 +132,7 @@ input[type="text"]{
 }
 
 </style>
-<!-- Script -->
+<!-- SCript -->
 
 
  <script>
@@ -150,7 +150,6 @@ var own = $('#own')[0];
 var rent = $('#rent')[0];
 
 own.onclick = function() {
-
     $('#own_value')[0].value = 'yes';
     check();
 
@@ -276,10 +275,6 @@ function geolocate() {
   }
 }
 // [END region_geolocation]
-
-
-
-
 
 </script>
 

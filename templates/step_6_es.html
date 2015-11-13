@@ -1,4 +1,4 @@
-{% extends 'base2.html' %}
+{% extends 'base2_es.html' %}
 {% block body %}
 
 <section id="main">
@@ -7,15 +7,15 @@
 <!-- START PAGE TEMPLATE -->
 <!-- Start -->
 <div class="row-container light bg-scroll" style=""><div class="container-fluid"><div class="row"><div class="col-md-9" style="background-color: #fff; margin-bottom:0px;">
-  <div class="row"><div class="tw-element waves-heading center col-md-12" style="" ><h3 class="heading-title" style="font-weight:400;font-style:normal">Who should we contact?<span class="title-seperator"></span></h3>
+  <div class="row"><div class="tw-element waves-heading center col-md-12" style="" ><h3 class="heading-title" style="font-weight:400;font-style:normal">¿A quien debemos contactar?<span class="title-seperator"></span></h3>
 
-<p><b>Enter the name of the person responsible for the utility:</b></p>
+<p><b>Ingrese el nombre de la persona de pagar los
+servicios públicos:</b></p>
 
 </div>
 </div>
 
-<form role="form" action="/esap" method="POST" id="esap_form" >
-
+<form role="form" action="/esap" method="POST" id="esap_form"><input name="lang" value="es" type="hidden">
   <input type="hidden" name="step" value="6">
   <input type="hidden" name="referrer" value="no">
 
@@ -30,13 +30,13 @@
               <div class="col-md-3 col-md-offset-3">
 
                 <input type="text" class="form-control" name="first_name" onfocus="this.placeholder = ''" 
-    onblur="this.placeholder = 'first name*'"  placeholder="first name*" autocomplete="off" tabindex="1" required>
+    onblur="this.placeholder = 'Nombre*'"  placeholder="Nombre*" autocomplete="off" tabindex="1" required>
               </div>
 
               <div class="col-md-3">
 
                <input type="text" class="form-control" name="last_name" onfocus="this.placeholder = ''" 
-    onblur="this.placeholder = 'last name*'"  placeholder="last name*" autocomplete="off" tabindex="2" required>
+    onblur="this.placeholder = 'Apellido*'"  placeholder="Apellido*" autocomplete="off" tabindex="2" required>
     </div>
     </div>
     <div class="row" align="center">
@@ -44,12 +44,12 @@
               <div class="col-md-3 col-md-offset-3">
 
                 <input type="tel" class="form-control" name="phone_number" onfocus="this.placeholder = ''" 
-    onblur="this.placeholder = 'mobile phone*'"  placeholder="mobile phone*" autocomplete="off" tabindex="3" required>
+    onblur="this.placeholder = 'numero de teléfono Mobil*'"  placeholder="numero de teléfono Mobil*" autocomplete="off" tabindex="3" required>
               </div>
 
               <div class="col-md-3">
             <input type="tel" class="form-control" name="home_phone" onfocus="this.placeholder = ''" 
-    onblur="this.placeholder = 'home phone*'"  placeholder="home phone*" autocomplete="off" tabindex="4" required>
+    onblur="this.placeholder = 'Numero de teléfono de casa*'"  placeholder="Numero de teléfono de casa*" autocomplete="off" tabindex="4" required>
               </div>
     </div>
 
@@ -59,7 +59,7 @@
               <div class="col-md-6 col-md-offset-3">
 
                 <input type="email" class="form-control" name="email" onfocus="this.placeholder = ''" 
-    onblur="this.placeholder = 'email address*'"  placeholder="email address*" autocomplete="off" tabindex="5" required>
+    onblur="this.placeholder = 'Correo electrónico / Email*'"  placeholder="Correo electrónico / Email*" autocomplete="off" tabindex="5" required>
               </div>
 
     </div>
@@ -71,10 +71,11 @@
         
 
 
+</form>
 
 <div class="row" align="center">
   <div class="col-md-6 col-md-offset-3">
-<p><b>Are you the person above?</b></p>
+<p><b>¿Es usted la persona ya mencionada?</b></p>
 </div>
 </div>
 
@@ -91,37 +92,36 @@
 <div id="referrer" style="display: none;">
   <div class="row" align="center">
   <div class="col-md-6 col-md-offset-3">
-<p><b>Enter your name and contact information:</b></p>
+<p><b>Ingrese su nombre e información:</b></p>
 </div>
 </div>
 
-
-    <div class="form-group">
+  
       <div class="row" align="center">
 
               <div class="col-md-3 col-md-offset-3">
 
                 <input type="text" class="form-control" name="r_first_name" onfocus="this.placeholder = ''" 
-    onblur="this.placeholder = 'first name*'"  placeholder="first name*" autocomplete="off" tabindex="1" required>
+    onblur="this.placeholder = 'Nombre*'"  placeholder= "Nombre*" autocomplete="off" tabindex="1" required>
               </div>
 
               <div class="col-md-3">
 
                <input type="text" class="form-control" name="r_last_name" onfocus="this.placeholder = ''" 
-    onblur="this.placeholder = 'last name*'"  placeholder="last name*" autocomplete="off" tabindex="2" required>
+    onblur="this.placeholder = 'Apellido*'"  placeholder="Apellido*" autocomplete="off" tabindex="2" required>
     </div>
     </div>
     <div class="row" align="center">
 
               <div class="col-md-3 col-md-offset-3">
 
-                <input type="tel" class="form-control" name="referrer_phone" onfocus="this.placeholder = ''" 
-    onblur="this.placeholder = 'phone*'"  placeholder="phone*" autocomplete="off" tabindex="3" required>
+                <input type="tel" class="form-control" name="refferer_phone" onfocus="this.placeholder = ''" 
+    onblur="this.placeholder = 'Numero de teléfono de casa*'"  placeholder="Numero de teléfono de casa*" autocomplete="off" tabindex="3" required>
               </div>
 
               <div class="col-md-3">
             <input type="email" class="form-control" name="referrer_email" onfocus="this.placeholder = ''" 
-    onblur="this.placeholder = 'email*'"  placeholder="email*" autocomplete="off" tabindex="4" required>
+    onblur="this.placeholder = 'Correo electrónico / Email*'"  placeholder="Correo electrónico / Email*" autocomplete="off" tabindex="4" required>
               </div>
     </div>
 
@@ -131,17 +131,14 @@
               <div class="col-md-6 col-md-offset-3">
 
                 <input type="text" class="form-control" name="relationship" onfocus="this.placeholder = ''" 
-    onblur="this.placeholder = 'relationship*'"  placeholder="relationship*" autocomplete="off" tabindex="5" required>
+    onblur="this.placeholder = 'Parentesco*'"  placeholder="Parentesco*" autocomplete="off" tabindex="5" required>
               </div>
 
     </div>
-  </div>
-  </form>
-
-
+</form>
     <div class="row" align="center">
   <div class="col-md-4 col-md-offset-4">
-    <button class="btn btn-default" id="continue" tabindex="6">Continue</button>
+    <button class="btn btn-default" id="continue" tabindex="6">continuar</button>
   </div>
 </div>
 
@@ -154,37 +151,38 @@
   <div class="col-md-3" id="sidebar">
 
   <div class="row">
-    <h3 class="heading-title" style="font-weight:400; font-style:normal">QUALIFICATION STEPS</h4>
+    <h3 class="heading-title" style="font-weight:400; font-style:normal">PASOS A TOMAR PARA SOMETER
+SOLICITUD</h4>
   </div>
 
   <div class="row" >
             <i class="fa fa-check"></i>
-    Service Territory
+    Elegibilidad de Territorio
   </div>
 
   <div class="row" >
             <i class="fa fa-check"></i>
-    Utility Company
+    Elegibilidad de servicios públicos
   </div>
 
   <div class="row" >
             <i class="fa fa-check"></i>
-    Income Eligibity
+    Elegibilidad de Ingresos
   </div>
 
   <div class="row" >
         <i class="fa fa-check"></i>
-    Age of Home
+    Elegibilidad de antigüedad de su casa
   </div>
 
   <div class="row" >
     <i class="fa fa-check"></i>
-      Property Eligibility
+      Elegibilidad del predio
   </div>
 
   <div class="row" >
         <i class="fa fa-check"></i>
-    Application & Next Steps
+     Próximos pasos
   </div>
 
 

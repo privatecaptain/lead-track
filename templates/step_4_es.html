@@ -1,4 +1,4 @@
-{% extends 'base2.html' %}
+{% extends 'base2_es.html' %}
 {% block body %}
 
 <section id="main">
@@ -7,12 +7,12 @@
 <!-- START PAGE TEMPLATE -->
 <!-- Start -->
 <div class="row-container light bg-scroll" style=""><div class="container-fluid"><div class="row"><div class="col-md-9" style="background-color: #fff; margin-bottom:0px;">
-  <div class="row"><div class="tw-element waves-heading center col-md-12" style="" ><h3 class="heading-title" style="font-weight:400;font-style:normal">Is the home at least?<span class="title-seperator"></span></h3>
+  <div class="row"><div class="tw-element waves-heading center col-md-12" style="" ><h3 class="heading-title" style="font-weight:400;font-style:normal">Si casa es por lo menos?<span class="title-seperator"></span></h3>
 
 </div>
 </div>
 
-<form role="form" action="/esap" method="POST" id="esap_form">
+<form role="form" action="/esap" method="POST" id="esap_form"><input name="lang" value="es" type="hidden">
 
   <input type="hidden" name="step" value="4">
 
@@ -20,7 +20,6 @@
 {% for key in params %}
 <input type="hidden" name="{{key}}" value="{{params[key]}}">
 {% endfor %}
-
   
     <div class="row" align="center">
         <div class="col-md-6 col-md-offset-3">
@@ -56,37 +55,38 @@
 <div class="col-md-3" id="sidebar">
 
   <div class="row">
-    <h3 class="heading-title" style="font-weight:400; font-style:normal">QUALIFICATION STEPS</h3>
+    <h3 class="heading-title" style="font-weight:400; font-style:normal">PASOS A TOMAR PARA SOMETER
+SOLICITUD</h3>
   </div>
 
   <div class="row">
             <i class="fa fa-check"></i>
-    Service Territory
+    Elegibilidad de Territorio
   </div>
 
   <div class="row">
             <i class="fa fa-check"></i>
-    Utility Company
+    Elegibilidad de servicios públicos
   </div>
 
   <div class="row">
             <i class="fa fa-check"></i>
-    Income Eligibity
+    Elegibilidad de Ingresos
   </div>
 
   <div class="row" >
         <i class="fa fa-check"></i>
-    Age of Home
+    Elegibilidad de antigüedad de su casa
   </div>
 
   <div class="row" >
     <i class="fa fa-check"></i>
-      Property Eligibility
+      Elegibilidad del predio
   </div>
 
   <div class="row" >
         <i class="fa fa-check"></i>
-    Application & Next Steps
+    Próximos pasos
   </div>
 
 
