@@ -23,6 +23,33 @@
 <p><b>INSCRIPCION PROGRAMADA</b></p>
 <p>Appointment set: {{lead['notes']}}</p>
 {% endif %}
+
+
+{% if lead['status'] == 'ready_for_assignment' or lead['status'] == 'unable_to_reach'
+                                      or lead['status'] == 'utility_authorization_needed'
+                                      or lead['status'] == 'address_not_valid'
+  
+ %}
+
+<p><b>SOLICITUD PROCESADA</b></p>
+<p>{{pretty_name(lead['status'])}}</p>
+<p>{{lead['first_name']}} &nbsp {{lead['last_name'] }} &nbsp {{format_number(lead['phone_number'])}} &nbsp {{lead['email']}} </p>
+{% endif %}
+
+
+{% if lead['status'] == 'previously_enrolled' or lead['status'] == 'dnq_over_income'
+                                      or lead['status'] == 'dnq_out_of_area'
+                                      or lead['status'] == 'dnq_other_utility'
+  
+ %}
+
+<p><b>SOLICITUD PROCESADA</b></p>
+<p>{{pretty_name(lead['status'])}}</p>
+<p>{{lead['notes']}} </p>
+{% endif %}
+
+
+
 </div>
 
 

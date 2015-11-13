@@ -1011,7 +1011,7 @@ def esap_process():
 		if step == 5:
 			lead_id = match_address(make_address(params))
 			print lead_id
-			return render_template(getGtemplate(lang,'status'),lead=get_lead('','',lead_id=lead_id))
+			return render_template(getGtemplate(lang,'status'),lead=get_lead('','',lead_id=lead_id)[0])
 
 		return render_template(get_templte(lang,step),
 								terminate=True,
@@ -1329,7 +1329,7 @@ def check_status():
 		lead = get_lead(last_name,phone_number)
 
 		if lead:
-			return render_template(getGtemplate(lang,'status'),lead=lead,match=True)
+			return render_template(getGtemplate(lang,'status'),lead=lead[0],match=True)
 		else:
 			return render_template(getGtemplate(lang,'check_status'),match=False)
 
@@ -1369,8 +1369,8 @@ def get_lead(last_name,phone_number,lead_id=''):
 				order by entry_date desc limit 1
 					'''
 	lead = lead_details(sql,params)
-
-	return lead[0]
+	
+	return lead
 
 
 

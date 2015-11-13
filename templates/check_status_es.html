@@ -37,7 +37,12 @@
 </div>
 </div>
 </form>
+{% if match == False %}
+<div class="row red" align="center">
 
+<p>Sorry no record found!, please check the details again.</p>
+</div>
+{% endif %}
 </div>
 
 
@@ -46,5 +51,100 @@
 </div>
 </div>
 </section>
+
+
+<script type="text/javascript">
+
+$('#sub')[0].onclick = function (){
+      
+      event.preventDefault();
+      check();
+
+}
+
+
+function check(ans) {
+    
+    var clear =  true;
+    var required = [
+      'last_name',
+      ]
+
+    var ph = [
+      'phone_number',
+      ]
+
+   
+    for (var i = required.length - 1; i >= 0; i--) {
+      
+      var input = $('input[name="'+required[i]+'"]')[0];
+      if (input.value == '') {
+          createLabel(input,'required');
+          clear = false;
+      }
+      else{
+        cleanSlate(input);
+      };
+
+    };
+
+    for (var i = ph.length - 1; i >= 0; i--) {
+
+      var input = $('input[name="'+ph[i]+'"]')[0];
+
+      if (!validatePhonenumber(input.value)) {
+        createLabel(input,'Invalid');
+        clear = false;
+      }
+      else{
+        cleanSlate(input);
+      };
+
+    };
+
+
+    console.log(clear);
+    if (clear) {
+      $('#status').submit();
+    };
+
+}
+
+function createLabel (input,reason) {
+    
+    var label_check = '#label_'+input.name;
+    if ($(label_check)[0] != undefined) {
+      return;
+    }
+    else{
+      var label = document.createElement('label');
+      label.className = 'red';
+      label.id = "label_" + input.name;
+      label.innerText = input.placeholder.replace('*','') + ' is '+ reason;
+      input.parentElement.appendChild(label);
+    }
+}
+
+function cleanSlate (input) {
+
+  var label_check = '#label_'+input.name;
+
+   if ($(label_check)[0] != undefined) {
+      $(label_check)[0].style.visibility = 'hidden';
+    }
+
+}
+
+function validatePhonenumber(inputtxt) {
+  var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+
+ return phoneno.test(inputtxt);
+}
+
+
+</script>
+
+
+
 <!-- End Main -->
 {% endblock %}
