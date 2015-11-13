@@ -1011,7 +1011,7 @@ def esap_process():
 		if step == 5:
 			lead_id = match_address(make_address(params))
 			print lead_id
-			return render_template('status.html',lead=get_lead('','',lead_id=lead_id))
+			return render_template(getGtemplate(lang,'status'),lead=get_lead('','',lead_id=lead_id))
 
 		return render_template(get_templte(lang,step),
 								terminate=True,
@@ -1024,6 +1024,12 @@ def get_templte(lang,step):
 		return 'step_' + str(step) + '_es.html'
 	else:
 		return 'step_' + str(step) + '.html'
+
+def getGtemplate(lang,t):
+	if lang == 'es':
+		return t+'_es.html'
+	else:
+		return t+'.html'
 
 
 def status_terminate(lead_id):
@@ -1311,10 +1317,11 @@ def process_resolution(step,params,extras):
 def check_status():
 
 	if request.method == 'GET':
-		return render_template('check_status.html')
+		lang = request.cookies.get('lang')
+		return render_template(getGtemplate(lang,'check_status'))
 
 	if request.method == 'POST':
-
+		lang = request.cookies.get('lang')
 		params = request.form
 		last_name = params['last_name']
 		phone_number = params['phone_number']
@@ -1322,9 +1329,9 @@ def check_status():
 		lead = get_lead(last_name,phone_number)
 
 		if lead:
-			return render_template('status.html',lead=lead,match=True)
+			return render_template(getGtemplate(lang,'status'),lead=lead,match=True)
 		else:
-			return render_template('check_status.html',match=False)
+			return render_template(getGtemplate(lang,'check_status'),match=False)
 
 
 @app.route('/es',methods=['GET'])
