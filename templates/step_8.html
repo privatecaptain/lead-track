@@ -34,11 +34,18 @@
 </div>
 </div>
 
+<form action="esap" method="POST">
+{% for key in extras %}
+<input type="hidden" name="{{key}}" value="{{extras[key]}}">
+{% endfor %}
+
+  <input type="hidden" name="step" value="8">
 <div class="row" align="center">
   <div class="col-md-4 col-md-offset-4">
     <button class="btn btn-default" id="submit" tabindex="1">Submit</button>
   </div>
 </div>
+</form>
 
  
 

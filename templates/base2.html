@@ -257,6 +257,7 @@ margin-bottom: 15px!important;
 input[type="text"],
 input[type="tel"],
 input[type="email"] {
+    text-transform: uppercase;
 	box-shadow: rgba(0, 0, 0, 0.14902) 0px 0px 4px 0px;
     color: rgb(51, 51, 51);
     cursor: default;
@@ -367,15 +368,20 @@ $(document).ready(function() {
 
 
 
-
+$(":input").each(function (i) { $(this).attr('tabindex', i + 1); });
 });
 
 </script>
 
 <!-- SideBar JS END -->
 
+<!-- Placeholder Caps START-->
+<script type="text/javascript">
 
 
+</script>
+
+<!-- PLaceholder Caps END -->
 <script type="text/javascript">
 
 

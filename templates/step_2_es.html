@@ -33,10 +33,15 @@
 
 
 <div class="row" align="center">
-  <div class="col-xs-6">
+  <div class="col-xs-4">
     <button class="btn btn-default" name="electric" value="pg&e">PG&E</button>
   </div>
-  <div class="col-xs-6">
+
+  <div class="col-xs-4">
+    <button class="btn btn-default" value="edison" name="electric">Edison</button>
+  </div>
+  
+  <div class="col-xs-4">
     <button class="btn btn-default" value="other" name="electric">Other</button>
   </div>
 </div>
@@ -166,16 +171,24 @@ $(document).ready(function() {
         var gas = $('#gas')[0].value;
         var electric = $('#electric')[0].value;
 
-        if ((gas != 'other' || electric != 'other') && gas != '' && electric != '') {
+        if (
+            (
+              (gas != 'other' || electric != 'other') 
+                && (gas != 'other' || electric != 'edison')
+            )
+            && gas != '' && electric != ''
+         ) {
             
             $('#esap_form').submit();
         };
 
-        if (gas == 'other' && electric == 'other') {
+        if ((gas == 'other' && electric == 'other') || (gas == 'other' && electric == 'edison')) {
             $('#alert')[0].style.visibility = 'visible';
                $('html, body').animate({
                 scrollTop: $("#alert").offset().top
             }, 2000);
+               $('input[name="step"]')[0].value = 10;
+               setTimeout(function() {$('#esap_form').submit();},3000);
         };
 
         return false;

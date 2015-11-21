@@ -33,13 +33,13 @@
               <div class="col-md-3 col-md-offset-3">
 
                 <input type="text" class="form-control" name="l_first_name" onfocus="this.placeholder = ''" 
-    onblur="this.placeholder = 'Nombre*'"  placeholder="Nombre*" autocomplete="off" tabindex="1" required>
+    onblur="this.placeholder = 'Nombre'"  placeholder="Nombre" autocomplete="off" tabindex="1" required>
               </div>
 
               <div class="col-md-3">
 
                <input type="text" class="form-control" name="l_last_name" onfocus="this.placeholder = ''" 
-    onblur="this.placeholder = 'Apellido*'"  placeholder="Apellido*" autocomplete="off" tabindex="2" required>
+    onblur="this.placeholder = 'Apellido'"  placeholder="Apellido" autocomplete="off" tabindex="2" required>
     </div>
     </div>
     <div class="row" align="center">
@@ -47,12 +47,12 @@
               <div class="col-md-3 col-md-offset-3">
 
                 <input type="tel" class="form-control" name="l_phone_number" onfocus="this.placeholder = ''" 
-    onblur="this.placeholder = 'numero de teléfono Mobil*'"  placeholder="numero de teléfono Mobil*" autocomplete="off" tabindex="3" required>
+    onblur="this.placeholder = 'numero de teléfono Mobil'"  placeholder="numero de teléfono Mobil" autocomplete="off" tabindex="3" required>
               </div>
 
               <div class="col-md-3">
             <input type="tel" class="form-control" name="l_office_phone" onfocus="this.placeholder = ''" 
-    onblur="this.placeholder = 'Numero de Teléfono de oficina*'"  placeholder="Numero de Teléfono de oficina*" autocomplete="off" tabindex="4" required>
+    onblur="this.placeholder = 'Numero de Teléfono de oficina'"  placeholder="Numero de Teléfono de oficina" autocomplete="off" tabindex="4" required>
               </div>
     </div>
 
@@ -62,7 +62,7 @@
               <div class="col-md-6 col-md-offset-3">
 
                 <input type="email" class="form-control" name="l_email" onfocus="this.placeholder = ''" 
-    onblur="this.placeholder = 'Correo electrónico / Email*'"  placeholder="Correo electrónico / Email*" autocomplete="off" tabindex="5" required>
+    onblur="this.placeholder = 'Correo electrónico / Email'"  placeholder="Correo electrónico / Email" autocomplete="off" tabindex="5" required>
               </div>
 
     </div>
@@ -168,8 +168,7 @@ function check() {
     
     var clear =  true;
     var required = [
-      'l_first_name',
-      'l_last_name',
+      
       ]
 
     var ph = [
@@ -197,12 +196,14 @@ function check() {
     for (var i = ph.length - 1; i >= 0; i--) {
 
       var input = $('input[name="'+ph[i]+'"]')[0];
+      if (input.value != '') {
 
       if (!validatePhonenumber(input.value)) {
         createLabel(input,'Invalid');
         clear = false;
       }
-      else{
+      
+    }else{
         cleanSlate(input);
       };
 
@@ -212,11 +213,14 @@ function check() {
     for (var i = em.length - 1; i >= 0; i--) {
       var input = $('input[name="'+em[i]+'"]')[0];
 
+      if (input.value != '') {
+
       if (!validateEmail(input.value)) {
         createLabel(input,'Invalid');
         clear = false;
-      }
-      else{
+      };
+      
+    }else{
         cleanSlate(input);
       };
 

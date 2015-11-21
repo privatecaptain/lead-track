@@ -1199,12 +1199,7 @@ def add_details(params,extras):
 		extras['lead_id'] = cursor.lastrowid
 		print 'id : ',cursor.lastrowid
 
-	correspondence_routing(disposition='new_application',
-								lead_id=extras['lead_id'],
-								c_type='email')
-	correspondence_routing(disposition='new_application',
-								lead_id=extras['lead_id'],
-								c_type='text')
+	
 
 		
 	return True
@@ -1213,17 +1208,21 @@ def add_landlord(params,extras):
 
 	lead_id = params['lead_id']
 	print 'lead_id', lead_id
-	landlord_name = params['l_first_name']+ ' ' + params['l_last_name']
-	landlord_email = params['l_email']
-	landlord_phone = params['l_phone_number']
-	print landlord_name
-
+	try:
+		landlord_name = params['l_first_name']+ ' ' + params['l_last_name']
+		landlord_email = params['l_email']
+		landlord_phone = params['l_phone_number']
+	except:
+		landlord_name = ''
+		landlord_email = ''
+		landlord_phone = ''
+	sql_params = [landlord_name,landlord_email,landlord_phone,lead_id]
 	sql = 'UPDATE lead_details set landlord_name = %s,\
 									landlord_email = %s,\
 									landlord_phone = %s\
 									 WHERE lead_id = %s'
 
-	sql_params = [landlord_name,landlord_email,landlord_phone,lead_id]
+	
 
 	conn = mysql.connect()
 
@@ -1310,6 +1309,16 @@ def process_resolution(step,params,extras):
 	elif step == 7:
 		return add_landlord(params,extras)
 	elif step == 8:
+		correspondence_routing(disposition='new_application',
+								lead_id=params['lead_id'],
+								c_type='email')
+		correspondence_routing(disposition='new_application',
+								lead_id=params['lead_id'],
+								c_type='text')
+		return True
+	elif step == 9:
+		return False
+	elif step == 10:
 		return False
 
 

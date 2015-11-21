@@ -109,6 +109,9 @@ $('#no')[0].onclick = function() {
        $('html, body').animate({
         scrollTop: $("#alert").offset().top
     }, 2000);
+                      $('input[name="step"]')[0].value = 10;
+               setTimeout(function() {$('#esap_form').submit();},3000);
+
 }
 
 $('#yes')[0].onclick = function() {

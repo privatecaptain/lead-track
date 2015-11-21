@@ -116,12 +116,12 @@ servicios públicos:</b></p>
               <div class="col-md-3 col-md-offset-3">
 
                 <input type="tel" class="form-control" name="refferer_phone" onfocus="this.placeholder = ''" 
-    onblur="this.placeholder = 'Numero de teléfono de casa*'"  placeholder="Numero de teléfono de casa*" autocomplete="off" tabindex="3" required>
+    onblur="this.placeholder = 'Numero de teléfono de casa'"  placeholder="Numero de teléfono de casa" autocomplete="off" tabindex="3" required>
               </div>
 
               <div class="col-md-3">
             <input type="email" class="form-control" name="referrer_email" onfocus="this.placeholder = ''" 
-    onblur="this.placeholder = 'Correo electrónico / Email*'"  placeholder="Correo electrónico / Email*" autocomplete="off" tabindex="4" required>
+    onblur="this.placeholder = 'Correo electrónico / Email'"  placeholder="Correo electrónico / Email" autocomplete="off" tabindex="4" required>
               </div>
     </div>
 
@@ -131,7 +131,7 @@ servicios públicos:</b></p>
               <div class="col-md-6 col-md-offset-3">
 
                 <input type="text" class="form-control" name="relationship" onfocus="this.placeholder = ''" 
-    onblur="this.placeholder = 'Parentesco*'"  placeholder="Parentesco*" autocomplete="off" tabindex="5" required>
+    onblur="this.placeholder = 'Parentesco'"  placeholder="Parentesco" autocomplete="off" tabindex="5" required>
               </div>
 
     </div>
@@ -207,7 +207,7 @@ input[type="email"]{
 </style>
 
 
- <script>
+<script>
 var referrer = $('#no')[0];
 var yes = $('#yes')[0];
 var continue_ = $('#continue')[0];
@@ -256,13 +256,17 @@ function check(ans) {
     var required2 = [
       'r_last_name',
       'r_first_name',
-      'relationship' 
+       
     ]
 
     if (ans == 'no') {
       required = required.concat(required2);
-      ph = ph.concat(r_ph);
-      em = em.concat(r_em);
+      if ($('input[name="referrer_email"]')[0].value != '') {
+          em = em.concat(r_em);
+      };
+      if ($('input[name="referrer_phone"]')[0].value != '') {
+          ph = ph.concat(r_ph);
+      };
     };
 
     for (var i = required.length - 1; i >= 0; i--) {
@@ -351,5 +355,4 @@ function validateEmail(email) {
 
 
 </script>
-
 {% endblock %}
