@@ -237,6 +237,11 @@ def show():
 	print request.form
 	return 'OK'
 
+@app.route('/test')
+def test():
+	return render_template('test_esap.html')
+
+
 @app.route('/change_password',methods=['GET','POST'])
 @login_required
 def change_password():
