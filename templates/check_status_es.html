@@ -61,7 +61,20 @@ $('#sub')[0].onclick = function (){
       check();
 
 }
+ var ph = [
+      'phone_number',
+      ]
 
+ for (var i = ph.length - 1; i >= 0; i--) {
+
+    var phones = [{ "mask": "(###) ###-####"}];
+      $('input[name="'+ph[i]+'"]').inputmask({ 
+        mask: phones,
+        greedy: false, 
+        definitions: { '#': { validator: "[0-9]", cardinality: 1}} 
+      });
+
+};
 
 function check() {
     

@@ -1331,7 +1331,9 @@ def process_resolution(step,params,extras):
 def check_status():
 
 	if request.method == 'GET':
-		lang = request.cookies.get('lang')
+		lang = request.args.get('lang')
+		if not lang:
+			lang = request.cookies.get('lang')
 		return render_template(getGtemplate(lang,'check_status'))
 
 	if request.method == 'POST':
