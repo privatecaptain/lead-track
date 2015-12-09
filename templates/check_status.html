@@ -27,7 +27,7 @@
     <div class="col-md-4 col-md-offset-4">
   <div class="form-group">
     <input type="tel" class="form-control" name="phone_number" onfocus="this.placeholder = ''" 
-    onblur="this.placeholder = 'MOBILE PHONE'" placeholder="MOBILE PHONE" maxlength="10" autocomplete="off" tabindex="2" required>
+    onblur="this.placeholder = 'MOBILE PHONE'" placeholder="MOBILE PHONE" autocomplete="off" tabindex="2" required>
   </div>
 </div>
 </div>
@@ -67,20 +67,14 @@ $('#sub')[0].onclick = function (){
 }
 
 
- var ph = [
-      'phone_number',
-      ]
-
- for (var i = ph.length - 1; i >= 0; i--) {
 
     var phones = [{ "mask": "(###) ###-####"}];
-      $('input[name="'+ph[i]+'"]').inputmask({ 
+      $('input[name="phone_number"]').inputmask({ 
         mask: phones,
         greedy: false, 
         definitions: { '#': { validator: "[0-9]", cardinality: 1}} 
       });
 
-};
 
 function check(ans) {
     

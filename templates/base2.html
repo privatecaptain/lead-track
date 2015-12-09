@@ -408,7 +408,9 @@
 
     $(document).ready(function() {
 
-    var sidebar = $('#sidebar')[0];
+
+        if (!document.URL.includes('status')) {
+             var sidebar = $('#sidebar')[0];
     var steps = sidebar.children;
     var step_no = $('[name="step"]')[0].value;
 
@@ -427,7 +429,11 @@
 
 
     $(":input").each(function (i) { $(this).attr('tabindex', i + 1); });
-    });
+
+            
+        };
+
+       });
 
     </script><!-- SideBar JS END -->
     <!-- Placeholder Caps START-->
