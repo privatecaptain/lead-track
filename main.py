@@ -1136,8 +1136,8 @@ def add_details(params,extras):
 	email = params['email']
 	print email
 
-	mobile_phone = params['phone_number']
-	home_phone = params['home_phone']
+	mobile_phone = extract_number(params['phone_number'])
+	home_phone = extract_number(params['home_phone'])
 
 	zip_code = params['zip_code']
 	members = params['members']
@@ -1154,7 +1154,7 @@ def add_details(params,extras):
 	print params['apartment_number']
 	if params['referrer'] == 'yes':
 		referer_name = params['r_first_name'] +' '+ params['r_last_name']
-		referer_phone_number = params['referrer_phone']
+		referer_phone_number = extract_number(params['referrer_phone'])
 		referer_email = params['referrer_email']
 		referer_relation = params['relationship']
 	else:
@@ -1327,6 +1327,13 @@ def process_resolution(step,params,extras):
 		return False
 
 
+def extract_number(number):
+	result = ''
+	for i in number:
+		if i in '0123456789':
+			result += i
+	return result
+
 @app.route('/check_status', methods=['GET','POST'])
 def check_status():
 
@@ -1341,6 +1348,8 @@ def check_status():
 		params = request.form
 		last_name = params['last_name']
 		phone_number = params['phone_number']
+		phone_number = extract_number(phone_number)
+		print phone_number
 
 		lead = get_lead(last_name,phone_number)
 
