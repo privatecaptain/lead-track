@@ -1378,19 +1378,29 @@ def get_lead(last_name,phone_number,lead_id=''):
 	if lead_id != '':
 		params = [lead_id]
 		sql = '''SELECT status,first_name,last_name,
-			phone_number,lead_id,entry_date,
+			lead_details.phone_number,lead_id,entry_date,
+			ltu.name agent_name,
+			ltu.email agent_email,
+			ltu.phone_number agent_phone,
 			 (select dr.notes from disposition_record dr where dr.status = lead_details.status order by dr.timestamp desc limit 1) as notes
-			  from  lead_details WHERE 
+			  from  lead_details
+			  LEFT JOIN lead_track_users ltu ON lead_details.agent = ltu.id 
+			  WHERE 
 			lead_id = %s
 			order by entry_date desc limit 1'''
 	else:
 		params = [last_name,phone_number]
 		sql = '''SELECT status,first_name,last_name,
-				phone_number,lead_id,entry_date,
+				lead_details.phone_number,lead_id,entry_date,
+				ltu.name agent_name,
+				ltu.email agent_email,
+				ltu.phone_number agent_phone,
 				 (select dr.notes from disposition_record dr where dr.status = lead_details.status order by dr.timestamp desc limit 1) as notes
-				  from  lead_details WHERE 
+				  from  lead_details
+				 LEFT JOIN lead_track_users ltu ON lead_details.agent = ltu.id  
+				 WHERE 
 				last_name = %s AND
-				phone_number = %s
+				lead_details.phone_number = %s
 				order by entry_date desc limit 1
 					'''
 	lead = lead_details(sql,params)
