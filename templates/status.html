@@ -30,9 +30,9 @@
   
  %}
 
-<p><b>Application Processed</b></p>
-<p>{{pretty_name(lead['status'])}}</p>
-<p>{{lead['first_name']}} &nbsp {{lead['last_name'] }} &nbsp {{format_number(lead['phone_number'])}} &nbsp {{lead['email']}} </p>
+<p><b>{{lead['entry_date']}}</b></p>
+<p><b>{{pretty_name(lead['status'])}}</b></p>
+<p>{{lead['notes']}}</p>
 <p><b>Contact</b>: {{lead['agent_name']}} </p>
 			<p>{{lead['agent_phone']}} </p>
 			<p>{{lead['agent_email']}}</p>
@@ -45,9 +45,12 @@
   
  %}
 
-<p><b>Application Processed</b></p>
-<p>{{pretty_name(lead['status'])}}</p>
-<p>{{lead['notes']}} </p>
+<p><b>{{lead['entry_date']}}</b></p>
+<p><b>{{pretty_name(lead['status'])}}</b></p>
+<p>{{lead['notes']}}</p>
+<p><b>Contact</b>: {{lead['agent_name']}} </p>
+			<p>{{lead['agent_phone']}} </p>
+			<p>{{lead['agent_email']}}</p>
 {% endif %}
 
 
