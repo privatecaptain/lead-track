@@ -1341,7 +1341,11 @@ def check_status():
 		lang = request.args.get('lang')
 		if not lang:
 			lang = request.cookies.get('lang')
-		return render_template(getGtemplate(lang,'check_status'))
+		if not lang:
+			lang = 'en'
+		resp = make_response(render_template(getGtemplate(lang,'check_status')))
+		resp.set_cookie('lang',lang)
+		return resp
 
 	if request.method == 'POST':
 		lang = request.cookies.get('lang')

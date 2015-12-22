@@ -48,9 +48,9 @@
 <p><b>{{lead['entry_date']}}</b></p>
 <p><b>{{pretty_name(lead['status'])}}</b></p>
 <p>{{lead['notes']}}</p>
-<p><b>Contact</b>: {{lead['agent_name']}} </p>
-			<p>{{lead['agent_phone']}} </p>
-			<p>{{lead['agent_email']}}</p>
+<p><b>Contact:</b> {{lead['agent_name']}} </p>
+			<p><b>Phone: </b>{{lead['agent_phone']}} </p>
+			<p><b>Email:</b> {{lead['agent_email']}}</p>
 {% endif %}
 
 
@@ -64,5 +64,12 @@
 
 </div>
 </section>
+<style type="text/css">
+
+p{
+  font-size: 22px;
+}
+</style>
 <!-- End Main -->
 {% endblock %}
+
