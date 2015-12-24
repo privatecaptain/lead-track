@@ -264,7 +264,11 @@ margin-bottom: 15px!important;
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.1.62/jquery.inputmask.bundle.js"></script>
+    <script src="//console.re/connector.js" data-channel="lead-track" id="consolerescript"></script>
+
+
     <style type="text/css">
+
 
     body{
         zoom: 1.2;
@@ -364,7 +368,7 @@ margin-bottom: 15px!important;
     $(document).ready(function() {
 
 
-        if (!document.URL.includes('status')) {
+        if (document.URL.indexOf('status') == -1 ) {
              var sidebar = $('#sidebar')[0];
     var steps = sidebar.children;
     var step_no = $('[name="step"]')[0].value;

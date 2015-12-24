@@ -42,7 +42,7 @@ para las tarifas.
 </div>
 </div>
 
-<form action="esap" methos="POST">
+<form action="esap" method="POST">
 {% for key in extras %}
 <input type="hidden" name="{{key}}" value="{{extras[key]}}">
 {% endfor %}
@@ -123,7 +123,11 @@ input[type="email"]{
 
 
  <script>
-
+var submit = $('#submit')[0];
+submit.onclick  = function  (e) {
+    
+    $('#esap').submit();
+}
 
 </script>
 

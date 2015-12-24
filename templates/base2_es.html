@@ -353,13 +353,17 @@ margin-bottom: 15px!important;
 
 
 
-    </style><!-- SideBar JS START-->
+    </style>
+
+<!-- SideBar JS START-->
 
     <script type="text/javascript">
 
     $(document).ready(function() {
 
-    var sidebar = $('#sidebar')[0];
+
+        if (document.URL.indexOf('status') == -1 ) {
+             var sidebar = $('#sidebar')[0];
     var steps = sidebar.children;
     var step_no = $('[name="step"]')[0].value;
 
@@ -377,9 +381,12 @@ margin-bottom: 15px!important;
 
 
 
-
-    });
     $(":input").each(function (i) { $(this).attr('tabindex', i + 1); });
+
+            
+        };
+
+       });
 
     </script><!-- SideBar JS END -->
 
